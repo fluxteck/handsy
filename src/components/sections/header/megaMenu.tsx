@@ -11,7 +11,7 @@ import { ProductType } from '@/types/productType'
 const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredProducts: ProductType[] }) => {
 
     return (
-        <div className='absolute z-50 left-0 bg-home-bg-1 flex lg:flex-row flex-col justify-between w-full transition-all duration-500 lg:h-0 h-auto overflow-hidden lg:group-hover:h-[400px] shadow-lg rounded-b-lg'>
+        <div className='static lg:absolute lg:z-50 lg:left-0 bg-home-bg-1 flex lg:flex-row flex-col justify-between w-full transition-all duration-500 lg:h-0 h-auto overflow-hidden lg:group-hover:h-[400px] shadow-lg rounded-b-lg'>
             {
                 data.map(({ menus, id }) => {
                     return (
@@ -70,10 +70,10 @@ const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredPr
             <div className='pr-6 lg:py-7.5 py-3'>
                 <div className='bg-[url("/images/header-megamenu.webp")] rounded-sm object-cover bg-no-repeat max-w-[350px] h-full lg:px-7.5 lg:py-12.5 px-5 py-7'>
                     <div>
-                        <p className='text-primary-foreground'>Urna's Special Offer</p>
+                        <p className='text-primary-foreground'>Furnisy's Special Offer</p>
                         <p className='lg:text-4xl text-3xl font-semibold text-primary-foreground'>Sale <span className='text-orange-500'>up to 30%</span> Only today!</p>
                         <Button asChild size={"medium"} className='lg:text-[15px] mt-7.5 hover:bg-primary hover:text-white hover:opacity-85 uppercase'>
-                            <Link href={""}>By Theme</Link>
+                            <Link href={"/shop"}>Shop Now</Link>
                         </Button>
                     </div>
                 </div>

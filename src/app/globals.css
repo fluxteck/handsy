@@ -63,6 +63,7 @@
   --animate-spring-one: spring 3s ease-in-out 0s infinite;
   --animate-spring-two: spring 3s ease-in-out 1s infinite;
   --animate-spring-three: spring 3s ease-in-out 2s infinite;
+  --animate-shimmer: shimmer-sweep 7s ease-in-out infinite;
 }
 
 :root {
@@ -211,6 +212,34 @@
     width: 80px;
     transition: width 0.5s ease-in-out;
   }
+
+  .category-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    background-color: var(--gray-2);
+    display: inline-block;
+    border-radius: 9999px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+
+  .category-pagination-bullet-active {
+    width: 22px;
+    background-color: var(--primary);
+  }
+}
+
+/* Un-layered: swiper/css/pagination (loaded globally via homeCategory.tsx) ships its
+   own unlayered `.swiper-pagination-bullets.swiper-pagination-horizontal` rule, which
+   beats Tailwind's `@layer utilities` classes regardless of specificity and pins the
+   hero pagination to the left edge instead of centering it. (Tailwind's `-translate-x-1/2`
+   uses the separate `translate` property, so it's untouched by swiper and doesn't need
+   to be restated here.) */
+.hero-pagination.swiper-pagination-bullets.swiper-pagination-horizontal {
+  left: 50%;
+  right: auto;
+  width: auto;
+  bottom: 2rem;
 }
 
 @keyframes spring {
@@ -224,5 +253,21 @@
   100% {
     transform: scale(0.9, 0.9);
     opacity: 0;
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-150%);
+  }
+  55%,
+  100% {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .promo-shimmer {
+    animation: none;
   }
 }

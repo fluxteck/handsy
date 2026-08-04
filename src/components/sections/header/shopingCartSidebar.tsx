@@ -52,10 +52,10 @@ const ShopingCartSidebar = () => {
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger
             aria-label="shoping-cart"
-            className="text-gray-1-foreground relative"
+            className="text-gray-1-foreground relative p-1.5 -m-1.5 rounded-full transition-colors duration-300 hover:bg-black/[0.04] active:bg-black/[0.06]"
           >
             <ShopCart className="size-6" />
-            <span className="w-[15px] h-[15px] bg-primary rounded-full flex items-center justify-center text-xs text-white absolute -right-[3px] -top-[3px]">
+            <span className="w-[15px] h-[15px] bg-primary rounded-full flex items-center justify-center text-xs text-white absolute right-[3px] top-[3px]">
               {totalProducts}
             </span>
           </SheetTrigger>

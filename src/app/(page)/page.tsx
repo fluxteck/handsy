@@ -2,6 +2,7 @@ import React from 'react'
 import { Metadata } from 'next'
 import AdsSlider from '@/components/sections/adsSlider'
 import BlogSlider from '@/components/sections/blogs/blogSlider'
+import BrandCarousel from '@/components/sections/brandCarousel'
 import FeaturedProducts from '@/components/sections/featuredProducts'
 import InstagramGallery from '@/components/sections/instagramGallery'
 import HomeCategory from '@/components/sections/homeCategory'
@@ -10,7 +11,7 @@ import TestimonialSlider from '@/components/sections/testimonialSlider'
 import TopCollections from '@/components/sections/topCollections'
 import Hero from '@/components/sections/hero'
 import AboutTwo from '@/components/sections/aboutTwo'
-import { getAdsData, getBlogData, getCategoriesData, getHeroData, getProductsData, getTestimonialsData } from '@/lib/data'
+import { getAdsData, getBlogData, getBrandsData, getCategoriesData, getHeroData, getProductsData, getTestimonialsData } from '@/lib/data'
 
 export const metadata: Metadata = {
   title: "Home",
@@ -24,6 +25,7 @@ const Home = async () => {
   const ads = await getAdsData()
  const { topCollections } = await getProductsData();
   const heroData = await getHeroData()
+  const brandsData = await getBrandsData()
 
   return (
     <>
@@ -32,6 +34,7 @@ const Home = async () => {
       <FeaturedProducts />
       <AboutTwo />
       <TopCollections data={topCollections} />
+      <BrandCarousel brands={brandsData} />
       <AdsSlider data={ads} />
       <BlogSlider blogs={blogData} />
       <TestimonialSlider testimonials={testimonialData} />

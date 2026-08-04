@@ -25,197 +25,113 @@ export type menuType = {
     "megaMenu"?: MegamenuType[]
 }
 
+const buildCategoryMegaMenu = (categoryPath: string, subCategories: string[]): MegamenuType[] => [
+    {
+        "id": 1,
+        "menus": [
+            {
+                "id": 0,
+                "title": "Shop by Category",
+                "items": subCategories.map((label, index) => ({
+                    "id": index + 1,
+                    "label": label,
+                    "path": categoryPath,
+                }))
+            }
+        ]
+    }
+]
+
 export const menuList: menuType[] = [
     {
         "id": 1,
-        "label": "Home",
-        "path": "#",
-        "dropdownList": [
-            {
-                "id": 1,
-                "label": "Home-1",
-                "path": `https://furnisy.vercel.app/`,
-            },
-            {
-                "id": 2,
-                "label": "Home-2",
-                "path": `https://furnisy-home-2.vercel.app/`,
-            },
-            {
-                "id": 3,
-                "label": "Home-3",
-                "path": `https://furnisy-home-3.vercel.app/`,
-            },
-        ]
+        "label": "Furniture",
+        "path": "/category/furniture",
+        "megaMenu": buildCategoryMegaMenu("/category/furniture", [
+            "Sofas & Couches",
+            "Chairs & Recliners",
+            "Tables",
+            "Beds & Bed Frames",
+            "Wardrobes & Storage",
+            "Outdoor Furniture",
+        ])
     },
     {
         "id": 2,
-        "label": "Shop",
-        "path": "#",
-        "dropdownList": [
-            {
-                "id": 1,
-                "label": "Shop-1",
-                "path": "/shop",
-            },
-            {
-                "id": 2,
-                "label": "Shop-2",
-                "path": "/shop-2",
-            },
-            {
-                "id": 3,
-                "label": "Shop-3",
-                "path": "/shop-3",
-            },
-        ]
+        "label": "Mattresses",
+        "path": "/category/mattresses",
+        "megaMenu": buildCategoryMegaMenu("/category/mattresses", [
+            "Memory Foam Mattresses",
+            "Spring Mattresses",
+            "Hybrid Mattresses",
+            "Mattress Toppers",
+            "Kids Mattresses",
+        ])
+    },
+    {
+        "id": 3,
+        "label": "Home Decor",
+        "path": "/category/home-decor",
+        "megaMenu": buildCategoryMegaMenu("/category/home-decor", [
+            "Wall Art & Paintings",
+            "Mirrors",
+            "Vases & Bowls",
+            "Rugs & Carpets",
+            "Curtains & Blinds",
+        ])
     },
     {
         "id": 4,
-        "label": "Blog",
-        "path": "#",
-        "dropdownList": [
-            {
-                "id": 1,
-                "label": "blog-1",
-                "path": "/blog",
-            },
-            {
-                "id": 2,
-                "label": "blog-2",
-                "path": "/blog-2",
-            },
-            {
-                "id": 3,
-                "label": "blog-3",
-                "path": "/blog-3",
-            },
-            {
-                "id": 4,
-                "label": "blog-single",
-                "path": "/blog-single",
-            },
-
-        ]
+        "label": "Lamps & Lighting",
+        "path": "/category/lamps-lighting",
+        "megaMenu": buildCategoryMegaMenu("/category/lamps-lighting", [
+            "Table Lamps",
+            "Floor Lamps",
+            "Ceiling Lights",
+            "Wall Lights",
+            "Chandeliers",
+        ])
     },
     {
         "id": 5,
-        "label": "Pages",
-        "path": "#",
-        "megaMenu": [
-            {
-                "id": 1,
-                "menus": [
-                    {
-                        "id": 0,
-                        "title": "product layout",
-                        "items": [
-                            {
-                                "id": 4,
-                                "label": "product details 1",
-                                "path": "/product-details",
-                            },
-                            {
-                                "id": 6,
-                                "label": "product details 3",
-                                "path": "/product-details-3",
-                            },
-                            {
-                                "id": 7,
-                                "label": "product details 4",
-                                "path": "/product-details-4",
-                            },
-                        ]
-                    },
-
-                ]
-            },
-            {
-                "id": 2,
-                "menus": [
-                    {
-                        "id": 0,
-                        "title": "pages",
-                        "items": [
-                            {
-                                "id": 1,
-                                "label": "about-us",
-                                "path": "/about-us",
-                            },
-                            {
-                                "id": 2,
-                                "label": "contact-us",
-                                "path": "/contact-us",
-                            },
-                            {
-                                "id": 3,
-                                "label": "view Cart",
-                                "path": "/cart",
-                            },
-                            {
-                                "id": 4,
-                                "label": "checkout",
-                                "path": "/checkout",
-                            },
-                            {
-                                "id": 5,
-                                "label": "Wishlist",
-                                "path": "/wishlist",
-                            },
-                            {
-                                "id": 6,
-                                "label": "Compare",
-                                "path": "/compare",
-                            },
-
-                        ]
-                    }
-
-                ]
-            },
-            {
-                "id": 3,
-                "menus": [
-                    {
-                        "id": 0,
-                        "title": "use full link",
-                        "items": [
-                            {
-                                "id": 88,
-                                "label": "register",
-                                "path": "/register",
-                            },
-                            {
-                                "id": 99,
-                                "label": "login",
-                                "path": "/login",
-                            },
-                            {
-                                "id": 114,
-                                "label": "location",
-                                "path": "/location",
-                            },
-                            {
-                                "id": 7,
-                                "label": "faq",
-                                "path": "/faq",
-                            },
-                            {
-                                "id": 10,
-                                "label": "404-1",
-                                "path": "/404-1",
-                            },
-                            {
-                                "id": 11,
-                                "label": "404-2",
-                                "path": "/404-2",
-                            },
-                        ]
-                    }
-                ]
-            },
-
-        ]
-    }
-
+        "label": "Kitchen & Dining",
+        "path": "/category/kitchen-dining",
+        "megaMenu": buildCategoryMegaMenu("/category/kitchen-dining", [
+            "Dining Tables & Chairs",
+            "Kitchen Storage",
+            "Crockery & Cutlery",
+            "Bar Furniture",
+            "Kitchen Islands",
+        ])
+    },
+    {
+        "id": 6,
+        "label": "Luxury",
+        "path": "/category/luxury",
+        "megaMenu": buildCategoryMegaMenu("/category/luxury", [
+            "Luxury Sofas",
+            "Designer Chairs",
+            "Premium Bedroom Sets",
+            "Statement Lighting",
+            "Curated Decor",
+        ])
+    },
+    {
+        "id": 7,
+        "label": "Modular",
+        "path": "/category/modular",
+        "megaMenu": buildCategoryMegaMenu("/category/modular", [
+            "Modular Sofas",
+            "Modular Kitchens",
+            "Modular Wardrobes",
+            "Modular Shelving",
+            "Modular Bedroom Sets",
+        ])
+    },
 ]
+
+// Single source of truth for the `/category/[slug]` landing pages,
+// so page titles always match the nav labels above.
+export const categorySlugLabels: Record<string, string> = Object.fromEntries(
+    menuList.map(({ label, path }) => [path.replace("/category/", ""), label])
+)

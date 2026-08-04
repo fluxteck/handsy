@@ -32,10 +32,10 @@ const BlogSlider = ({ blogs }: { blogs: BlogType[] }) => {
                 <div className='flex justify-between items-center'>
                     <Title>News & Blogs</Title>
                     <div className='flex items-center gap-x-2.5'>
-                        <button aria-label='arrow-left' className='swiper-button-prev text-gray-1-foreground bg-background hover:text-white hover:bg-primary transition-all w-12.5 h-12.5 rounded-full flex justify-center items-center drop-shadow-[(0px_0px_4px_rgba(102,99,97,0.20))]'>
+                        <button aria-label='arrow-left' className='blog-button-prev text-gray-1-foreground bg-background hover:text-white hover:bg-primary transition-all w-12.5 h-12.5 rounded-full flex justify-center items-center drop-shadow-[(0px_0px_4px_rgba(102,99,97,0.20))]'>
                             <ArrowLeft />
                         </button>
-                        <button aria-label='arrow-right' className='swiper-button-next text-gray-1-foreground bg-background hover:text-white hover:bg-primary transition-all w-12.5 h-12.5 rounded-full flex justify-center items-center drop-shadow-[(0px_0px_4px_rgba(102,99,97,0.20))]'>
+                        <button aria-label='arrow-right' className='blog-button-next text-gray-1-foreground bg-background hover:text-white hover:bg-primary transition-all w-12.5 h-12.5 rounded-full flex justify-center items-center drop-shadow-[(0px_0px_4px_rgba(102,99,97,0.20))]'>
                             <ArrowRight />
                         </button>
                     </div>
@@ -68,8 +68,8 @@ const BlogSlider = ({ blogs }: { blogs: BlogType[] }) => {
                     }}
                     grabCursor
                     navigation={{
-                        nextEl: '.swiper-button-next',
-                        prevEl: '.swiper-button-prev',
+                        nextEl: '.blog-button-next',
+                        prevEl: '.blog-button-prev',
                     }}
                     modules={[Navigation]}
                 >

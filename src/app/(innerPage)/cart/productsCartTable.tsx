@@ -14,8 +14,9 @@ import {
   incrementProductQuentity,
   removeToCart,
 } from "@/lib/features/AddToCartSlice";
-import { Close, Minus, Plus } from "@/lib/icon";
+import { Close, Minus, Plus, ShopCart } from "@/lib/icon";
 import { useAppDispatch, useAppSelector } from "@/lib/reduxHooks";
+import { menuList } from "@/db/menuList";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -120,16 +121,50 @@ const ProductsCartTable = () => {
           </div>
         </div>
       ) : (
-        <div>
-          <h3 className="lg:text-2xl text-xl ">
-            No Product in Cart{" "}
-            <Link
-              href={"/shop"}
-              className="font-medium underline underline-offset-5 hover:no-underline transition-all duration-500"
-            >
-              Browse Shop
-            </Link>
+        <div className="lg:col-span-2 flex flex-col items-center justify-center text-center border rounded-lg px-6 py-14 lg:py-20 animate-in fade-in slide-in-from-bottom-2 duration-700 fill-mode-both">
+          <h3 className="lg:text-[32px] text-2xl font-bold text-secondary-foreground">
+            Your Cart is Empty
           </h3>
+          <p className="mt-1.5 lg:text-xl text-lg text-gray-1-foreground">
+            Let&apos;s fill it with something you&apos;ll love
+          </p>
+
+          <div className="relative my-8 lg:my-10 flex size-32 lg:size-40 items-center justify-center animate-in fade-in zoom-in-95 duration-700 delay-150 fill-mode-both">
+            <span
+              aria-hidden
+              className="absolute inset-0 rounded-full bg-home-bg-1 after:absolute after:inset-0 after:rounded-full after:bg-[rgba(138,138,138,0.25)] after:animate-spring-one"
+            />
+            <ShopCart className="relative size-14 lg:size-16 text-gray-1-foreground" />
+            <span className="absolute right-2 bottom-2 lg:right-3 lg:bottom-3 flex size-8 lg:size-10 items-center justify-center rounded-full bg-primary text-white shadow-md ring-4 ring-background">
+              <Close className="size-3.5 lg:size-4" strokeWidth="3" />
+            </span>
+          </div>
+
+          <div className="animate-in fade-in slide-in-from-bottom-1 duration-700 delay-300 fill-mode-both">
+            <p className="font-medium text-secondary-foreground">
+              What would you like to buy? Pick from our best-selling categories
+            </p>
+            <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+              {menuList.map(({ id, label, path }) => (
+                <li key={id}>
+                  <Link
+                    href={path}
+                    className="multiline-hover text-gray-1-foreground hover:text-secondary-foreground capitalize transition-colors duration-300"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <Button
+            asChild
+            size={"lg"}
+            className="mt-9 w-full max-w-sm uppercase tracking-wide lg:text-lg hover:scale-[1.02] transition-transform duration-300"
+          >
+            <Link href={"/shop"}>Continue Shopping</Link>
+          </Button>
         </div>
       )}
     </>

@@ -6,6 +6,7 @@ import { blogData } from "@/db/blogData";
 import { faqData } from "@/db/faqData";
 import { galleryDataOne } from "@/db/galleryData";
 import { partnerData } from "@/db/partnerData";
+import { brandsData } from "@/db/brandsData";
 import { privacyPolicyData } from "@/db/privacyPolicyData";
 import { termsAndConditionsData } from "@/db/termsAndConditionsData";
 import { testimonialData } from "@/db/testimonialsData";
@@ -128,6 +129,19 @@ export const getPartnerData = cache(async () => {
         return partnerData;
     } catch (error) {
         throw new Error('Error in getPartnerData: ' + (error instanceof Error ? error.message : String(error)));
+    }
+});
+
+export const getBrandsData = cache(async () => {
+    try {
+        if (process.env.NODE_ENV === 'production') {
+            const res = await fetch(`${baseUrl}/api/brands`);
+            if (!res.ok) throw new Error('Failed to fetch brands data');
+            return res.json();
+        }
+        return brandsData;
+    } catch (error) {
+        throw new Error('Error in getBrandsData: ' + (error instanceof Error ? error.message : String(error)));
     }
 });
 
