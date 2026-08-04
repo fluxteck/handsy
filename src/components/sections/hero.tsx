@@ -7,11 +7,12 @@ import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay, Pagination } from "swiper/modules";
+import { cn } from "@/lib/utils";
 import { HeroDataType } from "@/db/heroData";
 
-const Hero = ({ data }: { data: HeroDataType[] }) => {
+const Hero = ({ data, className }: { data: HeroDataType[]; className?: string }) => {
   return (
-    <section>
+    <section className={cn("h-full", className)}>
       <Swiper
         grabCursor
         loop
@@ -76,12 +77,12 @@ const Hero = ({ data }: { data: HeroDataType[] }) => {
                   >
                     <Button
                       asChild
-                      size={"medium"}
-                      className="mt-10 lg:mt-6 lg:py-2 max-w-[188px] leading-[170%] group"
+                      size={"sm"}
+                      className="mt-10 lg:mt-6 max-w-[150px] text-sm lg:text-sm leading-[170%] group"
                     >
                       <Link href={"/shop"}>
                         Shop Now{" "}
-                        <ArrowUp className="group-hover:rotate-45 transition-transform duration-500" />{" "}
+                        <ArrowUp className="size-4 group-hover:rotate-45 transition-transform duration-500" />{" "}
                       </Link>
                     </Button>
                   </motion.div>

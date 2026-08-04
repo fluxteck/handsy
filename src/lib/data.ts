@@ -11,6 +11,7 @@ import { privacyPolicyData } from "@/db/privacyPolicyData";
 import { termsAndConditionsData } from "@/db/termsAndConditionsData";
 import { testimonialData } from "@/db/testimonialsData";
 import { heroData } from "@/db/heroData";
+import { promoCardsData } from "@/db/promoCardsData";
 import { products } from "@/db/products";
 
 const baseUrl = 'https://furnisy.vercel.app';
@@ -25,6 +26,19 @@ export const getHeroData = cache(async () => {
         return heroData;
     } catch (error) {
         throw new Error('Error in getHeroData: ' + (error instanceof Error ? error.message : String(error)));
+    }
+});
+
+export const getPromoCardsData = cache(async () => {
+    try {
+        if (process.env.NODE_ENV === 'production') {
+            const res = await fetch(`${baseUrl}/api/promo-cards`);
+            if (!res.ok) throw new Error('Failed to fetch promo cards data');
+            return res.json();
+        }
+        return promoCardsData;
+    } catch (error) {
+        throw new Error('Error in getPromoCardsData: ' + (error instanceof Error ? error.message : String(error)));
     }
 });
 

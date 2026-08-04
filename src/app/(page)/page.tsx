@@ -9,9 +9,9 @@ import HomeCategory from '@/components/sections/homeCategory'
 import Newsletter from '@/components/sections/newsletter'
 import TestimonialSlider from '@/components/sections/testimonialSlider'
 import TopCollections from '@/components/sections/topCollections'
-import Hero from '@/components/sections/hero'
+import HeroSection from '@/components/sections/heroSection'
 import AboutTwo from '@/components/sections/aboutTwo'
-import { getAdsData, getBlogData, getBrandsData, getCategoriesData, getHeroData, getProductsData, getTestimonialsData } from '@/lib/data'
+import { getAdsData, getBlogData, getBrandsData, getCategoriesData, getHeroData, getPromoCardsData, getProductsData, getTestimonialsData } from '@/lib/data'
 
 export const metadata: Metadata = {
   title: "Home",
@@ -25,11 +25,12 @@ const Home = async () => {
   const ads = await getAdsData()
  const { topCollections } = await getProductsData();
   const heroData = await getHeroData()
+  const promoCardsData = await getPromoCardsData()
   const brandsData = await getBrandsData()
 
   return (
     <>
-      <Hero data={heroData} />
+      <HeroSection heroData={heroData} promoCards={promoCardsData} />
       <HomeCategory categories={categoriesData} />
       <FeaturedProducts />
       <AboutTwo />
