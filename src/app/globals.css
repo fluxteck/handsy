@@ -242,6 +242,16 @@
   bottom: 2rem;
 }
 
+/* Un-layered, same reason as above: swiper/css ships an unlayered `.swiper-slide { height: 100% }`
+   rule that would beat a Tailwind `h-[...]` utility. Caps the hero slide's height on desktop/laptop
+   (mobile and tablet keep the original content-driven height) so the header + hero fit within the
+   viewport without scrolling, scaling with the viewport's own height rather than a fixed breakpoint. */
+@media (min-width: 1024px) {
+  .swiper-slide.hero-slide {
+    height: clamp(460px, 60vh, 640px);
+  }
+}
+
 @keyframes spring {
   0% {
     transform: scale(0.2, 0.2);
