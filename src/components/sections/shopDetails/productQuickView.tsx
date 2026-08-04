@@ -35,14 +35,20 @@ const ProductQuickView = ({
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       {/* <DialogTrigger className='text-primary-foreground'>Open</DialogTrigger> */}
-      <DialogContent className="sm:max-w-[1230px] p-0 border-0 overflow-y-auto [&_.close-orginal]:hidden overflow-visible">
+      <DialogContent
+        showCloseButton={false}
+        className="sm:max-w-[min(1230px,calc(100%-2rem))] p-0 border-0 overflow-visible"
+      >
         <DialogTitle className="hidden"></DialogTitle>
         <DialogDescription className="hidden"></DialogDescription>
-        <DialogClose className="absolute right-0 -top-10 flex justify-center items-center border-none text-[#E5E2E1] hover:text-white transition-all duration-500">
-          <Close className="w-8 h-8" />
+        <DialogClose
+          aria-label="Close quick view"
+          className="absolute z-10 flex justify-center items-center border-none transition-all duration-500 right-3 top-3 w-10 h-10 rounded-full bg-black/40 text-white hover:text-white"
+        >
+          <Close className="w-5 h-5" />
         </DialogClose>
-        <div className="lg:max-h-[800px] max-h-[700px] h-full flex md:flex-row flex-col items-start gap-10 lg:p-10 p-5 overflow-y-auto scrollbar-hidden">
-          <div className="max-w-[560px] w-full relative bg-[#F2F2F2] rounded-lg">
+        <div className="max-h-[92vh] h-full flex md:flex-row flex-col items-start gap-10 lg:p-8 p-5 overflow-y-auto scrollbar-hidden">
+          <div className="md:max-w-[380px] w-full relative bg-[#F2F2F2] rounded-lg">
             <Image
               width={560}
               height={600}
@@ -66,6 +72,7 @@ const ProductQuickView = ({
             price={product.price}
             discountPercentage={product.discountPercentage}
             stock={product.stock}
+            compact
           />
         </div>
       </DialogContent>

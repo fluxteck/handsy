@@ -1,6 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Rating from "@/components/ui/rating";
+import { cn } from "@/lib/utils";
 import calcluteDiscount from "@/lib/calcluteDiscount";
 import { addToCart } from "@/lib/features/AddToCartSlice";
 import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
@@ -32,6 +33,8 @@ export interface ProductShortInfoPropsType {
   discountPercentage: number;
   thumbnail: string;
   stock: number;
+  /** Tightens vertical spacing so the whole block fits without scrolling, e.g. inside the Quick View modal. Defaults to the standard spacing used on product pages. */
+  compact?: boolean;
 }
 const ProductShortInfo = ({
   id,
@@ -41,6 +44,7 @@ const ProductShortInfo = ({
   discountPercentage,
   thumbnail,
   stock,
+  compact = false,
 }: ProductShortInfoPropsType) => {
   const dispatch = useAppDispatch();
   const [selectSize, setSelectSize] = useState("m");
@@ -61,6 +65,37 @@ const ProductShortInfo = ({
   const finalPrice = discountPercentage
     ? calcluteDiscount(price, discountPercentage)
     : price;
+
+  const colorSwatches = (
+    <ul className="flex gap-2.5 mt-2.5">
+      {colors.map((color, index) => (
+        <li
+          key={index}
+          onClick={() => setSelectColor(color)}
+          className={`w-5 h-5 rounded-full cursor-pointer relative after:absolute after:left-1/2 after:top-1/2 after:-translate-y-1/2 after:-translate-x-1/2 after:w-7 after:h-7 after:rounded-full ${
+            color === selectColor ? "after:border after:border-[#E5E2E1]" : ""
+          }`}
+          style={{ backgroundColor: color }}
+        ></li>
+      ))}
+    </ul>
+  );
+
+  const sizeButtons = (
+    <ul className="flex gap-2.5 mt-2.5">
+      {sizes.map((size, index) => (
+        <li
+          key={index}
+          onClick={() => setSelectSize(size)}
+          className={`w-7 h-7 rounded-[4px] cursor-pointer border border-[#E5E2E1] uppercase flex justify-center items-center text-sm leading-[171%] ${
+            size === selectSize ? "bg-primary text-white" : "text-gray-1-foreground"
+          }`}
+        >
+          {size}
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
     <div>
@@ -102,7 +137,7 @@ const ProductShortInfo = ({
       <strong className="text-secondary-foreground lg:leading-[81%] lg:text-[32px] md:text-[28px] text-2xl font-semibold capitalize">
         {title}
       </strong>
-      <div className="flex gap-10 mt-4">
+      <div className={cn("flex gap-10", compact ? "mt-2" : "mt-4")}>
         <div className="flex items-center gap-2">
           <Rating star={5} iconSize="lg:size-[15px]" />
           <span className="text-base text-gray-1-foreground leading-none">
@@ -113,7 +148,12 @@ const ProductShortInfo = ({
           Stock: <span className="text-[#59994D]">In stock</span>
         </p>
       </div>
-      <p className="text-xl lg:text-2xl xl:text-3xl xl:leading-[133%] text-secondary-foreground mt-5">
+      <p
+        className={cn(
+          "text-xl lg:text-2xl xl:text-3xl xl:leading-[133%] text-secondary-foreground",
+          compact ? "mt-2" : "mt-5"
+        )}
+      >
         {discountPercentage ? (
           <del className="text-gray-3-foreground">
             {currencyFormatter.format(price, { code: "USD" })}
@@ -121,47 +161,40 @@ const ProductShortInfo = ({
         ) : null}{" "}
         <span>{currencyFormatter.format(finalPrice, { code: "USD" })}</span>
       </p>
-      <p className="mt-5 text-gray-1-foreground">
+      <p
+        className={cn(
+          "text-gray-1-foreground",
+          compact ? "mt-3 line-clamp-2" : "mt-5"
+        )}
+      >
         The Tacoma Carver Dining Chair features a sleek, Its clean lines and
         refined silhouette make a standout pieceany room.
       </p>
 
-      <div className="mt-7.5">
-        <p className="text-gray-1-foreground font-medium">Color:</p>
-        <ul className="flex gap-2.5 mt-2.5">
-          {colors.map((color, index) => (
-            <li
-              key={index}
-              onClick={() => setSelectColor(color)}
-              className={`w-5 h-5 rounded-full cursor-pointer relative after:absolute after:left-1/2 after:top-1/2 after:-translate-y-1/2 after:-translate-x-1/2 after:w-7 after:h-7 after:rounded-full ${
-                color === selectColor
-                  ? "after:border after:border-[#E5E2E1]"
-                  : ""
-              }`}
-              style={{ backgroundColor: color }}
-            ></li>
-          ))}
-        </ul>
-      </div>
-      <div className="mt-5">
-        <p className="text-gray-1-foreground font-medium">Size:</p>
-        <ul className="flex gap-2.5 mt-2.5">
-          {sizes.map((size, index) => (
-            <li
-              key={index}
-              onClick={() => setSelectSize(size)}
-              className={`w-7 h-7 rounded-[4px] cursor-pointer border border-[#E5E2E1] uppercase flex justify-center items-center text-sm leading-[171%] ${
-                size === selectSize
-                  ? "bg-primary text-white"
-                  : "text-gray-1-foreground"
-              }`}
-            >
-              {size}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="flex gap-3 mt-10">
+      {compact ? (
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-10 mt-4">
+          <div>
+            <p className="text-gray-1-foreground font-medium">Color:</p>
+            {colorSwatches}
+          </div>
+          <div>
+            <p className="text-gray-1-foreground font-medium">Size:</p>
+            {sizeButtons}
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="mt-7.5">
+            <p className="text-gray-1-foreground font-medium">Color:</p>
+            {colorSwatches}
+          </div>
+          <div className="mt-5">
+            <p className="text-gray-1-foreground font-medium">Size:</p>
+            {sizeButtons}
+          </div>
+        </>
+      )}
+      <div className={cn("flex gap-3", compact ? "mt-5" : "mt-10")}>
         <div className="border-[1.5px] border-[#000] text-secondary-foreground flex items-center gap-2.5 px-3 py-2.5 rounded-sm">
           <span
             className="cursor-pointer h-4 w-5 inline-flex items-center justify-center"
@@ -201,7 +234,7 @@ const ProductShortInfo = ({
           Add To Cart
         </Button>
       </div>
-      <div className="flex gap-4 mt-[22px]">
+      <div className={cn("flex gap-4", compact ? "mt-4" : "mt-[22px]")}>
         <div
           onClick={() =>
             dispatch(
@@ -243,7 +276,7 @@ const ProductShortInfo = ({
           <p>Compare</p>
         </div>
       </div>
-      <div className="mt-10 flex flex-col gap-2.5">
+      <div className={cn("flex flex-col", compact ? "mt-6 gap-2" : "mt-10 gap-2.5")}>
         <p className="text-gray-1-foreground">
           SKU: <span className="text-gray-1-foreground text-base">D1008</span>
         </p>
