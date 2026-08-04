@@ -133,16 +133,12 @@ export const getPartnerData = cache(async () => {
 });
 
 export const getBrandsData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/brands`);
-            if (!res.ok) throw new Error('Failed to fetch brands data');
-            return res.json();
-        }
-        return brandsData;
-    } catch (error) {
-        throw new Error('Error in getBrandsData: ' + (error instanceof Error ? error.message : String(error)));
-    }
+    // Note: unlike the sibling fetchers above, this doesn't call `${baseUrl}/api/brands` in
+    // production yet. Those routes work because they were deployed in an earlier release, so
+    // baseUrl (the live site) already serves them. /api/brands is new in this release, so the
+    // build would be fetching a route that doesn't exist on the live site until *after* this
+    // deploy succeeds. Once this is live, switch this back to match the pattern above.
+    return brandsData;
 });
 
 export const getPrivacyPolicyData = cache(async () => {
