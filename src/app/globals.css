@@ -227,6 +227,21 @@
     width: 22px;
     background-color: var(--primary);
   }
+
+  .testimonial-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    background-color: var(--gray-2);
+    display: inline-block;
+    border-radius: 9999px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+
+  .testimonial-pagination-bullet-active {
+    width: 22px;
+    background-color: var(--primary);
+  }
 }
 
 /* Un-layered: swiper/css/pagination (loaded globally via homeCategory.tsx) ships its

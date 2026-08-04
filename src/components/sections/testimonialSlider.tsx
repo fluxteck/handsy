@@ -1,69 +1,106 @@
 'use client'
 import React from 'react'
-import { StarFill } from '@/lib/icon'
+import Image from 'next/image'
+import { cn } from '@/lib/utils'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/css';
-import { Autoplay, Navigation } from 'swiper/modules'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 import Title from '@/components/ui/title'
+import Rating from '@/components/ui/rating'
+import { ArrowLeft, ArrowRight } from '@/lib/icon'
 import { testimonialType } from '@/db/testimonialsData'
 
-const TestimonialSlider = ({ testimonials }: { testimonials: testimonialType[] }) => {
+type TestimonialSliderProps = {
+    testimonials: testimonialType[];
+    title?: string;
+    className?: string;
+}
+
+const TestimonialSlider = ({ testimonials, title = 'Client Testimonials', className }: TestimonialSliderProps) => {
     return (
-        <div className='container lg:pt-25 lg:pb-25 pt-15 pb-15'>
-            <Title className='leading-[120%] tracking-[-1.5px] text-center text-[clamp(1.75rem,1.375rem+1.6667vw,3.375rem)]'>What People Are Saying</Title>
-            <Swiper
-                navigation={{
-                    nextEl: ".next-el",
-                    prevEl: ".prev-el"
-                }}
-                loop
-                autoplay={{
-                    delay: 4000
-                }}
-                modules={[Navigation, Autoplay]}
-                className='mt-15'
-            >
-                {
-                    testimonials.map(({ id, position, review, userImage, userName }) => {
-                        return (
-                            <SwiperSlide key={id}>
-                                <div className='text-center max-w-[1073px] flex flex-col justify-center items-center mx-auto'>
-                                    <ul className='flex items-center gap-1'>
-                                        <li className='text-[#FBBF24]'>
-                                            <StarFill className='size-8' />
-                                        </li>
-                                        <li className='text-[#FBBF24]'>
-                                            <StarFill className='size-8' />
-                                        </li>
-                                        <li className='text-[#FBBF24]'>
-                                            <StarFill className='size-8' />
-                                        </li>
-                                        <li className='text-[#FBBF24]'>
-                                            <StarFill className='size-8' />
-                                        </li>
-                                        <li className='text-[#FBBF24]'>
-                                            <StarFill className='size-8' />
-                                        </li>
-                                    </ul>
-                                    <p className='text-secondary-foreground text-[clamp(1.125rem,0.8654rem+1.1538vw,2.25rem)] leading-[140%] tracking-[-1px] mt-10'>{review}</p>
-                                    <div className='flex items-center gap-3 mt-10'>
-                                        <img src={userImage} alt={userName} className='w-[54px] h-[54px] rounded-full' />
-                                        <div>
-                                            <h5 className='text-base font-medium text-secondary-foreground leading-[170%]'>{userName}</h5>
-                                            <span className='text-gray-3-foreground leading-[170%] text-sm'>{position}</span>
-                                        </div>
+        <section className={cn('lg:pt-25 pt-15 lg:pb-25 pb-15 group/section', className)} aria-label="Client testimonials">
+            <div className='container'>
+                {title && (
+                    <Title className='text-center mb-10'>{title}</Title>
+                )}
+                <div className='relative'>
+                    <Swiper
+                        grabCursor
+                        loop
+                        speed={800}
+                        autoplay={{
+                            delay: 3500,
+                            disableOnInteraction: false,
+                            pauseOnMouseEnter: true,
+                        }}
+                        navigation={{
+                            nextEl: '.testimonial-next-el',
+                            prevEl: '.testimonial-prev-el',
+                        }}
+                        pagination={{
+                            el: '.testimonial-pagination',
+                            clickable: true,
+                            bulletClass: 'testimonial-pagination-bullet',
+                            bulletActiveClass: 'testimonial-pagination-bullet-active',
+                        }}
+                        spaceBetween={24}
+                        breakpoints={{
+                            0: {
+                                slidesPerView: 1,
+                            },
+                            640: {
+                                slidesPerView: 2,
+                            },
+                            1024: {
+                                slidesPerView: 4,
+                            },
+                        }}
+                        modules={[Autoplay, Navigation, Pagination]}
+                        className='!pt-10 !pb-2'
+                    >
+                        {testimonials.map(({ id, name, image, rating, title: caption, review }) => (
+                            <SwiperSlide key={id} className='!h-auto'>
+                                <article className='group/card relative flex flex-col items-center h-full rounded-2xl border border-border bg-background pt-13 pb-8 px-6 text-center transition-all duration-500 hover:-translate-y-1 hover:shadow-3xl'>
+                                    <div className='absolute -top-10 size-20 overflow-hidden rounded-full ring-4 ring-background shadow-3xl'>
+                                        <Image
+                                            src={image}
+                                            alt={name}
+                                            fill
+                                            sizes='80px'
+                                            className='object-cover transition-transform duration-500 group-hover/card:scale-110'
+                                        />
                                     </div>
-                                </div>
+                                    <h5 className='text-base font-medium text-secondary-foreground leading-[150%]'>{name}</h5>
+                                    <Rating star={rating} iconSize='size-4' className='justify-center mt-2' />
+                                    <h6 className='mt-4 text-lg font-medium text-secondary-foreground leading-[140%]'>{caption}</h6>
+                                    <p className='mt-3 text-sm text-gray-1-foreground leading-[170%]'>{review}</p>
+                                </article>
                             </SwiperSlide>
-                        )
-                    })
-                }
-                {/* <div className='w-full '>
-                    <div className='next-el w-10 h-10 rounded-full bg-home-bg-1 absolute top-[42%] right-1 z-40 drop-shadow-3xl cursor-pointer text-gray-1-foreground flex justify-center items-center hover:text-white hover:bg-primary transition-all duration-500'><ArrowRight className='size-4' /></div>
-                    <div className='prev-el w-10 h-10 rounded-full bg-home-bg-1 absolute top-[42%] left-1 z-40 drop-shadow-3xl cursor-pointer text-gray-1-foreground flex justify-center items-center hover:text-white hover:bg-primary transition-all duration-500'><ArrowLeft className='size-4' /></div>
-                </div> */}
-            </Swiper>
-        </div>
+                        ))}
+                    </Swiper>
+
+                    <div className='w-full invisible opacity-0 group-hover/section:visible group-hover/section:opacity-100 transition-all'>
+                        <button
+                            type='button'
+                            aria-label='Previous testimonial'
+                            className='testimonial-prev-el w-12.5 h-12.5 rounded-full bg-home-bg-1 absolute top-1/2 -translate-y-1/2 -left-4 lg:-left-6 z-40 drop-shadow-3xl cursor-pointer text-gray-1-foreground flex justify-center items-center hover:text-white hover:bg-primary transition-all duration-500'
+                        >
+                            <ArrowLeft />
+                        </button>
+                        <button
+                            type='button'
+                            aria-label='Next testimonial'
+                            className='testimonial-next-el w-12.5 h-12.5 rounded-full bg-home-bg-1 absolute top-1/2 -translate-y-1/2 -right-4 lg:-right-6 z-40 drop-shadow-3xl cursor-pointer text-gray-1-foreground flex justify-center items-center hover:text-white hover:bg-primary transition-all duration-500'
+                        >
+                            <ArrowRight />
+                        </button>
+                    </div>
+
+                    <div className='testimonial-pagination flex justify-center items-center gap-2 mt-10' />
+                </div>
+            </div>
+        </section>
     )
 }
 
