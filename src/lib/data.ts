@@ -55,16 +55,12 @@ export const getProductsData = cache(async () => {
 });
 
 export const getMenuData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/menu`);
-            if (!res.ok) throw new Error('Failed to fetch menu data');
-            return res.json();
-        }
-        return menuList;
-    } catch (error) {
-        throw new Error('Error in getMenuData: ' + (error instanceof Error ? error.message : String(error)));
-    }
+    // Note: doesn't fetch `${baseUrl}/api/menu` like the sibling fetchers below. That fetch
+    // targets the live production URL, which during a Vercel build is still the *previous*
+    // deployment (the new one isn't live yet). Since Header is statically generated at build
+    // time with no revalidation, that bakes in stale, one-deploy-behind menu data on every
+    // release. Returning the local data keeps the deployed nav in sync with the committed code.
+    return menuList;
 });
 
 export const getCategoriesData = cache(async () => {
