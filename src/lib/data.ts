@@ -174,14 +174,12 @@ export const getTermsAndConditionsData = cache(async () => {
 });
 
 export const getTestimonialsData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/testimonials`);
-            if (!res.ok) throw new Error('Failed to fetch testimonials data');
-            return res.json();
-        }
-        return testimonialData;
-    } catch (error) {
-        throw new Error('Error in getTestimonialsData: ' + (error instanceof Error ? error.message : String(error)));
-    }
+    // Note: unlike the sibling fetchers above, this doesn't call `${baseUrl}/api/testimonials` in
+    // production yet. Those routes work because they were deployed in an earlier release, so
+    // baseUrl (the live site) already serves them in the matching shape. The testimonial data
+    // shape (name/image/rating/title/review) is new in this release, so until this deploy is
+    // live, baseUrl would still serve the old shape (userName/userImage/position/review) and
+    // bake mismatched data into the static build. Once this is live, switch this back to match
+    // the pattern above.
+    return testimonialData;
 });
