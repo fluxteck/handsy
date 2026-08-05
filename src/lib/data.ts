@@ -30,16 +30,12 @@ export const getHeroData = cache(async () => {
 });
 
 export const getPromoCardsData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/promo-cards`);
-            if (!res.ok) throw new Error('Failed to fetch promo cards data');
-            return res.json();
-        }
-        return promoCardsData;
-    } catch (error) {
-        throw new Error('Error in getPromoCardsData: ' + (error instanceof Error ? error.message : String(error)));
-    }
+    // Note: unlike the sibling fetchers above, this doesn't call `${baseUrl}/api/promo-cards` in
+    // production yet. Those routes work because they were deployed in an earlier release, so
+    // baseUrl (the live site) already serves them. /api/promo-cards is new in this release, so the
+    // build would be fetching a route that doesn't exist on the live site until *after* this
+    // deploy succeeds. Once this is live, switch this back to match the pattern above.
+    return promoCardsData;
 });
 
 export const getAdsData = cache(async () => {
