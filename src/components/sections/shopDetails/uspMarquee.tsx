@@ -73,7 +73,7 @@ const UspMarquee = ({
   return (
     <div
       className={cn(
-        "usp-marquee group relative w-full min-w-0 overflow-hidden mt-7.5 pt-7.5 border-t border-gray-2",
+        "usp-marquee group relative w-full min-w-0 overflow-hidden mt-7.5 pt-7.5",
         className,
       )}
     >

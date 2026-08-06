@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local'
+import { Instrument_Serif } from 'next/font/google'
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from "react-hot-toast";
@@ -31,6 +32,16 @@ const satoshi = localFont({
   variable:'--satoshi'
 })
 
+// Editorial italic serif used for a handful of premium display headlines (e.g. "Shop the Look").
+// Self-hosted and subset by next/font at build time, so this adds no extra runtime dependency.
+const displaySerif = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['italic', 'normal'],
+  display: 'swap',
+  variable: '--display-serif',
+})
+
 
 export const metadata: Metadata = {
   title: "Furnisy - E-Commerce Template",
@@ -46,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${satoshi.variable}`}
+        className={`${satoshi.variable} ${displaySerif.variable}`}
         suppressHydrationWarning={true}
         suppressContentEditableWarning={true}
       >

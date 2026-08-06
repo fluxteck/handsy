@@ -10,7 +10,8 @@ import Newsletter from '@/components/sections/newsletter'
 import TestimonialSlider from '@/components/sections/testimonialSlider'
 import TopCollections from '@/components/sections/topCollections'
 import HeroSection from '@/components/sections/heroSection'
-import { getAdsData, getBlogData, getBrandsData, getCategoriesData, getHeroData, getPromoCardsData, getProductsData, getTestimonialsData } from '@/lib/data'
+import ShopTheLook from '@/components/sections/shopTheLook'
+import { getAdsData, getBlogData, getBrandsData, getCategoriesData, getHeroData, getPromoCardsData, getProductsData, getShopTheLookData, getTestimonialsData } from '@/lib/data'
 
 export const metadata: Metadata = {
   title: "Home",
@@ -26,6 +27,7 @@ const Home = async () => {
   const heroData = await getHeroData()
   const promoCardsData = await getPromoCardsData()
   const brandsData = await getBrandsData()
+  const shopTheLookData = await getShopTheLookData()
 
   return (
     <>
@@ -33,6 +35,7 @@ const Home = async () => {
       <HomeCategory categories={categoriesData} />
       <FeaturedProducts />
       <TopCollections data={topCollections} />
+      <ShopTheLook data={shopTheLookData} />
       <BrandCarousel brands={brandsData} />
       <AdsSlider data={ads} />
       <BlogSlider blogs={blogData} />

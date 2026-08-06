@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { Minus, Plus, Heart, ShopCart } from "@/lib/icon";
+import { Minus, Plus, Heart } from "@/lib/icon";
 import { Share2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Rating from "@/components/ui/rating";
@@ -214,7 +214,7 @@ const ProductInfoDetails = ({
             <Plus />
           </button>
         </div>
-        <Button className="flex-1 min-w-[180px]" onClick={handleAddToCart}>
+        <Button className="min-w-[160px]" onClick={handleAddToCart}>
           Add To Cart
         </Button>
         <button
@@ -228,23 +228,16 @@ const ProductInfoDetails = ({
         </button>
       </div>
 
-      <a
-        href="#help"
-        className="inline-flex items-center gap-2 text-secondary-foreground font-medium underline underline-offset-4 mt-5 hover:text-gray-1-foreground transition-all duration-500"
-      >
-        Need Any Help OR Want To Buy This In Bulk? <ShopCart className="size-5" />
-      </a>
-
       <UspMarquee />
 
       {offers.length > 0 && (
         <div className="mt-7.5">
-          <p className="text-secondary-foreground font-medium mb-3">Best Offers For You</p>
-          <div className="grid sm:grid-cols-2 gap-3">
+          <p className="text-secondary-foreground font-medium text-sm mb-2.5">Best Offers For You</p>
+          <div className="grid sm:grid-cols-2 gap-2.5">
             {offers.map((offer) => (
-              <div key={offer.code} className="border border-gray-2 rounded-sm p-4">
-                <p className="text-secondary-foreground font-semibold">{offer.code}</p>
-                <p className="text-gray-1-foreground text-sm mt-1">{offer.description}</p>
+              <div key={offer.code} className="border border-gray-2 rounded-xl px-3.5 py-3">
+                <p className="text-secondary-foreground text-sm font-semibold tracking-wide">{offer.code}</p>
+                <p className="text-gray-1-foreground text-xs leading-relaxed mt-0.5">{offer.description}</p>
               </div>
             ))}
           </div>

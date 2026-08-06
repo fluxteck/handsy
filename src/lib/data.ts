@@ -13,6 +13,7 @@ import { testimonialData } from "@/db/testimonialsData";
 import { heroData } from "@/db/heroData";
 import { promoCardsData } from "@/db/promoCardsData";
 import { products } from "@/db/products";
+import { shopTheLookData } from "@/db/shopTheLookData";
 
 const baseUrl = 'https://furnisy.vercel.app';
 
@@ -171,6 +172,12 @@ export const getTermsAndConditionsData = cache(async () => {
     } catch (error) {
         throw new Error('Error in getTermsAndConditionsData: ' + (error instanceof Error ? error.message : String(error)));
     }
+});
+
+export const getShopTheLookData = cache(async () => {
+    // Same reasoning as getBrandsData/getPromoCardsData above: no /api/shop-the-look route
+    // exists on the live site yet, so this always serves the local data instead of fetching.
+    return shopTheLookData;
 });
 
 export const getTestimonialsData = cache(async () => {
