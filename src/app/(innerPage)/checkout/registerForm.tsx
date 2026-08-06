@@ -98,10 +98,7 @@ const RegisterForm = () => {
                 </Link>{" "}
               </Label>
             </div>
-            <Button
-              onClick={handleSingup}
-              className="w-full lg:py-[11px] lg:text-lg mt-7.5"
-            >
+            <Button onClick={handleSingup} className="w-full mt-7.5">
               Sing up
             </Button>
           </form>

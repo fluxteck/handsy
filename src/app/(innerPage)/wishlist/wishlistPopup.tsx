@@ -56,8 +56,9 @@ const WishlistPopup = () => {
                                                     </div>
                                                     <Button
                                                         variant={"outline"}
+                                                        size={"sm"}
                                                         onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
-                                                        className='lg:py-3 lg:px-6 lg:text-lg text-gray-1-foreground border-gray-1 ml-auto'
+                                                        className='text-gray-1-foreground border-gray-1 ml-auto'
                                                     >
                                                         Add To cart
                                                     </Button>
@@ -71,10 +72,10 @@ const WishlistPopup = () => {
                         }
                     </div>
                     <div className='flex flex-wrap justify-between gap-5 px-7.5 pt-7.5'>
-                        <Button  asChild className='lg:py-3 lg:px-6 lg:text-lg'>
+                        <Button asChild>
                             <Link href={"/wishlist"}>Open Wishlist Page</Link>
                         </Button>
-                        <Button variant={"outline"} asChild className='lg:py-3 lg:px-6 lg:text-lg'>
+                        <Button variant={"outline"} asChild>
                             <Link href={"/"}>Continue Shopping</Link>
                         </Button>
                     </div>

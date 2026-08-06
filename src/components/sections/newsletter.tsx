@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import React from 'react'
@@ -12,7 +13,12 @@ const Newsletter = ({ className }: { className?: string }) => {
                 </div>
                 <form className='relative max-w-[579px] basis-1/2'>
                     <Input placeholder='Your email address' required className='placeholder:text-[#565959] font-medium text-base border-gray-2 pl-[22px] pr-[5px] py-1.5 lg:h-[70px] h-15 w-full max-w-[579px] rounded-[100px]' />
-                    <button className='rounded-full sm:px-5 px-3 py-[11px] text-base font-semibold leading-[170%] tracking-[-0.2px] bg-primary text-white absolute right-1.5 top-1/2 -translate-y-1/2 max-h-[58px] border border-primary hover:bg-transparent hover:text-secondary-foreground transition-all duration-500'>Subscribe now</button>
+                    <Button
+                        type='submit'
+                        className='absolute right-1.5 top-1/2 -translate-y-1/2 max-h-[58px] sm:px-5 px-3 py-[11px] tracking-[-0.2px]'
+                    >
+                        Subscribe now
+                    </Button>
                 </form>
             </div>
         </div>

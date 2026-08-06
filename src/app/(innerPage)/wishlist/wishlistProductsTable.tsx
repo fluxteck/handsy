@@ -63,9 +63,8 @@ const WishlistProductsTable = () => {
                                             <TableCell className="px-0 py-5 ">
                                                 <div className='flex items-center gap-15'>
                                                     <Button
+                                                        size={"sm"}
                                                         onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
-                                                        
-                                                        className='lg:py-3 lg:px-6 lg:text-lg'
                                                     >
                                                         Add To cart
                                                     </Button>

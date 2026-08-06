@@ -20,7 +20,7 @@ const CouponCodeForm = () => {
                     <p className='text-base text-gray-3-foreground'>If you have a coupon code, please apply it below</p>
                     <div className='w-full flex items-center gap-2.5 mt-5'>
                         <Input type={"text"} placeholder={"Coupon code"} className={"border-gray px-5 py-[14px]"} />
-                        <Button  className="lg:px-6 lg:py-3 lg:text-lg">Apply coupon</Button>
+                        <Button>Apply coupon</Button>
                     </div>
                 </div>
             </DialogContent>

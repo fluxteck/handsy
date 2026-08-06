@@ -54,20 +54,11 @@ const Error = ({
         </details>
 
         <div className="flex items-center justify-center gap-3 mt-8">
-          <Button
-            onClick={reset}
-            size={"sm"}
-            className="lg:text-base text-base rounded-sm"
-          >
+          <Button onClick={reset} size={"sm"}>
             Try again
           </Button>
           {pathName !== "/" && (
-            <Button
-              variant="outline"
-              size={"sm"}
-              className="lg:text-base text-base rounded-sm"
-              asChild
-            >
+            <Button variant="outline" size={"sm"} asChild>
               <Link href={"/"}>Go to homepage</Link>
             </Button>
           )}

@@ -40,7 +40,7 @@ const ReviewAddForm = () => {
                 <p className='text-gray-1-foreground'>Your Review<span className='text-primary-foreground'>*</span></p>
                 <Textarea required className='min-h-[180px] rounded-none mt-2 border-muted text-gray-1-foreground' />
             </div>
-            <Button  size={"lg"} className='mt-5'>Submit</Button>
+            <Button className='mt-5'>Submit</Button>
         </form>
     )
 }

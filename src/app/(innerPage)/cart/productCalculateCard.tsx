@@ -92,7 +92,7 @@ const ProductCalculateCard = () => {
             </p>
             <p className="font-bold text-secondary-foreground">${totalPrice}</p>
           </div>
-          <Button asChild className="mt-7.5 w-full lg:text-lg" size="lg">
+          <Button asChild className="mt-7.5 w-full">
             <Link href={"/checkout"}>Proceed to checkout</Link>
           </Button>
         </div>

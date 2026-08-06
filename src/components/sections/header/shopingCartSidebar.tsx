@@ -153,30 +153,17 @@ const ShopingCartSidebar = () => {
                       <div className="h-full bg-stripes w-4/5 animate-stripes"></div>
                     </div>
                     <div className="mt-10">
-                      <Button
-                        variant={"outline"}
-                        size={"sm"}
-                        asChild
-                        className="w-full py-[11px] lg:text-lg lg:leading-[155%]"
-                      >
+                      <Button variant={"outline"} size={"sm"} asChild className="w-full">
                         <Link href={"/cart"}>View Cart</Link>
                       </Button>
-                      <Button
-                        size={"sm"}
-                        asChild
-                        className="w-full py-[11px] lg:text-lg lg:leading-[155%] mt-3"
-                      >
+                      <Button size={"sm"} asChild className="w-full mt-3">
                         <Link href={"/checkout"}>Check Out</Link>
                       </Button>
                     </div>
                   </div>
                 </>
               ) : (
-                <Button
-                  size={"sm"}
-                  asChild
-                  className="w-full py-[11px] lg:text-lg lg:leading-[155%] mt-3"
-                >
+                <Button size={"sm"} asChild className="w-full mt-3">
                   <Link href={"/shop"}>Browse Shop</Link>
                 </Button>
               )}

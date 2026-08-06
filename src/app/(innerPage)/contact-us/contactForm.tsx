@@ -37,7 +37,7 @@ const ContactForm = () => {
                     Message
                     <Textarea name='message' id='message' className='mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground min-h-[140px]' />
                 </Label>
-                <Button  size={"lg"} className='mt-10 lg:px-12.5' type='submit'>
+                <Button className='mt-10 lg:px-12.5' type='submit'>
                     Submit
                 </Button>
                 {/* You can display state.message here for feedback */}

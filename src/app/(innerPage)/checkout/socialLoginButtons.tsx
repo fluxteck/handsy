@@ -10,13 +10,13 @@ const SocialLoginButtons = () => {
             </p>
 
             <div className='flex flex-col justify-between gap-5 mt-5'>
-                <div className='bg-[#4285F4] text-center cursor-pointer w-full py-3 px-6 relative rounded-lg'>
+                <div className='bg-[#4285F4] text-center cursor-pointer w-full py-2.5 px-6 relative rounded-full'>
                     <span className='flex justify-center items-center w-7.5 h-7.5 bg-background absolute left-6'>
                         <img src="/images/google.png" alt="google" />
                     </span>
                     <span className='text-white uppercase block'>Google</span>
                 </div>
-                <div className='bg-[#365EB2] text-center cursor-pointer w-full py-3 px-6 relative rounded-lg'>
+                <div className='bg-[#365EB2] text-center cursor-pointer w-full py-2.5 px-6 relative rounded-full'>
                     <span className='flex justify-center items-center w-7.5 h-7.5 bg-background absolute left-6'>
                         <img src="/images/facebook.png" alt="facebook" />
                     </span>

@@ -33,7 +33,7 @@ const RegisterForm = () => {
                             <Checkbox id="terms" className="rounded-[4px] border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white" />
                             <Label htmlFor="terms" className="text-base text-gray-1-foreground">I agree to all <Link href={"/terms-conditions"} className='text-gray-1-foreground underline decoration-skip-ink-none text-underline-position'>Terms & Conditions</Link> </Label>
                         </div>
-                        <Button className='w-full lg:py-[11px] lg:text-lg mt-7.5'>Sign Up</Button>
+                        <Button className='w-full mt-7.5'>Sign Up</Button>
                     </form>
                     {state && state.message && (
                         <p className={`text-center mt-2.5 text-base ${state.status === 'error' ? 'text-red-400' : 'text-green-400'}`}>

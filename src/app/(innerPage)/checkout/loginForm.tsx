@@ -75,9 +75,7 @@ const LoginForm = () => {
                 Lost your password?
               </Link>
             </div>
-            <Button className="w-full lg:py-[11px] lg:text-lg mt-7.5">
-              Sign In
-            </Button>
+            <Button className="w-full mt-7.5">Sign In</Button>
           </form>
           <SocialLoginButtons />
           <p className="text-center mt-5 text-base text-gray-1-foreground">

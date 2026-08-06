@@ -64,6 +64,7 @@
   --animate-spring-two: spring 3s ease-in-out 1s infinite;
   --animate-spring-three: spring 3s ease-in-out 2s infinite;
   --animate-shimmer: shimmer-sweep 7s ease-in-out infinite;
+  --animate-marquee: marquee 24s linear infinite;
 }
 
 :root {
@@ -242,6 +243,11 @@
     width: 22px;
     background-color: var(--primary);
   }
+
+  .usp-marquee {
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+  }
 }
 
 /* Un-layered: swiper/css/pagination (loaded globally via homeCategory.tsx) ships its
@@ -288,6 +294,15 @@
   55%,
   100% {
     transform: translateX(250%);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 

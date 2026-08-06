@@ -107,15 +107,9 @@ const ProductsCartTable = () => {
                 placeholder={"Coupon code"}
                 className={"border-gray px-5 py-[14px]"}
               />
-              <Button className="lg:px-6 px-4 lg:py-3 lg:text-lg">
-                Apply coupon
-              </Button>
+              <Button>Apply coupon</Button>
             </div>
-            <Button
-              variant={"outline"}
-              asChild
-              className="lg:px-6 lg:py-3 lg:text-lg"
-            >
+            <Button variant={"outline"} asChild>
               <Link href={"/shop"}>Continue Shopping</Link>
             </Button>
           </div>
@@ -160,8 +154,7 @@ const ProductsCartTable = () => {
 
           <Button
             asChild
-            size={"lg"}
-            className="mt-9 w-full max-w-sm uppercase tracking-wide lg:text-lg hover:scale-[1.02] transition-transform duration-300"
+            className="mt-9 w-full max-w-sm uppercase tracking-wide hover:scale-[1.02] transition-transform duration-300"
           >
             <Link href={"/shop"}>Continue Shopping</Link>
           </Button>

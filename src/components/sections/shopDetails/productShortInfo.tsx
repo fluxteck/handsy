@@ -215,8 +215,7 @@ const ProductShortInfo = ({
           </span>
         </div>
         <Button
-          size={"xm"}
-          className="lg:leading-[166%] py-1.5"
+          size={"sm"}
           onClick={() =>
             dispatch(
               addToCart({

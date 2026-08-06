@@ -174,7 +174,7 @@ const ProductsView = ({
                           </p>
                           <div className="flex gap-2.5 mt-5">
                             <Button
-                              size={"xm"}
+                              size={"sm"}
                               onClick={() =>
                                 dispatch(
                                   addToCart({

@@ -14,7 +14,7 @@ const InstagramGallery = async () => {
             <div className='container'>
                 <div className='md:flex justify-between items-center'>
                     <Title className='mb-5 md:mb-0 font-medium'>Furniture Gallery</Title>
-                    <Button asChild  size={"lg"} className='lg:[&_svg]:size-5 [&_svg]:size-4'>
+                    <Button asChild className='lg:[&_svg]:size-5 [&_svg]:size-4'>
                         <Link href={"#"}><Instagram /> Follow</Link>
                     </Button>
                 </div>

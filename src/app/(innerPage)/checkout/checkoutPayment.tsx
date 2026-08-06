@@ -200,9 +200,7 @@ const CheckoutPayment = () => {
           </Label>
         </div>
 
-        <Button className="lg:py-3 w-full mt-10 lg:leading-[166%] lg:text-lg">
-          Place Order
-        </Button>
+        <Button className="w-full mt-10">Place Order</Button>
       </div>
     </div>
   );

@@ -32,7 +32,7 @@ const LoginForm = () => {
                             </div>
                             <Link href={"#"} className='text-base text-gray-1-foreground multiline-hover'>Lost your password?</Link>
                         </div>
-                        <Button className='w-full lg:py-[11px] lg:text-lg mt-7.5'>Sign In</Button>
+                        <Button className='w-full mt-7.5'>Sign In</Button>
                     </form>
                     {state && state.message && (
                         <p className={`text-center mt-2.5 text-base ${state.status === 'error' ? 'text-red-400' : 'text-green-400'}`}>

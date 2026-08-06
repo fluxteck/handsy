@@ -72,7 +72,7 @@ const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredPr
                     <div>
                         <p className='text-primary-foreground'>Furnisy's Special Offer</p>
                         <p className='lg:text-4xl text-3xl font-semibold text-primary-foreground'>Sale <span className='text-orange-500'>up to 30%</span> Only today!</p>
-                        <Button asChild size={"medium"} className='lg:text-[15px] mt-7.5 hover:bg-primary hover:text-white hover:opacity-85 uppercase'>
+                        <Button asChild className='lg:text-[15px] mt-7.5 hover:bg-primary hover:text-white hover:opacity-85 uppercase'>
                             <Link href={"/shop"}>Shop Now</Link>
                         </Button>
                     </div>

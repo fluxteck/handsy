@@ -28,7 +28,7 @@ const WelcomePopupTwo = () => {
                         <p className='mt-5 text-[#807E7C]  lg:text-xl text-lg lg:leading-[150%]'>Subscribe to our newletter and we will ship <span className='font-medium text-gray-2-foreground'>20% Discount</span> Code today</p>
                         <form className='flex lg:mt-20 mt-10'>
                             <Input placeholder='Type Email' required className='shrink px-5 py-[15px] lg:text-lg text-base lg:leading-[166%]  font-light border-none bg-[#F5F5F5]' />
-                            <Button size={"medium"}  className='shrink-0 min-w-30'>Submit</Button>
+                            <Button className='shrink-0 min-w-30'>Submit</Button>
                         </form>
                     </div>
                 </div>
