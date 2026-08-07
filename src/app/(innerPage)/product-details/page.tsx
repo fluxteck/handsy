@@ -7,6 +7,7 @@ import ProductAccordionInfo from "@/components/sections/shopDetails/productAccor
 import NeedHelp from "@/components/sections/shopDetails/needHelp";
 import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import Breadcrumb from "@/components/ui/breadcrumb";
+import { cn } from "@/lib/utils";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -44,21 +45,17 @@ const ProductDetailsOne = () => {
             { label: "Opal Accent Chair" },
           ]}
         />
-        <div className="grid lg:grid-cols-[52%_auto] md:grid-cols-2 grid-cols-1 items-start xl:gap-15 gap-10">
-          <div>
+        <div
+          className={cn(
+            "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[52%_auto] items-start gap-x-10 xl:gap-x-15",
+            "[grid-template-areas:'gallery'_'info'_'description'_'needhelp']",
+            "md:[grid-template-areas:'gallery_info'_'description_needhelp']"
+          )}
+        >
+          <div className="min-w-0 [grid-area:gallery]">
             <ProductGalleryVertical images={productImages} badge="Monsoon Deals" />
-            <ProductAccordionInfo
-              description="The Opal Accent Chair pairs a sculptural bouclé frame with a solid wood base, bringing a soft, contemporary silhouette to any living space. Generously padded seating and a gently curved backrest offer lasting comfort, while the compact footprint makes it easy to place in smaller rooms."
-              returnsPolicy="We offer a 15-day, hassle-free return and exchange window from the date of delivery. Items must be unused and in their original packaging. Reach out to our support team to start a return or exchange."
-              additionalInfo={[
-                { label: "Material", value: "Bouclé fabric, solid wood legs" },
-                { label: "Dimensions", value: "68 x 74 x 76 cm (W x D x H)" },
-                { label: "Weight Capacity", value: "120 kg" },
-                { label: "Assembly", value: "Minimal assembly required" },
-              ]}
-            />
           </div>
-          <div className="min-w-0 lg:self-stretch">
+          <div className="min-w-0 mt-7.5 md:mt-0 [grid-area:info]">
             <ProductInfoDetails
               id={1}
               title="Opal Accent Chair"
@@ -71,8 +68,20 @@ const ProductDetailsOne = () => {
               colors={productColors}
               offers={productOffers}
             />
-            <NeedHelp className="mt-7.5" />
           </div>
+          <div className="min-w-0 [grid-area:description]">
+            <ProductAccordionInfo
+              description="The Opal Accent Chair pairs a sculptural bouclé frame with a solid wood base, bringing a soft, contemporary silhouette to any living space. Generously padded seating and a gently curved backrest offer lasting comfort, while the compact footprint makes it easy to place in smaller rooms."
+              returnsPolicy="We offer a 15-day, hassle-free return and exchange window from the date of delivery. Items must be unused and in their original packaging. Reach out to our support team to start a return or exchange."
+              additionalInfo={[
+                { label: "Material", value: "Bouclé fabric, solid wood legs" },
+                { label: "Dimensions", value: "68 x 74 x 76 cm (W x D x H)" },
+                { label: "Weight Capacity", value: "120 kg" },
+                { label: "Assembly", value: "Minimal assembly required" },
+              ]}
+            />
+          </div>
+          <NeedHelp className="min-w-0 mt-7.5 lg:self-stretch [grid-area:needhelp]" />
         </div>
         <ProductDetailsTabView />
       </div>
