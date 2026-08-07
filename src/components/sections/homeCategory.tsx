@@ -54,7 +54,7 @@ const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {
                 <p className="text-gray-1-foreground leading-[150%] font-light mt-1">Discover everything you need through the categories!</p>
 
                 {/* Tablet & desktop: full grid, every category visible at once */}
-                <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-10 lg:gap-y-12 lg:mt-11 mt-8">
+                <div className="hidden sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-6 lg:gap-y-8 lg:mt-11 mt-8">
                     {categories.map(({ categoryName, id, categoryImg }) => (
                         <CategoryCard
                             key={id}
@@ -70,7 +70,7 @@ const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {
             {/* Mobile only: swipeable carousel with nav arrows + pagination dots */}
             <div className="sm:hidden container relative lg:mt-11 mt-8">
                 <Swiper
-                    spaceBetween={20}
+                    spaceBetween={12}
                     slidesPerView={1.8}
                     grabCursor
                     navigation={{ nextEl: ".category-next", prevEl: ".category-prev" }}
@@ -81,6 +81,7 @@ const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {
                         bulletActiveClass: "category-pagination-bullet-active",
                     }}
                     modules={[Navigation, Pagination]}
+                    className="!px-10"
                 >
                     {categories.map(({ categoryName, id, categoryImg }) => (
                         <SwiperSlide key={id}>
