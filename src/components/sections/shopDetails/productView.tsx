@@ -86,7 +86,7 @@ const ProductsView = ({
                   return (
                     <Card key={prd.id}>
                       <CardHeader>
-                        <CardImg src={prd.thumbnail} height={400} width={340} />
+                        <CardImg src={prd.thumbnail} height={400} width={340} path="/product-details" />
                         <CardLabel isLabel={prd.label ? prd.label : false}>
                           {prd.label}
                         </CardLabel>
@@ -135,7 +135,11 @@ const ProductsView = ({
                         key={id}
                         className="grid sm:grid-cols-[32.2%_auto] grid-cols-1 items-center gap-7.5"
                       >
-                        <div className="bg-[#F2F2F2] rounded-xl">
+                        <Link
+                          href={"/product-details"}
+                          aria-label="View product details"
+                          className="bg-[#F2F2F2] rounded-xl block"
+                        >
                           <Image
                             width={341}
                             height={400}
@@ -144,7 +148,7 @@ const ProductsView = ({
                             alt="img"
                             className="w-full rounded-xl"
                           />
-                        </div>
+                        </Link>
                         <div>
                           <Link
                             href={"/product-details"}
@@ -152,11 +156,13 @@ const ProductsView = ({
                           >
                             {title}
                           </Link>
-                          <p className="text-gray-1-foreground leading-[155%] mt-2.5">
-                            Elevate your dining experience with the Baxter
-                            Colette Chair, a perfect blend of modern elegance
-                            and timeless craftsmanship.
-                          </p>
+                          <Link href={"/product-details"} className="block mt-2.5">
+                            <p className="text-gray-1-foreground leading-[155%]">
+                              Elevate your dining experience with the Baxter
+                              Colette Chair, a perfect blend of modern elegance
+                              and timeless craftsmanship.
+                            </p>
+                          </Link>
                           <p className="text-secondary-foreground lg:text-2xl md:text-xl text-lg font-medium mt-5">
                             {discountPercentage ? (
                               <del className="text-gray-3-foreground font-normal">

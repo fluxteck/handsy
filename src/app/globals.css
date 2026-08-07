@@ -274,6 +274,28 @@
   }
 }
 
+/* Un-layered: react-photo-view/dist/react-photo-view.css ships its own unlayered
+   `.PhotoView-Slider__ArrowLeft`/`.PhotoView-Slider__ArrowRight` rules, pinning its
+   built-in prev/next buttons to the viewport edges, and `.PhotoView-Slider__BannerWrap`
+   (top counter/close/rotate strip). The product image zoom viewer
+   (productGalleryVertical.tsx) renders its own themed nav/close/counter/backdrop
+   instead, so the library's defaults are hidden here. `!important` is required (not
+   just higher specificity) because Next.js always emits this app-level stylesheet
+   chunk before the library's component-level chunk in the document, so on equal
+   specificity the later-loaded library rule would otherwise win. Deliberately not
+   using the `bannerVisible={false}` prop for the banner — in this library version it
+   has the side effect of also dropping the arrow buttons from the DOM entirely.
+   Deliberately NOT touching `.PhotoView-Slider__Backdrop` here (even though it never
+   visibly paints in this browser, a rendering quirk CSS can't reach) — forcing
+   `display: none` on it stops its background-color transition from ever firing
+   `transitionend`, which the library waits on internally to finish closing, leaving
+   the whole slider permanently stuck (and the page unclickable) after every close. */
+.PhotoView-Slider__ArrowLeft,
+.PhotoView-Slider__ArrowRight,
+.PhotoView-Slider__BannerWrap {
+  display: none !important;
+}
+
 @keyframes spring {
   0% {
     transform: scale(0.2, 0.2);

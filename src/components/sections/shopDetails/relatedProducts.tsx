@@ -15,7 +15,7 @@ const RelatedProducts = async ({ className }: { className?: string }) => {
                             return (
                                 <Card key={prd.id}>
                                     <CardHeader>
-                                        <CardImg src={prd.thumbnail} height={400} width={340} />
+                                        <CardImg src={prd.thumbnail} height={400} width={340} path="/product-details" />
                                         <CardLabel isLabel={prd.label ? prd.label : false}>{prd.label}</CardLabel>
                                         <CardDiscount isDiscountTrue={prd.discountPercentage ? prd.discountPercentage : false}>-{prd.discountPercentage}%</CardDiscount>
                                         <CardIcons product={prd} />

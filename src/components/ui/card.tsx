@@ -72,26 +72,38 @@ export function CardImg({
   height,
   width,
   className,
+  path,
 }: {
   src: string;
   height: number;
   width: number;
   className?: string;
+  path?: string;
 }) {
   const context = useContext(CardContext);
   const currentImage = context ? context.currentImage : "";
 
+  const image = (
+    <Image
+      src={currentImage || src}
+      height={height}
+      width={width}
+      sizes="100vw"
+      style={{ width: "100%", height: "auto" }}
+      alt="img"
+      className="mx-auto hover:scale-110 transition-all duration-700 rounded-xl"
+    />
+  );
+
   return (
     <div className={cn("overflow-hidden rounded-xl", className)}>
-      <Image
-        src={currentImage || src}
-        height={height}
-        width={width}
-        sizes="100vw"
-        style={{ width: "100%", height: "auto" }}
-        alt="img"
-        className="mx-auto hover:scale-110 transition-all duration-700 rounded-xl"
-      />
+      {path ? (
+        <Link href={path} aria-label="View product details">
+          {image}
+        </Link>
+      ) : (
+        image
+      )}
     </div>
   );
 }

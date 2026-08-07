@@ -218,7 +218,7 @@ const NeedHelp = ({
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <h3 id="need-help-heading" className="font-display text-lg italic text-secondary-foreground">
+        <h3 id="need-help-heading" className="font-display text-lg lg:text-xl text-secondary-foreground">
           Need Help in Buying?
         </h3>
         {isExpertOnline && (
@@ -232,20 +232,26 @@ const NeedHelp = ({
         )}
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <a
-          href={`tel:${phoneDigits}`}
-          className="group flex flex-col items-start gap-2.5 rounded-xl border border-gray-2 p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
-        >
-          <span className="flex size-9 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
-            <Call className="size-4" />
-          </span>
-          <span>
-            <span className="block text-xs text-gray-1-foreground">Call Now</span>
-            <span className="block text-sm font-medium text-secondary-foreground">{phoneNumber}</span>
-          </span>
-        </a>
+      {/* Call Now — icon, label, number, and response time share a single compact row */}
+      <a
+        href={`tel:${phoneDigits}`}
+        className="group mt-4 flex items-center gap-3 rounded-xl border border-gray-2 p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+      >
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
+          <Call className="size-4" />
+        </span>
+        <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2">
+          <span className="shrink-0 text-xs text-gray-1-foreground">Call Now</span>
+          <span className="truncate text-sm font-semibold text-secondary-foreground">{phoneNumber}</span>
+        </span>
+        <span className="hidden shrink-0 items-center gap-1.5 text-[11px] text-gray-1-foreground sm:flex">
+          <CallTime className="size-3.5 shrink-0" />
+          {responseTime}
+        </span>
+      </a>
 
+      {/* Product Demo, WhatsApp, and Callback — equal-height compact action tiles */}
+      <div className="mt-2.5 grid grid-cols-3 gap-2.5">
         <ContactDialog
           title="Schedule a Live Video Demo"
           description={`Pick a time that works for you and a ${expertName.toLowerCase()} will walk you through the product live.`}
@@ -263,36 +269,29 @@ const NeedHelp = ({
           trigger={
             <button
               type="button"
-              className="group flex flex-col items-start gap-2.5 rounded-xl border border-gray-2 p-3.5 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+              className="group flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-2 px-2 py-3 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
             >
-              <span className="flex w-full items-center justify-between">
-                <span className="flex size-9 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
-                  <Video className="size-4" strokeWidth={1.5} />
-                </span>
-                <span className="rounded-full bg-[#59994D] px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-white">
+              <span className="flex size-9 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
+                <Video className="size-4" strokeWidth={1.5} />
+              </span>
+              <span className="flex items-center gap-1 text-xs font-medium text-secondary-foreground">
+                Demo
+                <span className="rounded-full bg-[#59994D] px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wider text-white">
                   Live
                 </span>
               </span>
-              <span className="block text-sm font-medium text-secondary-foreground">Product Demo</span>
             </button>
           }
         />
-      </div>
 
-      <div className="mt-3 flex items-center gap-2 text-xs text-gray-1-foreground">
-        <CallTime className="size-3.5 shrink-0" />
-        {responseTime}
-      </div>
-
-      <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-gray-2 pt-5">
         <a
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-2 text-sm font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+          className="flex h-full flex-col items-center justify-center gap-1.5 rounded-xl bg-[#25D366] px-2 py-3 text-center text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#1FB855] hover:shadow-md"
         >
           <MessageCircle className="size-4" strokeWidth={1.5} />
-          WhatsApp Chat
+          <span className="text-xs font-medium">WhatsApp</span>
         </a>
 
         <ContactDialog
@@ -304,18 +303,26 @@ const NeedHelp = ({
             toast.success("Thanks! Our team will call you back shortly.");
           }}
           trigger={
-            <Button type="button" variant="outline" size="sm" className="gap-2">
-              <PhoneIncoming className="size-4" strokeWidth={1.5} />
-              Request a Callback
-            </Button>
+            <button
+              type="button"
+              className="group flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-2 px-2 py-3 text-center text-secondary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+            >
+              <span className="flex size-9 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
+                <PhoneIncoming className="size-4" strokeWidth={1.5} />
+              </span>
+              <span className="text-xs font-medium">Callback</span>
+            </button>
           }
         />
       </div>
 
-      <ul className="mt-5 grid grid-cols-3 gap-2 border-t border-gray-2 pt-5">
+      <ul className="mt-4 grid grid-cols-3 divide-x divide-gray-2 border-t border-gray-2 pt-4">
         {trustIndicators.map(({ id, icon: Icon, label }) => (
-          <li key={id} className="flex flex-col items-center gap-1.5 text-center">
-            <span className="flex size-8 items-center justify-center rounded-full bg-[#F2F2F2] text-gray-1-foreground">
+          <li
+            key={id}
+            className="flex flex-col items-center gap-1.5 px-1 text-center transition-transform duration-300 hover:-translate-y-0.5"
+          >
+            <span className="flex size-9 items-center justify-center rounded-full border border-gray-2 text-gray-1-foreground transition-colors duration-300 hover:border-primary hover:bg-primary hover:text-white">
               <Icon className="size-3.5" strokeWidth={1.5} />
             </span>
             <span className="text-[10px] font-medium leading-tight text-gray-1-foreground">{label}</span>
@@ -323,7 +330,7 @@ const NeedHelp = ({
         ))}
       </ul>
 
-      <div className="mt-5 flex items-center gap-2 text-[11px] text-gray-3-foreground">
+      <div className="mt-4 flex items-center gap-2 border-t border-gray-2 pt-4 text-[11px] text-gray-3-foreground">
         <CalendarClock className="size-3.5 shrink-0" strokeWidth={1.5} />
         Flexible scheduling &middot; No spam calls &middot; Cancel anytime
       </div>
