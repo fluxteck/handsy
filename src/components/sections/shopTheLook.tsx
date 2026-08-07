@@ -54,8 +54,8 @@ const RoomShowcase = ({
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start lg:gap-10">
-      <div className="relative aspect-[4/5] sm:aspect-[16/11] w-full overflow-hidden rounded-2xl bg-[#F2F2F2]">
+    <div className="grid gap-6 lg:grid-cols-2 lg:items-stretch lg:gap-8">
+      <div className="group/image relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto lg:h-full lg:min-h-[380px] w-full overflow-hidden rounded-xl bg-[#F2F2F2]">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeImage.src}
@@ -70,7 +70,7 @@ const RoomShowcase = ({
               alt={activeImage.alt}
               fill
               sizes="(min-width: 1024px) 55vw, 100vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-700 ease-out group-hover/image:scale-105"
             />
           </motion.div>
         </AnimatePresence>
@@ -80,13 +80,13 @@ const RoomShowcase = ({
             type="button"
             onClick={() => setActiveImageIndex((prev) => (prev + 1) % room.images.length)}
             aria-label="Show next room photo"
-            className="absolute top-4 left-4 z-10 rounded-full bg-primary/80 px-3 py-1 text-[11px] font-medium tracking-wider text-white backdrop-blur-sm transition-colors duration-300 hover:bg-primary"
+            className="absolute top-3 left-3 z-10 rounded-full bg-primary/80 px-2.5 py-1 text-[10px] font-medium tracking-wider text-white backdrop-blur-sm transition-colors duration-300 hover:bg-primary"
           >
             {String(activeImageIndex + 1).padStart(2, "0")} · {String(room.images.length).padStart(2, "0")}
           </button>
         )}
 
-        <span className="absolute bottom-4 left-4 z-10 rounded-full bg-primary/70 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-white backdrop-blur-sm">
+        <span className="absolute bottom-3 left-3 z-10 rounded-full bg-primary/70 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-white backdrop-blur-sm">
           {room.roomLabel}
         </span>
 
@@ -114,7 +114,7 @@ const RoomShowcase = ({
               )}
               <span
                 className={cn(
-                  "relative flex size-7 items-center justify-center rounded-full bg-background text-xs font-medium text-secondary-foreground shadow-3xl transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white",
+                  "relative flex size-6 items-center justify-center rounded-full bg-background text-[11px] font-medium text-secondary-foreground shadow-3xl transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-white",
                   isActive && "scale-110 bg-primary text-white"
                 )}
               >
@@ -125,22 +125,22 @@ const RoomShowcase = ({
         })}
       </div>
 
-      <div className="flex flex-col">
-        <div className="flex items-center justify-between border-b border-gray-2 pb-3">
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">The Pieces</p>
-          <p className="text-xs text-gray-3-foreground">{room.products.length} in this room</p>
+      <div className="flex flex-col lg:h-full">
+        <div className="flex items-center justify-between border-b border-gray-2 pb-2.5">
+          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-gray-3-foreground">The Pieces</p>
+          <p className="text-[11px] text-gray-3-foreground">{room.products.length} in this room</p>
         </div>
 
-        <ul>
+        <ul className="flex flex-1 flex-col">
           {room.products.map((product, index) => {
             const thumbnail = (
-              <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-[#F2F2F2]">
+              <div className="size-12 shrink-0 overflow-hidden rounded-lg bg-[#F2F2F2]">
                 <Image
                   src={product.thumbnail}
                   alt={product.title}
-                  width={64}
-                  height={64}
-                  sizes="64px"
+                  width={48}
+                  height={48}
+                  sizes="48px"
                   className="h-full w-full object-cover transition-transform duration-500 group-hover/row:scale-110"
                 />
               </div>
@@ -152,30 +152,30 @@ const RoomShowcase = ({
                 onMouseEnter={() => setActiveProductIndex(index)}
                 onMouseLeave={() => setActiveProductIndex(null)}
                 className={cn(
-                  "group/row flex items-center gap-4 border-b border-gray-2 py-4 transition-colors duration-300",
+                  "group/row flex flex-1 items-center gap-3 border-b border-gray-2 py-2.5 transition-colors duration-300",
                   activeProductIndex === index && "bg-home-bg-4/50"
                 )}
               >
                 {product.href ? (
-                  <Link href={product.href} className="flex min-w-0 flex-1 items-center gap-4">
+                  <Link href={product.href} className="flex min-w-0 flex-1 items-center gap-3">
                     {thumbnail}
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate font-display text-lg italic text-secondary-foreground">
+                      <span className="block truncate font-display text-base italic text-secondary-foreground">
                         {product.title}
                       </span>
-                      <span className="mt-0.5 block text-sm text-gray-1-foreground">
+                      <span className="mt-0.5 block text-xs text-gray-1-foreground">
                         {priceFormatter.format(product.price)}
                       </span>
                     </span>
                   </Link>
                 ) : (
-                  <div className="flex min-w-0 flex-1 items-center gap-4">
+                  <div className="flex min-w-0 flex-1 items-center gap-3">
                     {thumbnail}
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-display text-lg italic text-secondary-foreground">
+                      <p className="truncate font-display text-base italic text-secondary-foreground">
                         {product.title}
                       </p>
-                      <p className="mt-0.5 text-sm text-gray-1-foreground">
+                      <p className="mt-0.5 text-xs text-gray-1-foreground">
                         {priceFormatter.format(product.price)}
                       </p>
                     </div>
@@ -186,24 +186,24 @@ const RoomShowcase = ({
                   type="button"
                   onClick={() => handleAddProduct(product)}
                   aria-label={`Add ${product.title} to cart`}
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-gray-2 text-secondary-foreground transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white"
+                  className="flex size-8 shrink-0 items-center justify-center rounded-full border border-gray-2 text-secondary-foreground transition-all duration-300 hover:scale-105 hover:border-primary hover:bg-primary hover:text-white"
                 >
-                  <Plus className="size-4" />
+                  <Plus className="size-3.5" />
                 </button>
               </li>
             );
           })}
         </ul>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-gray-3-foreground">The Room, Complete</p>
-            <p className="mt-1 text-2xl font-semibold text-secondary-foreground">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-gray-3-foreground">The Room, Complete</p>
+            <p className="mt-1 text-lg font-semibold text-secondary-foreground">
               {priceFormatter.format(totalPrice)}
             </p>
           </div>
-          <Button onClick={handleAddRoom} className="gap-2">
-            {ctaLabel} <ArrowRight className="size-4" />
+          <Button onClick={handleAddRoom} size="sm" className="gap-2 transition-transform duration-300 hover:-translate-y-0.5">
+            {ctaLabel} <ArrowRight className="size-3.5" />
           </Button>
         </div>
       </div>
@@ -216,15 +216,15 @@ const ShopTheLook = ({ data, className }: { data: ShopTheLookData; className?: s
   if (!firstRoomId) return null;
 
   return (
-    <section className={cn("lg:pt-25 pt-15 lg:pb-25 pb-15", className)}>
+    <section className={cn("lg:pt-20 pt-12 lg:pb-20 pb-12", className)}>
       <div className="container">
         <Tabs defaultValue={firstRoomId}>
-          <div className="flex flex-wrap items-end justify-between gap-6 mb-10">
+          <div className="flex flex-wrap items-end justify-between gap-5 mb-7 lg:mb-8">
             <div>
               <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
                 {data.eyebrow} <ChevronRight className="size-3" />
               </p>
-              <h2 className="mt-2 font-display text-[clamp(1.875rem,1.5rem+1.5vw,3rem)] italic leading-[115%] text-secondary-foreground">
+              <h2 className="mt-1.5 font-display text-[clamp(1.5rem,1.25rem+1vw,2.25rem)] italic leading-[120%] text-secondary-foreground">
                 {data.title}
               </h2>
             </div>
@@ -235,7 +235,7 @@ const ShopTheLook = ({ data, className }: { data: ShopTheLookData; className?: s
                   <TabsTrigger
                     key={room.id}
                     value={room.id}
-                    className="rounded-full border border-gray-2 px-4 py-2 text-xs font-medium uppercase tracking-[0.15em] text-gray-1-foreground transition-colors duration-300 data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white"
+                    className="rounded-full border border-gray-2 px-3.5 py-1.5 text-[11px] md:text-[11px] lg:text-[11px] font-medium uppercase tracking-[0.15em] text-gray-1-foreground transition-all duration-300 hover:border-primary/50 data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-white"
                   >
                     {room.tabLabel}
                   </TabsTrigger>

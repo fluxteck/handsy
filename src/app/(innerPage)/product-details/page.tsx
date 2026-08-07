@@ -4,6 +4,7 @@ import ProductDetailsTabView from "@/components/sections/shopDetails/productDeta
 import ProductGalleryVertical from "@/components/sections/shopDetails/productGalleryVertical";
 import ProductInfoDetails from "@/components/sections/shopDetails/productInfoDetails";
 import ProductAccordionInfo from "@/components/sections/shopDetails/productAccordionInfo";
+import NeedHelp from "@/components/sections/shopDetails/needHelp";
 import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import Breadcrumb from "@/components/ui/breadcrumb";
 import { Metadata } from "next";
@@ -57,18 +58,21 @@ const ProductDetailsOne = () => {
               ]}
             />
           </div>
-          <ProductInfoDetails
-            id={1}
-            title="Opal Accent Chair"
-            price={45799}
-            discountPercentage={25.91}
-            thumbnail="/images/product-details/img-1.webp"
-            stock={99}
-            rating={0}
-            totalRating="0"
-            colors={productColors}
-            offers={productOffers}
-          />
+          <div className="min-w-0 lg:self-stretch">
+            <ProductInfoDetails
+              id={1}
+              title="Opal Accent Chair"
+              price={45799}
+              discountPercentage={25.91}
+              thumbnail="/images/product-details/img-1.webp"
+              stock={99}
+              rating={0}
+              totalRating="0"
+              colors={productColors}
+              offers={productOffers}
+            />
+            <NeedHelp className="mt-7.5" />
+          </div>
         </div>
         <ProductDetailsTabView />
       </div>
