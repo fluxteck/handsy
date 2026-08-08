@@ -116,7 +116,7 @@ const ProductsCartTable = () => {
         </div>
       ) : (
         <div className="lg:col-span-2 flex flex-col items-center justify-center text-center border rounded-lg px-6 py-14 lg:py-20 animate-in fade-in slide-in-from-bottom-2 duration-700 fill-mode-both">
-          <h3 className="lg:text-[32px] text-2xl font-bold text-secondary-foreground">
+          <h3 className="text-heading text-secondary-foreground">
             Your Cart is Empty
           </h3>
           <p className="mt-1.5 lg:text-xl text-lg text-gray-1-foreground">

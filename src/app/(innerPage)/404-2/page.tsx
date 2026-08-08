@@ -15,7 +15,7 @@ const page = () => {
         <main>
             <section className='bg-[url("/images/404/404-2.webp")] bg-no-repeat bg-cover lg:py-[180px] py-[130px]'>
                 <div className='text-center'>
-                    <h1 className='font-semibold text-black lg:text-[200px] text-[130px] leading-[80%] lg:leading-[110%]'>404</h1>
+                    <h1 className='text-black lg:text-[200px] text-[130px] leading-[80%] lg:leading-[110%]'>404</h1>
                     <p className='mt-5 lg:text-4xl text-3xl lg:leading-[135%] text-black font-medium'>Opps! Something Wrong</p>
                     <p className='text-base text-gray-3-foreground'>Sorry but the page you are looking for doesn’t exist. </p>
                     <Button asChild className='mt-10 group lg:leading-[170%] leading-[170%]'>

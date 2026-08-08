@@ -49,7 +49,7 @@ const AboutDetails = () => {
                     <div ref={ref} className="md:mt-15 mt-10 flex xl:gap-x-15 gap-x-10">
                         {aboutData.stats.map((stat, index) => (
                             <div key={index}>
-                                <h4 className="text-[clamp(1.5rem,1.1538rem+1.5385vw,3rem)] leading-[125%] text-secondary-foreground font-semibold">
+                                <h4 className="text-[clamp(1.5rem,1.1538rem+1.5385vw,3rem)] leading-[125%] text-secondary-foreground">
                                     {inView && <CountUp end={stat.value} />}{stat.endKey}
                                 </h4>
                                 <p className="text-[#484655] leading-[150%]">{stat.label}</p>

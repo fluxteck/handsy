@@ -17,7 +17,7 @@ const PageHeader = ({
   return (
     <section className='bg-[linear-gradient(0deg,_rgba(0,0,0,0.50)_0%,rgba(0,0,0,0.50)_100%),url("/images/page-header-img.webp")] bg-center bg-cover bg-no-repeat'>
       <div className="lg:py-20 py-12 text-center">
-        <h5 className="text-white capitalize">{pageTitle}</h5>
+        <h5 className="text-white">{pageTitle}</h5>
         <ul className="text-base leading-[162%] flex items-center justify-center gap-0.5 mt-[15px]">
           <li className="flex items-center gap-0.5">
             <Link

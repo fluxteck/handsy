@@ -149,7 +149,7 @@ const ProductInfoDetails = ({
         </button>
       </div>
 
-      <strong className="text-secondary-foreground lg:text-[32px] md:text-[28px] text-2xl font-semibold capitalize block mt-4">
+      <strong className="text-secondary-foreground text-heading font-semibold capitalize block mt-4">
         {title}
       </strong>
 

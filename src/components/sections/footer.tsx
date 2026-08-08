@@ -18,7 +18,7 @@ const Footer = () => {
                     <div className='basis-[65%]'>
                         <div className='grid md:grid-cols-4 sm:grid-cols-2 gap-x-5 gap-y-10'>
                             <div>
-                                <h6 className='font-medium text-secondary-foreground leading-[170%] text-base'>Home Decor Solutions</h6>
+                                <h6 className='text-secondary-foreground leading-[170%] text-base'>Home Decor Solutions</h6>
                                 <ul className='mt-[29px] text-[#4F4F59] text-base leading-[170%] flex flex-col gap-4'>
                                     <li>
                                         <Link href={"#"} className='hover:text-secondary-foreground transition-all duration-500'>Interior Designer</Link>
@@ -32,7 +32,7 @@ const Footer = () => {
                                 </ul>
                             </div>
                             <div>
-                                <h6 className='font-medium text-secondary-foreground leading-[170%] text-base'>Furnisy</h6>
+                                <h6 className='text-secondary-foreground leading-[170%] text-base'>Furnisy</h6>
                                 <ul className='mt-[29px] text-[#4F4F59] text-base leading-[170%] flex flex-col gap-4'>
                                     <li>
                                         <Link href={"#"} className='hover:text-secondary-foreground transition-all duration-500'>About Furnisy</Link>
@@ -46,7 +46,7 @@ const Footer = () => {
                                 </ul>
                             </div>
                             <div>
-                                <h6 className='font-medium text-secondary-foreground leading-[170%] text-base'>Resources</h6>
+                                <h6 className='text-secondary-foreground leading-[170%] text-base'>Resources</h6>
                                 <ul className='mt-[29px] text-[#4F4F59] text-base leading-[170%] flex flex-col gap-4'>
                                     <li>
                                         <Link href={"#"} className='hover:text-secondary-foreground transition-all duration-500'>Our Customers</Link>
@@ -60,7 +60,7 @@ const Footer = () => {
                                 </ul>
                             </div>
                             <div>
-                                <h6 className='font-medium text-secondary-foreground leading-[170%] text-base'>Our Features</h6>
+                                <h6 className='text-secondary-foreground leading-[170%] text-base'>Our Features</h6>
                                 <ul className='mt-[29px] text-[#4F4F59] text-base leading-[170%] flex flex-col gap-4'>
                                     <li>
                                         <Link href={"#"} className='hover:text-secondary-foreground transition-all duration-500'>Interior Designer</Link>

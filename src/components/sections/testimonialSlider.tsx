@@ -22,7 +22,7 @@ const TestimonialSlider = ({ testimonials, title = 'Client Testimonials', classN
         <section className={cn('lg:pt-25 pt-15 lg:pb-25 pb-15 group/section', className)} aria-label="Client testimonials">
             <div className='container'>
                 {title && (
-                    <Title className='text-center mb-10'>{title}</Title>
+                    <Title className='mb-10'>{title}</Title>
                 )}
                 <div className='relative'>
                     <Swiper
@@ -71,9 +71,9 @@ const TestimonialSlider = ({ testimonials, title = 'Client Testimonials', classN
                                             className='object-cover transition-transform duration-500 group-hover/card:scale-110'
                                         />
                                     </div>
-                                    <h5 className='text-base font-medium text-secondary-foreground leading-[150%]'>{name}</h5>
+                                    <h5 className='text-base text-secondary-foreground leading-[150%]'>{name}</h5>
                                     <Rating star={rating} iconSize='size-4' className='justify-center mt-2' />
-                                    <h6 className='mt-4 text-lg font-medium text-secondary-foreground leading-[140%]'>{caption}</h6>
+                                    <h6 className='mt-4 text-lg text-secondary-foreground leading-[140%]'>{caption}</h6>
                                     <p className='mt-3 text-sm text-gray-1-foreground leading-[170%]'>{review}</p>
                                 </article>
                             </SwiperSlide>

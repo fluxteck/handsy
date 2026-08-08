@@ -47,7 +47,7 @@ const PromoCardSlider = ({ slides, className }: PromoCardSliderProps) => {
                             />
                             <div className='absolute inset-0 bg-gradient-to-t from-[rgba(26,26,25,0.75)] via-[rgba(26,26,25,0.15)] to-transparent' />
                             <div className='absolute inset-0 flex flex-col justify-end p-6 lg:p-8'>
-                                <h3 className='text-white text-[clamp(1.25rem,1.05rem+0.85vw,1.75rem)] leading-[125%] font-light max-w-[280px]'>
+                                <h3 className='text-white text-[clamp(1.25rem,1.05rem+0.85vw,1.75rem)] leading-[125%] max-w-[280px]'>
                                     {title}
                                 </h3>
                                 <p className='text-white/80 text-sm mt-2 max-w-[260px]'>

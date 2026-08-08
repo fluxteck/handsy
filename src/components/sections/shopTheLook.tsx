@@ -160,7 +160,7 @@ const RoomShowcase = ({
                   <Link href={product.href} className="flex min-w-0 flex-1 items-center gap-3">
                     {thumbnail}
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate font-display text-base italic text-secondary-foreground">
+                      <span className="block truncate text-base font-medium capitalize text-secondary-foreground">
                         {product.title}
                       </span>
                       <span className="mt-0.5 block text-xs text-gray-1-foreground">
@@ -172,7 +172,7 @@ const RoomShowcase = ({
                   <div className="flex min-w-0 flex-1 items-center gap-3">
                     {thumbnail}
                     <div className="min-w-0 flex-1">
-                      <p className="truncate font-display text-base italic text-secondary-foreground">
+                      <p className="truncate text-base font-medium capitalize text-secondary-foreground">
                         {product.title}
                       </p>
                       <p className="mt-0.5 text-xs text-gray-1-foreground">
@@ -216,7 +216,7 @@ const ShopTheLook = ({ data, className }: { data: ShopTheLookData; className?: s
   if (!firstRoomId) return null;
 
   return (
-    <section className={cn("lg:pt-20 pt-12 lg:pb-20 pb-12", className)}>
+    <section className={cn("lg:pt-25 pt-15 lg:pb-25 pb-15", className)}>
       <div className="container">
         <Tabs defaultValue={firstRoomId}>
           <div className="flex flex-wrap items-end justify-between gap-5 mb-7 lg:mb-8">
@@ -224,7 +224,7 @@ const ShopTheLook = ({ data, className }: { data: ShopTheLookData; className?: s
               <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
                 {data.eyebrow} <ChevronRight className="size-3" />
               </p>
-              <h2 className="mt-1.5 font-display text-[clamp(1.5rem,1.25rem+1vw,2.25rem)] italic leading-[120%] text-secondary-foreground">
+              <h2 className="mt-1.5 text-heading capitalize text-secondary-foreground">
                 {data.title}
               </h2>
             </div>

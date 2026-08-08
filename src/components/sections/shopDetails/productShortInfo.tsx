@@ -134,7 +134,7 @@ const ProductShortInfo = ({
         </div>
       )}
 
-      <strong className="text-secondary-foreground lg:leading-[81%] lg:text-[32px] md:text-[28px] text-2xl font-semibold capitalize">
+      <strong className="text-secondary-foreground text-heading font-semibold capitalize">
         {title}
       </strong>
       <div className={cn("flex gap-10", compact ? "mt-2" : "mt-4")}>

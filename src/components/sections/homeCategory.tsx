@@ -48,8 +48,8 @@ const CategoryCard = ({
 
 const HomeCategory = ({ categories }: { categories: CategoryType[] }) => {
     return (
-        <div className="lg:mt-25 lg:mb-25 mt-15 mb-15">
-            <div className="container text-center">
+        <div className="lg:pt-25 lg:pb-25 pt-15 pb-15">
+            <div className="container">
                 <Title>Shop by Category</Title>
                 <p className="text-gray-1-foreground leading-[150%] font-light mt-1">Discover everything you need through the categories!</p>
 

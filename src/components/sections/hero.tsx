@@ -48,7 +48,7 @@ const Hero = ({ data, className }: { data: HeroDataType[]; className?: string })
                       duration: 0.3,
                       delay: isActive ? 0.5 : 0,
                     }}
-                    className="text-[clamp(2.25rem,1.3269rem+4.1026vw,6.25rem)] lg:text-[clamp(2rem,3.125vw,3.75rem)] leading-[115%] max-w-[810px] text-secondary-foreground font-light mb-2.5"
+                    className="text-[clamp(2.25rem,1.3269rem+4.1026vw,6.25rem)] lg:text-[clamp(2rem,3.125vw,3.75rem)] leading-[115%] max-w-[810px] text-secondary-foreground mb-2.5"
                   >
                     {title}
                   </motion.h1>

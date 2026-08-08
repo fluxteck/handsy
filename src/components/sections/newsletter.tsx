@@ -8,7 +8,7 @@ const Newsletter = ({ className }: { className?: string }) => {
         <div className={cn('bg-home-bg-1 lg:py-25 py-15', className)}>
             <div className='container flex lg:flex-row flex-col lg:items-center justify-between gap-x-5 gap-y-12'>
                 <div className='basis-1/2'>
-                    <h5 className='mb-4 text-[clamp(1.75rem,1.3462rem+1.7949vw,3.5rem)] tracking-[-1.5px] font-bold leading-[120%] text-secondary-foreground max-w-[696px]'>Subscribe to our newsletter and Grab 30% OFF</h5>
+                    <h5 className='mb-4 max-w-[696px]'>Subscribe to our newsletter and Grab 30% OFF</h5>
                     <p className='tracking-[-0.2px] opacity-90 text-secondary-foreground text-base max-w-[572px]'>We believe in keeping you at the forefront of innovation information, and inspiration. That's why we invite you to.</p>
                 </div>
                 <form className='relative max-w-[579px] basis-1/2'>

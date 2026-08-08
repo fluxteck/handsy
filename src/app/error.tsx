@@ -36,7 +36,7 @@ const Error = ({
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <h2 className="text-heading text-gray-900 mb-2">
             Something went wrong!
           </h2>
           <p className="text-gray-600 mb-4">
