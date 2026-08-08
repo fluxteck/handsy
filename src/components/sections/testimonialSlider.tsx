@@ -19,7 +19,7 @@ type TestimonialSliderProps = {
 
 const TestimonialSlider = ({ testimonials, title = 'Client Testimonials', className }: TestimonialSliderProps) => {
     return (
-        <section className={cn('lg:pt-25 pt-15 lg:pb-25 pb-15 group/section', className)} aria-label="Client testimonials">
+        <section className={cn('pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5 group/section', className)} aria-label="Client testimonials">
             <div className='container'>
                 {title && (
                     <Title className='mb-10'>{title}</Title>

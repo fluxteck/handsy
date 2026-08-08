@@ -11,7 +11,7 @@ const FeaturedProducts = async () => {
     let filterList: string[] = ["Best Sellers", "New arrivals", "featured"];
 
     return (
-        <section className="bg-home-bg-1 lg:pt-25 lg:pb-25 pt-15 pb-15">
+        <section className="bg-home-bg-1 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5">
             <div className="container">
                 <Title>Featured Products</Title>
                 <p className="text-gray-1-foreground mt-3 leading-[166.667%]">

@@ -60,6 +60,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --spacing-7\.5: 30px;
+  --spacing-11\.25: 45px;
   --spacing-12\.5: 50px;
   --spacing-15: 60px;
   --spacing-25: 100px;

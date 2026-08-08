@@ -27,7 +27,7 @@ const BlogSlider = ({ blogs }: { blogs: BlogType[] }) => {
     }, []);
 
     return (
-        <section className='bg-home-bg-1 lg:pt-25 pt-15 lg:pb-25 pb-15'>
+        <section className='bg-home-bg-1 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5'>
             <div className='container' ref={containerRef}>
                 <div className='flex justify-between items-center'>
                     <Title>News & Blogs</Title>

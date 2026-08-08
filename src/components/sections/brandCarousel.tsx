@@ -18,7 +18,7 @@ type BrandCarouselProps = {
 
 const BrandCarousel = ({ brands, title = "Brands You'll Love", className }: BrandCarouselProps) => {
     return (
-        <section className={cn('lg:pb-25 pb-15 group/section', className)} aria-label="Brands we carry">
+        <section className={cn('pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5 group/section', className)} aria-label="Brands we carry">
             <div className='container'>
                 {title && (
                     <Title className='mb-10'>{title}</Title>

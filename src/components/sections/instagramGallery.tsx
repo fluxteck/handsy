@@ -10,7 +10,7 @@ import { GalleryType } from '@/db/galleryData'
 const InstagramGallery = async () => {
     const galleryData: GalleryType[] = await getGalleryData();
     return (
-        <section className='lg:pt-25 pt-15 lg:pb-25 pb-15'>
+        <section className='pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5'>
             <div className='container'>
                 <div className='md:flex justify-between items-center'>
                     <Title className='mb-5 md:mb-0 font-medium'>Furniture Gallery</Title>

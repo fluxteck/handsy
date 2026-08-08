@@ -17,7 +17,7 @@ const AdsSlider = ({ data }: { data: AdsDataType[] }) => {
         setPlayingVideoId(null); // Reset when video ends
     };
     return (
-        <div className="lg:pb-25 pb-15">
+        <div className="pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5">
             <Swiper
 
                 breakpoints={{
