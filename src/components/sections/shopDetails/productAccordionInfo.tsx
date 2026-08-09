@@ -1,4 +1,4 @@
-import { FileText, Hammer, HeartHandshake, Ruler, type LucideIcon } from "lucide-react";
+import { FileText, Hammer, HeartHandshake, Ruler, Truck, type LucideIcon } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -22,10 +22,12 @@ const MANUFACTURING_LABELS = new Set(["Material", "Assembly"]);
 
 const ProductAccordionInfo = ({
   description,
+  shippingAndReplacement,
   returnsPolicy,
   additionalInfo,
 }: {
   description: string;
+  shippingAndReplacement: string;
   returnsPolicy: string;
   additionalInfo: { label: string; value: string }[];
 }) => {
@@ -73,6 +75,15 @@ const ProductAccordionInfo = ({
                 </li>
               ))}
             </ul>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="shipping-replacement" className="border-gray-2">
+          <AccordionTrigger className="group text-secondary-foreground font-medium lg:text-lg">
+            <AccordionTriggerLabel icon={Truck} label="Shipping & Replacement" />
+          </AccordionTrigger>
+          <AccordionContent>
+            <p className="text-gray-1-foreground leading-relaxed">{shippingAndReplacement}</p>
           </AccordionContent>
         </AccordionItem>
 

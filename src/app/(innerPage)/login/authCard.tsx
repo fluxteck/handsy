@@ -12,7 +12,7 @@ const AuthCard = () => {
     const [prefillEmail, setPrefillEmail] = useState('')
 
     return (
-        <div className="relative w-full max-w-[400px] rounded-3xl border border-border bg-background/90 p-6 shadow-3xl backdrop-blur-xl sm:p-8">
+        <div className="relative w-full max-w-[400px] rounded-2xl border border-gray-2 bg-background p-5 shadow-sm lg:p-6">
             <Link
                 href="/"
                 aria-label="Close"

@@ -4,11 +4,11 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import toast from "react-hot-toast";
 import {
   Award,
+  Boxes,
   CalendarClock,
   MessageCircle,
   PhoneIncoming,
   ShieldCheck,
-  Video,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -31,11 +31,16 @@ export interface CallbackRequestPayload {
   phone: string;
 }
 
-export interface DemoRequestPayload extends CallbackRequestPayload {
-  preferredTime: string;
+export interface BulkRequestPayload extends CallbackRequestPayload {
+  quantity: string;
 }
 
-type ContactDialogField = { id: string; label: string; type: string; placeholder: string };
+type ContactDialogField = {
+  id: string;
+  label: string;
+  type: string;
+  placeholder: string;
+};
 
 const trustIndicators: { id: string; icon: typeof Zap; label: string }[] = [
   { id: "fast-response", icon: Zap, label: "Fast Response" },
@@ -127,7 +132,11 @@ const ContactRequestForm = ({
         </div>
       )}
       <DialogFooter>
-        <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full sm:w-auto"
+        >
           {isSubmitting ? "Submitting..." : submitLabel}
         </Button>
       </DialogFooter>
@@ -174,16 +183,16 @@ const ContactDialog = ({
 };
 
 export interface NeedHelpPropsType {
-  /** Display phone number, e.g. "+91-9314444747". Also used to build the tel: link. */
+  /** Display phone number, e.g. "+91-9205028025". Also used to build the tel: link. */
   phoneNumber?: string;
-  /** WhatsApp number in international format without symbols, e.g. "919314444747". Defaults to phoneNumber digits. */
+  /** WhatsApp number in international format without symbols, e.g. "919205028025". Defaults to phoneNumber digits. */
   whatsappNumber?: string;
   /** Prefilled WhatsApp message. */
   whatsappMessage?: string;
   /** Called after a visitor submits the callback request form. */
   onRequestCallback?: (payload: CallbackRequestPayload) => void;
-  /** Called after a visitor schedules a live video demo. */
-  onScheduleDemo?: (payload: DemoRequestPayload) => void;
+  /** Called after a visitor submits a bulk-quote request. */
+  onRequestBulkQuote?: (payload: BulkRequestPayload) => void;
   expertName?: string;
   isExpertOnline?: boolean;
   responseTime?: string;
@@ -193,11 +202,11 @@ export interface NeedHelpPropsType {
 }
 
 const NeedHelp = ({
-  phoneNumber = "+91-9314444747",
+  phoneNumber = "+91-9205028025",
   whatsappNumber,
   whatsappMessage = "Hi! I'd like some help choosing the right product.",
   onRequestCallback,
-  onScheduleDemo,
+  onRequestBulkQuote,
   expertName = "Product Expert",
   isExpertOnline = true,
   responseTime = "Usually responds within 5 minutes",
@@ -214,18 +223,27 @@ const NeedHelp = ({
       className={cn(
         "rounded-2xl border border-gray-2 bg-background p-5 lg:p-6",
         sticky && "lg:sticky lg:top-28",
-        className
+        className,
       )}
     >
       <div className="flex items-center justify-between gap-3">
-        <h3 id="need-help-heading" className="font-display text-lg lg:text-xl text-secondary-foreground">
+        <h3
+          id="need-help-heading"
+          className="text-lg font-medium text-secondary-foreground lg:text-xl"
+        >
           Need Help in Buying?
         </h3>
         {isExpertOnline && (
           <span className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-gray-1-foreground">
             <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#59994D]/60" aria-hidden />
-              <span className="relative inline-flex size-2 rounded-full bg-[#59994D]" aria-hidden />
+              <span
+                className="absolute inline-flex size-full animate-ping rounded-full bg-[#59994D]/60"
+                aria-hidden
+              />
+              <span
+                className="relative inline-flex size-2 rounded-full bg-[#59994D]"
+                aria-hidden
+              />
             </span>
             {expertName} online
           </span>
@@ -241,8 +259,12 @@ const NeedHelp = ({
           <Call className="size-4" />
         </span>
         <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2">
-          <span className="shrink-0 text-xs text-gray-1-foreground">Call Now</span>
-          <span className="truncate text-sm font-semibold text-secondary-foreground">{phoneNumber}</span>
+          <span className="shrink-0 text-xs text-gray-1-foreground">
+            Call Now
+          </span>
+          <span className="truncate text-sm font-semibold text-secondary-foreground">
+            {phoneNumber}
+          </span>
         </span>
         <span className="hidden shrink-0 items-center gap-1.5 text-[11px] text-gray-1-foreground sm:flex">
           <CallTime className="size-3.5 shrink-0" />
@@ -250,21 +272,21 @@ const NeedHelp = ({
         </span>
       </a>
 
-      {/* Product Demo, WhatsApp, and Callback — equal-height compact action tiles */}
+      {/* Bulk Quote, WhatsApp, and Callback — equal-height compact action tiles */}
       <div className="mt-2.5 grid grid-cols-3 gap-2.5">
         <ContactDialog
-          title="Schedule a Live Video Demo"
-          description={`Pick a time that works for you and a ${expertName.toLowerCase()} will walk you through the product live.`}
+          title="Request a Bulk Quote"
+          description={`Share your details and a ${expertName.toLowerCase()} will send you bulk pricing.`}
           extraField={{
-            id: "preferredTime",
-            label: "Preferred date & time",
-            type: "datetime-local",
-            placeholder: "",
+            id: "quantity",
+            label: "Quantity needed",
+            type: "number",
+            placeholder: "e.g. 50",
           }}
-          submitLabel="Schedule Demo"
+          submitLabel="Request Quote"
           onSubmit={(values) => {
-            onScheduleDemo?.(values as unknown as DemoRequestPayload);
-            toast.success("Demo scheduled! We'll confirm the slot shortly.");
+            onRequestBulkQuote?.(values as unknown as BulkRequestPayload);
+            toast.success("Thanks! We'll send your bulk quote shortly.");
           }}
           trigger={
             <button
@@ -272,13 +294,10 @@ const NeedHelp = ({
               className="group flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-2 px-2 py-3 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
             >
               <span className="flex size-9 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
-                <Video className="size-4" strokeWidth={1.5} />
+                <Boxes className="size-4" strokeWidth={1.5} />
               </span>
-              <span className="flex items-center gap-1 text-xs font-medium text-secondary-foreground">
-                Demo
-                <span className="rounded-full bg-[#59994D] px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wider text-white">
-                  Live
-                </span>
+              <span className="text-xs font-medium text-secondary-foreground">
+                Bulk
               </span>
             </button>
           }
@@ -325,7 +344,9 @@ const NeedHelp = ({
             <span className="flex size-9 items-center justify-center rounded-full border border-gray-2 text-gray-1-foreground transition-colors duration-300 hover:border-primary hover:bg-primary hover:text-white">
               <Icon className="size-3.5" strokeWidth={1.5} />
             </span>
-            <span className="text-[10px] font-medium leading-tight text-gray-1-foreground">{label}</span>
+            <span className="text-[10px] font-medium leading-tight text-gray-1-foreground">
+              {label}
+            </span>
           </li>
         ))}
       </ul>

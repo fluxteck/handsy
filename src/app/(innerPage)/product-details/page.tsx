@@ -51,6 +51,7 @@ const ProductDetailsOne = () => {
             <div className="order-3 min-w-0">
               <ProductAccordionInfo
                 description="The Opal Accent Chair pairs a sculptural bouclé frame with a solid wood base, bringing a soft, contemporary silhouette to any living space. Generously padded seating and a gently curved backrest offer lasting comfort, while the compact footprint makes it easy to place in smaller rooms."
+                shippingAndReplacement="Orders are dispatched within 2-3 business days and typically arrive within 5-7 business days, depending on your location. If your item arrives damaged or defective, we'll arrange a free replacement within 7 days of delivery — no questions asked."
                 returnsPolicy="We offer a 15-day, hassle-free return and exchange window from the date of delivery. Items must be unused and in their original packaging. Reach out to our support team to start a return or exchange."
                 additionalInfo={[
                   { label: "Material", value: "Bouclé fabric, solid wood legs" },
