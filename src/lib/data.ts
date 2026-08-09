@@ -14,6 +14,15 @@ import { heroData } from "@/db/heroData";
 import { promoCardsData } from "@/db/promoCardsData";
 import { products } from "@/db/products";
 import { shopTheLookData } from "@/db/shopTheLookData";
+import { customerData } from "@/db/customerData";
+import { ordersData } from "@/db/ordersData";
+import { addressesData } from "@/db/addressesData";
+import { paymentMethodsData } from "@/db/paymentMethodsData";
+import { notificationsData } from "@/db/notificationsData";
+import { couponsData } from "@/db/couponsData";
+import { returnsData } from "@/db/returnsData";
+import { customerReviewsData } from "@/db/customerReviewsData";
+import { recentlyViewedData } from "@/db/recentlyViewedData";
 
 const baseUrl = 'https://furnisy.vercel.app';
 
@@ -178,6 +187,47 @@ export const getShopTheLookData = cache(async () => {
     // Same reasoning as getBrandsData/getPromoCardsData above: no /api/shop-the-look route
     // exists on the live site yet, so this always serves the local data instead of fetching.
     return shopTheLookData;
+});
+
+// Note: like getBrandsData/getPromoCardsData/getShopTheLookData above, these don't fetch
+// `${baseUrl}/api/...` in production yet — those routes are new in this release and don't exist
+// on the live site until after this deploy succeeds. Once live, switch these to the fetch pattern.
+// TODO: once real auth/session exists, source getCustomerData from the logged-in session instead
+// of static mock data.
+export const getCustomerData = cache(async () => {
+    return customerData;
+});
+
+export const getOrdersData = cache(async () => {
+    return ordersData;
+});
+
+export const getAddressesData = cache(async () => {
+    return addressesData;
+});
+
+export const getPaymentMethodsData = cache(async () => {
+    return paymentMethodsData;
+});
+
+export const getNotificationsData = cache(async () => {
+    return notificationsData;
+});
+
+export const getCouponsData = cache(async () => {
+    return couponsData;
+});
+
+export const getReturnsData = cache(async () => {
+    return returnsData;
+});
+
+export const getCustomerReviewsData = cache(async () => {
+    return customerReviewsData;
+});
+
+export const getRecentlyViewedData = cache(async () => {
+    return recentlyViewedData;
 });
 
 export const getTestimonialsData = cache(async () => {

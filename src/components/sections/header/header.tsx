@@ -45,8 +45,8 @@ const Header = async () => {
             </div>
             <WishlistButton />
             <Link
-              aria-label="user"
-              href={"/login"}
+              aria-label="account"
+              href={"/account"}
               className="text-gray-1-foreground cursor-pointer lg:block hidden hover:text-secondary-foreground transition-all duration-500"
             >
               <User />
