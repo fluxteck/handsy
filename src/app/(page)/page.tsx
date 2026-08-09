@@ -23,7 +23,7 @@ const Home = async () => {
   const blogData = await getBlogData();
   const testimonialData = await getTestimonialsData();
   const ads = await getAdsData()
- const { topCollections } = await getProductsData();
+ const { topCollections, featuredProducts } = await getProductsData();
   const heroData = await getHeroData()
   const promoCardsData = await getPromoCardsData()
   const brandsData = await getBrandsData()
@@ -33,7 +33,7 @@ const Home = async () => {
     <>
       <HeroSection heroData={heroData} promoCards={promoCardsData} />
       <HomeCategory categories={categoriesData} />
-      <FeaturedProducts />
+      <FeaturedProducts featuredProducts={featuredProducts} />
       <TopCollections data={topCollections} />
       <ShopTheLook data={shopTheLookData} />
       <BrandCarousel brands={brandsData} />

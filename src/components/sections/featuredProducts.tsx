@@ -1,27 +1,37 @@
-import React from "react";
+'use client'
+import React, { useEffect, useRef, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardTitle, CardPriceEnhanced, CardLabel, CardDiscount } from "@/components/ui/card";
 import Title from "@/components/ui/title";
 import Link from "next/link";
 import { ProductType } from "@/types/productType";
-import { getProductsData } from "@/lib/data";
+import ProductCarousel from "./productCarousel";
 
-const FeaturedProducts = async () => {
-    const { featuredProducts }: { featuredProducts: ProductType[] } = await getProductsData();
+const FeaturedProducts = ({ featuredProducts }: { featuredProducts: ProductType[] }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [slidesOffset, setSlidesOffset] = useState(0);
     let filterList: string[] = ["Best Sellers", "New arrivals", "featured"];
 
+    useEffect(() => {
+        function updateOffset() {
+            if (containerRef.current) {
+                const rect = containerRef.current.getBoundingClientRect();
+                setSlidesOffset(rect.left + 15);
+            }
+        }
+        updateOffset();
+        window.addEventListener('resize', updateOffset);
+        return () => window.removeEventListener('resize', updateOffset);
+    }, []);
+
     return (
-        <section className="bg-home-bg-1 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5">
-            <div className="container">
-                <Title>Featured Products</Title>
-                <p className="text-gray-1-foreground mt-3 leading-[166.667%]">
-                    Explore the best of Furnisy Featured Collection.
-                </p>
-                <div className="mt-10">
-                    <Tabs
-                        defaultValue={filterList[0] || ''}
-                        className="relative"
-                    >
+        <section className="bg-home-bg-1 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5 group/section">
+            <Tabs defaultValue={filterList[0] || ''} className="relative">
+                <div className="container" ref={containerRef}>
+                    <Title>Featured Products</Title>
+                    <p className="text-gray-1-foreground mt-3 leading-[166.667%]">
+                        Explore the best of Furnisy Featured Collection.
+                    </p>
+                    <div className="mt-10">
                         <div className="flex justify-between flex-wrap items-center mb-5">
                             <TabsList className="flex-wrap justify-start lg:gap-7.5 gap-5">
                                 {filterList.map((item, index) => (
@@ -41,36 +51,18 @@ const FeaturedProducts = async () => {
                                 View All
                             </Link>
                         </div>
-
-                        {filterList.map((filter, index) => {
-                            const filteredData = featuredProducts.filter((prd) => prd.filter === filter);
-                            return (
-                                <TabsContent key={index} value={filter}>
-                                    <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-x-5 gap-y-10">
-                                        {filteredData.map((prd) => {
-                                            return (
-                                                <Card key={prd.id}>
-                                                    <CardHeader>
-                                                        <CardImg src={prd.thumbnail} height={400} width={340} path="/product-details" />
-                                                        <CardLabel isLabel={prd.label ? prd.label : false}>{prd.label}</CardLabel>
-                                                        <CardDiscount isDiscountTrue={prd.discountPercentage ? prd.discountPercentage : false}>-{prd.discountPercentage}%</CardDiscount>
-                                                        <CardIcons product={prd} />
-                                                    </CardHeader>
-                                                    <CardFooter>
-                                                        <CardTitle path="/product-details">{prd.title}</CardTitle>
-                                                        <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
-                                                    </CardFooter>
-                                                </Card>
-                                            );
-                                        }
-                                        )}
-                                    </div>
-                                </TabsContent>
-                            );
-                        })}
-                    </Tabs>
+                    </div>
                 </div>
-            </div>
+
+                {filterList.map((filter, index) => {
+                    const filteredData = featuredProducts.filter((prd) => prd.filter === filter);
+                    return (
+                        <TabsContent key={index} value={filter}>
+                            <ProductCarousel data={filteredData} slidesOffset={slidesOffset} />
+                        </TabsContent>
+                    );
+                })}
+            </Tabs>
         </section>
     );
 };
