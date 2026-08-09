@@ -128,6 +128,11 @@ export const menuList: menuType[] = [
             "Modular Bedroom Sets",
         ])
     },
+    {
+        "id": 8,
+        "label": "B2B",
+        "path": "/b2b",
+    },
 ]
 
 // Single source of truth for the `/category/[slug]` landing pages,
