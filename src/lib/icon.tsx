@@ -464,5 +464,24 @@ const MapPin = ({ className }: { className?: string }) => {
 }
 
 
-export { Heart, Shuffle, StarFill, Eye, ShopCart, StarOutline, Car, GiftBox, ReturnBox, ArrowLeft, ArrowRight, ArrowUp, Facebook, Instagram, Quotetion, ArrowRightLong, Sun, ChevronLeft, ChevronRight, Twitter, Linkedin, Refresh, CallTime, Close, Search, GridView, List, Minus, Plus, Expand, Email, Location, Call, User, IcHome, ShopBug, MapPin }
+const GoogleIcon = ({ className }: { className?: string }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" className={className} width="20" height="20" viewBox="0 0 48 48" fill="none">
+            <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" />
+            <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z" />
+            <path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z" />
+            <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" />
+        </svg>
+    )
+}
+
+const AppleIcon = ({ className }: { className?: string }) => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" className={className} width="18" height="18" viewBox="0 0 384 512" fill="currentColor">
+            <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.3-41.7-84.7-44.6-35.4-2.8-74.1 20.6-88.3 20.6-15 0-49.3-19.6-76.5-19.6C63.3 141 4 184.8 4 273.2c0 25.6 4.7 52.1 14 79.4 12.5 36.7 57.5 126.6 104.5 125.2 24.6-.6 42-17.5 74-17.5 31 0 47.1 17.5 74.4 17.5 47.4-.7 88-82.6 100-119.4-63.7-30-63.2-88-63.2-89.7zM254.4 88.2c26.7-31.7 24.3-60.6 23.5-71-23.6 1.4-51 16.4-66.6 34.8-17.2 19.8-27.3 44.4-25.1 71.6 25.2 1.9 48.1-10.4 68.2-35.4z" />
+        </svg>
+    )
+}
+
+export { Heart, Shuffle, StarFill, Eye, ShopCart, StarOutline, Car, GiftBox, ReturnBox, ArrowLeft, ArrowRight, ArrowUp, Facebook, Instagram, Quotetion, ArrowRightLong, Sun, ChevronLeft, ChevronRight, Twitter, Linkedin, Refresh, CallTime, Close, Search, GridView, List, Minus, Plus, Expand, Email, Location, Call, User, IcHome, ShopBug, MapPin, GoogleIcon, AppleIcon }
 

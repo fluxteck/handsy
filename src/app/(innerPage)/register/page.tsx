@@ -1,24 +1,8 @@
-import React from 'react'
-import PageHeader from '@/components/sections/pageHeader'
-import RegisterForm from './registerForm'
-import Newsletter from '@/components/sections/newsletter'
-import InstagramGallery from '@/components/sections/instagramGallery'
-import { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = {
-    title: "Register",
-    description: "Create a new account."
-}
-
+// Sign up now lives as a tab on the unified /login auth card — redirect old links here.
 const Register = () => {
-    return (
-        <main>
-            <PageHeader pageTitle='My Account' currentPage='Create account' />
-            <RegisterForm/>
-            <Newsletter />
-            <InstagramGallery />
-        </main>
-    )
+    redirect('/login')
 }
 
 export default Register
