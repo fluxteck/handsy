@@ -23,6 +23,7 @@ import { couponsData } from "@/db/couponsData";
 import { returnsData } from "@/db/returnsData";
 import { customerReviewsData } from "@/db/customerReviewsData";
 import { recentlyViewedData } from "@/db/recentlyViewedData";
+import { productReviewsData } from "@/db/productReviewsData";
 
 const baseUrl = 'https://furnisy.vercel.app';
 
@@ -228,6 +229,13 @@ export const getCustomerReviewsData = cache(async () => {
 
 export const getRecentlyViewedData = cache(async () => {
     return recentlyViewedData;
+});
+
+export const getProductReviewsData = cache(async (productId: number | string) => {
+    // Note: unlike the sibling fetchers above, this doesn't call `${baseUrl}/api/products/[id]/reviews`
+    // in production yet. That route is new in this release, so it isn't served by baseUrl (the live
+    // site) until this deploy goes live. Once it is, switch this back to match the pattern above.
+    return productReviewsData.filter((review) => String(review.productId) === String(productId));
 });
 
 export const getTestimonialsData = cache(async () => {

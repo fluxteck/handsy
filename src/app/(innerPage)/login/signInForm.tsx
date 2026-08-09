@@ -8,6 +8,7 @@ import { AppleIcon, ArrowLeft, GoogleIcon } from '@/lib/icon'
 import { Headphones, RotateCcw, ShieldCheck } from 'lucide-react'
 import { useEffect, useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
+import { useCustomerSession } from '@/lib/useCustomerSession'
 import { sendOtp, verifyOtp } from './actions'
 import { SOCIAL_LOGIN_ENABLED } from './config'
 import TrustBadges from './trustBadges'
@@ -28,6 +29,7 @@ const SignInForm = ({ initialEmail = '' }: { initialEmail?: string }) => {
     const [error, setError] = useState('')
     const [resendIn, setResendIn] = useState(0)
     const [isPending, startTransition] = useTransition()
+    const { signIn } = useCustomerSession()
 
     useEffect(() => {
         setEmail(initialEmail)
@@ -87,6 +89,7 @@ const SignInForm = ({ initialEmail = '' }: { initialEmail?: string }) => {
                 return
             }
             toast.success(res.message)
+            signIn({ email })
             setStep('success')
         })
     }

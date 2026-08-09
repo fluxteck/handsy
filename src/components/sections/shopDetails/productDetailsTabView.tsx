@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Rating from '@/components/ui/rating'
 import ReviewAddForm from '../reviewAddForm'
 
-const ProductDetailsTabView = ({ className }: { className?: string }) => {
+const ProductDetailsTabView = ({ className, productId = 1 }: { className?: string; productId?: number | string }) => {
     return (
         <div className='lg:mt-25 mt-15'>
             <Tabs defaultValue="description">
@@ -49,7 +49,7 @@ const ProductDetailsTabView = ({ className }: { className?: string }) => {
 
                     <div className='mt-15'>
                         <p className='text-secondary-foreground font-medium lg:text-2xl text-xl mb-4'>Write a Review for this product</p>
-                        <ReviewAddForm />
+                        <ReviewAddForm productId={productId} />
                     </div>
                 </TabsContent>
             </Tabs>

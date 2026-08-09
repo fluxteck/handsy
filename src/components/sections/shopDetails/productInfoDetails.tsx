@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { Minus, Plus, Heart } from "@/lib/icon";
 import { Share2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Rating from "@/components/ui/rating";
 import { cn } from "@/lib/utils";
 import calcluteDiscount from "@/lib/calcluteDiscount";
 import { addToCart } from "@/lib/features/AddToCartSlice";
@@ -37,8 +36,6 @@ export interface ProductInfoDetailsPropsType {
   discountPercentage: number;
   thumbnail: string;
   stock: number;
-  rating: number;
-  totalRating: string;
   colors: ProductColorType[];
   offers: ProductOfferType[];
 }
@@ -50,8 +47,6 @@ const ProductInfoDetails = ({
   discountPercentage,
   thumbnail,
   stock,
-  rating,
-  totalRating,
   colors,
   offers,
 }: ProductInfoDetailsPropsType) => {
@@ -133,12 +128,9 @@ const ProductInfoDetails = ({
   return (
     <div className="min-w-0">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <Rating star={rating} iconSize="size-4" />
-          <span className="text-base text-gray-1-foreground leading-none">
-            {rating ? `(${totalRating})` : "No reviews"}
-          </span>
-        </div>
+        <strong className="text-secondary-foreground text-heading font-semibold capitalize block">
+          {title}
+        </strong>
         <button
           type="button"
           onClick={handleShare}
@@ -148,10 +140,6 @@ const ProductInfoDetails = ({
           <Share2 className="size-4" />
         </button>
       </div>
-
-      <strong className="text-secondary-foreground text-heading font-semibold capitalize block mt-4">
-        {title}
-      </strong>
 
       <p className="text-xl lg:text-2xl xl:text-3xl text-secondary-foreground mt-4">
         {currencyFormatter.format(finalPrice)}{" "}

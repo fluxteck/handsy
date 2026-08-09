@@ -5,6 +5,7 @@ import ProductInfoDetails from "@/components/sections/shopDetails/productInfoDet
 import ProductAccordionInfo from "@/components/sections/shopDetails/productAccordionInfo";
 import NeedHelp from "@/components/sections/shopDetails/needHelp";
 import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
+import ProductReviews from "@/components/sections/shopDetails/productReviews";
 import Breadcrumb from "@/components/ui/breadcrumb";
 import { Metadata } from "next";
 
@@ -71,8 +72,6 @@ const ProductDetailsOne = () => {
                 discountPercentage={25.91}
                 thumbnail="/images/product-details/img-1.webp"
                 stock={99}
-                rating={0}
-                totalRating="0"
                 colors={productColors}
                 offers={productOffers}
               />
@@ -81,6 +80,7 @@ const ProductDetailsOne = () => {
           </div>
         </div>
       </div>
+      <ProductReviews productId={1} productName="Opal Accent Chair" />
       <RelatedProducts />
       <Newsletter />
       <InstagramGallery />
