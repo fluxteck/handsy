@@ -1,5 +1,4 @@
 import { cache } from "react";
-import { adsData } from "@/db/adsData";
 import { menuList } from "@/db/menuList";
 import { categoriesOneData } from "@/db/categoriesData";
 import { blogData } from "@/db/blogData";
@@ -47,19 +46,6 @@ export const getPromoCardsData = cache(async () => {
     // build would be fetching a route that doesn't exist on the live site until *after* this
     // deploy succeeds. Once this is live, switch this back to match the pattern above.
     return promoCardsData;
-});
-
-export const getAdsData = cache(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            const res = await fetch(`${baseUrl}/api/ads`);
-            if (!res.ok) throw new Error('Failed to fetch ads data');
-            return res.json();
-        }
-        return adsData;
-    } catch (error) {
-        throw new Error('Error in getAdsData: ' + (error instanceof Error ? error.message : String(error)));
-    }
 });
 
 export const getProductsData = cache(async () => {
