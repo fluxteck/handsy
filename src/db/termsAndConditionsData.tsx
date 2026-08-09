@@ -10,7 +10,7 @@ export interface TermsAndConditionsType {
 export const termsAndConditionsData: TermsAndConditionsType[] = [
     {
         title: 'Acceptance of Terms',
-        description: 'By accessing or using the Furnisy website, you agree to be bound by these Terms and all applicable laws and regulations. If you do not agree with any part of these Terms, you should not use our website.',
+        description: 'By accessing or using the Handsy Market website, you agree to be bound by these Terms and all applicable laws and regulations. If you do not agree with any part of these Terms, you should not use our website.',
         details: [],
     },
     {
@@ -55,17 +55,17 @@ export const termsAndConditionsData: TermsAndConditionsType[] = [
     },
     {
         title: 'Intellectual Property',
-        description: 'All content on our website, including text, graphics, logos, images, and software, is the property of Furnisy or its content suppliers and is protected by copyright, trademark, and other intellectual property laws. You may not reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of the material on our website without our prior written consent.',
+        description: 'All content on our website, including text, graphics, logos, images, and software, is the property of Handsy Market or its content suppliers and is protected by copyright, trademark, and other intellectual property laws. You may not reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of the material on our website without our prior written consent.',
         details: [],
     },
     {
         title: 'Limitation of Liability',
-        description: 'To the fullest extent permitted by law, Furnisy shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your use or inability to use the website, (ii) any unauthorized access to or use of our servers and/or any personal information stored therein, (iii) any interruption or cessation of transmission to or from the website, (iv) any bugs, viruses, Trojan horses, or the like that may be transmitted to or through our website by any third party, (v) any errors or omissions in any content or for any loss or damage of any kind incurred as a result of your use of any content posted, emailed, transmitted, or otherwise made available via the website, and/or (vi) the defamatory, offensive, or illegal conduct of any third party.',
+        description: 'To the fullest extent permitted by law, Handsy Market shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your use or inability to use the website, (ii) any unauthorized access to or use of our servers and/or any personal information stored therein, (iii) any interruption or cessation of transmission to or from the website, (iv) any bugs, viruses, Trojan horses, or the like that may be transmitted to or through our website by any third party, (v) any errors or omissions in any content or for any loss or damage of any kind incurred as a result of your use of any content posted, emailed, transmitted, or otherwise made available via the website, and/or (vi) the defamatory, offensive, or illegal conduct of any third party.',
         details: [],
     },
     {
         title: 'Indemnification',
-        description: 'You agree to indemnify, defend, and hold harmless Furnisy, its affiliates, and their respective officers, directors, employees, agents, licensors, and suppliers from and against all claims, losses, liabilities, expenses, damages, and costs, including reasonable attorneys’ fees, arising out of or relating to your use of our website, your violation of these Terms, or your violation of any rights of another.',
+        description: 'You agree to indemnify, defend, and hold harmless Handsy Market, its affiliates, and their respective officers, directors, employees, agents, licensors, and suppliers from and against all claims, losses, liabilities, expenses, damages, and costs, including reasonable attorneys’ fees, arising out of or relating to your use of our website, your violation of these Terms, or your violation of any rights of another.',
         details: [],
     },
     {

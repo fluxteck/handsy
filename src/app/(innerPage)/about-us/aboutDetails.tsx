@@ -6,7 +6,7 @@ import CountUp from 'react-countup';
 
 const aboutData = {
     image: '/images/about/img-2.webp',
-    title: 'About Furnisy',
+    title: 'About Handsy Market',
     description: `
     <p>Our goal is to provide you with furniture that not only looks stunning but also serves your needs and lasts for years to come. We prioritize quality in everything we do. From the materials we use to the craftsmanship of our products, we ensure that every piece meets our high standards of excellence.</p>
     <p>you with furniture that not only looks stunning but also serves your needs and lasts for years to come. We prioritize quality in everything we do. From the materials we use to the craftsmanship of our products, we ensure that every piece meets our high standards of excellence.</p>
@@ -19,7 +19,7 @@ const aboutData = {
 };
 
 const shoppingExperience = {
-    title: 'Discover The Furnisy Shopping Experience',
+    title: 'Discover The Handsy Market Shopping Experience',
     description: `Explore our carefully curated collections, featuring the latest furniture design home decor. Our diverse range of styles fits every taste and space.`,
     features: [
         'User-Friendly Website',
@@ -39,7 +39,7 @@ const AboutDetails = () => {
         <section className="container">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[40.2%_auto] lg:gap-15 gap-10 items-center">
                 <div>
-                    <Image width={570} height={600} style={{ width: "100%" }} src={aboutData.image} alt="About Furnisy" />
+                    <Image width={570} height={600} style={{ width: "100%" }} src={aboutData.image} alt="About Handsy Market" />
                 </div>
 
                 {/* Right Section */}

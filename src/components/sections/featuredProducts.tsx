@@ -29,7 +29,7 @@ const FeaturedProducts = ({ featuredProducts }: { featuredProducts: ProductType[
                 <div className="container" ref={containerRef}>
                     <Title>Featured Products</Title>
                     <p className="text-gray-1-foreground mt-3 leading-[166.667%]">
-                        Explore the best of Furnisy Featured Collection.
+                        Explore the best of Handsy Market Featured Collection.
                     </p>
                     <div className="mt-10">
                         <div className="flex justify-between flex-wrap items-center mb-5">

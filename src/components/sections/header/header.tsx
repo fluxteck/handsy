@@ -24,7 +24,7 @@ const Header = async () => {
             <MobileMenu data={menuList} featuredProducts={featuredProducts} />
             <Link
               href={"/"}
-              aria-label="Furnisy home"
+              aria-label="Handsy Market home"
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:left-auto lg:top-auto lg:translate-x-0 lg:translate-y-0 shrink-0"
             >
               <Image

@@ -46,24 +46,20 @@ const BlogSlider = ({ blogs }: { blogs: BlogType[] }) => {
                     spaceBetween={24}
                     slidesOffsetBefore={slidesOffset}
                     breakpoints={{
-                        320: {
-                            slidesPerView: 1.2,
+                        0: {
+                            slidesPerView: 1.15,
                         },
-                        640: {
+                        480: {
                             slidesPerView: 1.5,
                         },
-                        768: {
+                        640: {
                             slidesPerView: 2,
                         },
                         1024: {
-                            slidesPerView: 2.7,
+                            slidesPerView: 3,
                         },
                         1280: {
-                            slidesPerView: 3.091,
-                        },
-                        1536: {
-                            slidesOffsetBefore: 245,
-                            slidesPerView: 3.091,
+                            slidesPerView: 4,
                         },
                     }}
                     grabCursor

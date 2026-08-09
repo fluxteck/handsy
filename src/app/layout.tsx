@@ -44,9 +44,9 @@ const displaySerif = Instrument_Serif({
 
 
 export const metadata: Metadata = {
-  title: "Furnisy - E-Commerce Template",
-  description: "Furnisy - e-commerce template create by technology next.js, tailwind css, shadcn",
-  keywords: ["ecommerce", "furnisy", "product", "site", "react.js", "next.js", "tailwind css",],
+  title: "Handsy Market - E-Commerce Template",
+  description: "Handsy Market - e-commerce template create by technology next.js, tailwind css, shadcn",
+  keywords: ["ecommerce", "handsy market", "product", "site", "react.js", "next.js", "tailwind css",],
 };
 
 export default function RootLayout({

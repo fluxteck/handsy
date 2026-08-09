@@ -1,5 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
+import AboutTeaser from '@/components/sections/aboutTeaser'
 import BlogSlider from '@/components/sections/blogs/blogSlider'
 import BrandCarousel from '@/components/sections/brandCarousel'
 import FeaturedProducts from '@/components/sections/featuredProducts'
@@ -33,6 +34,7 @@ const Home = async () => {
       <HomeCategory categories={categoriesData} />
       <FeaturedProducts featuredProducts={featuredProducts} />
       <TopCollections data={topCollections} />
+      <AboutTeaser />
       <ShopTheLook data={shopTheLookData} />
       <BrandCarousel brands={brandsData} />
       <BlogSlider blogs={blogData} />

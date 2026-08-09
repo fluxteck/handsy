@@ -48,7 +48,7 @@ BlogCard.Meta = function Meta({ date, category, author }: MetaProps) {
 
 BlogCard.Title = function Title({ children, href, className }: PropsType) {
     return (
-        <h3 className={cn('text-secondary-foreground text-heading mt-3 mb-2 line-clamp-2', className)}>
+        <h3 className={cn('text-secondary-foreground text-[14px] sm:text-[15px] lg:text-[16px] leading-[150%] mt-3 mb-2 line-clamp-2', className)}>
             <Link href={href || '#'} className='multiline-hover'>
                 {children}
             </Link>

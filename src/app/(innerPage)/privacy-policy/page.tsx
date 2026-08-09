@@ -17,8 +17,8 @@ const PrivacyPolicy = async () => {
         <main>
             <PageHeader pageTitle='Privacy Policy' currentPage='Privacy Policy' />
             <section className='container lg:py-25 py-15'>
-                <h5 className='mb-5'>Privacy Policy for Furnisy</h5>
-                <p className='lg:text-xl text-lg font-medium leading-[170%] text-gray-1-foreground'>Thank you for visiting Furnisy. We are committed to protecting your privacy and ensuring that your personal information is handled securely and responsibly. This Privacy Policy outlines how we collect, use, and protect your information when you visit our website and interact with our services.</p>
+                <h5 className='mb-5'>Privacy Policy for Handsy Market</h5>
+                <p className='lg:text-xl text-lg font-medium leading-[170%] text-gray-1-foreground'>Thank you for visiting Handsy Market. We are committed to protecting your privacy and ensuring that your personal information is handled securely and responsibly. This Privacy Policy outlines how we collect, use, and protect your information when you visit our website and interact with our services.</p>
                 <ol className='mt-10 list-decimal list-inside grid gap-5'>
                     {
                         privacyPolicyData.map(({ description, title, details }) => {
@@ -48,7 +48,7 @@ const PrivacyPolicy = async () => {
                         })
                     }
                 </ol>
-                <p className='mt-5 font-medium text-xl text-[#333232]'>By using our website and services, you consent to the terms of this Privacy Policy. Thank you for trusting Furnisy with your personal information.</p>
+                <p className='mt-5 font-medium text-xl text-[#333232]'>By using our website and services, you consent to the terms of this Privacy Policy. Thank you for trusting Handsy Market with your personal information.</p>
             </section>
             <Newsletter />
             <InstagramGallery />

@@ -18,7 +18,7 @@ const Footer = () => {
                 />
               </Link>
               <p className="mt-6 text-base text-[#4F4F59] leading-[170%]">
-                Furnisy provides you with the essential pieces to build a
+                Handsy Market provides you with the essential pieces to build a
                 stunning online store for your furniture business.
               </p>
             </div>
@@ -58,7 +58,7 @@ const Footer = () => {
               </div>
               <div>
                 <h6 className="text-secondary-foreground leading-[170%] text-base">
-                  Furnisy
+                  Handsy Market
                 </h6>
                 <ul className="mt-[29px] text-[#4F4F59] text-base leading-[170%] flex flex-col gap-4">
                   <li>
@@ -66,7 +66,7 @@ const Footer = () => {
                       href={"#"}
                       className="hover:text-secondary-foreground transition-all duration-500"
                     >
-                      About Furnisy
+                      About Handsy Market
                     </Link>
                   </li>
                   <li>

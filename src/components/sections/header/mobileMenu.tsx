@@ -44,7 +44,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                 <SheetTitle className='sr-only'>Navigation Menu</SheetTitle>
 
                 <div className='-mx-6 -mt-6 mb-2 px-6 py-4 flex items-center justify-between border-b border-border shrink-0'>
-                    <Link href={"/"} aria-label='Furnisy home' className='shrink-0'>
+                    <Link href={"/"} aria-label='Handsy Market home' className='shrink-0'>
                         <Image width={70} height={44} src={"/images/logo.png"} alt='logo' />
                     </Link>
                     <SheetClose

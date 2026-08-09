@@ -26,7 +26,7 @@ const InstagramGallery = async () => {
                                     <Image width={340} height={340} sizes='100vw' src={thumbnail} alt='img' className='w-full rounded-[15px]' />
                                     <div className='rounded-[15px] absolute top-0 left-0 w-full h-full flex justify-center items-center flex-col bg-[linear-gradient(0deg,_rgba(26,25,25,0.80)_0%,_rgba(26,25,25,0.80)_100%)] transition-all duration-500 scale-0 group-hover:scale-100'>
                                         <span className='lg:text-2xl text-xl font-medium text-[#E5E2E1] block text-center'>View more in</span>
-                                        <Link href={"#"} className='lg:text-2xl text-xl font-medium text-[#E5E2E1] text-center'>@furnisy</Link>
+                                        <Link href={"#"} className='lg:text-2xl text-xl font-medium text-[#E5E2E1] text-center'>@handsymarket</Link>
                                     </div>
                                 </div>
                             )
