@@ -173,6 +173,24 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Lenis drives scroll smoothing itself; letting the browser's native
+   smooth-behavior run at the same time would double up the easing and
+   feel laggy, so it's disabled while Lenis is active. */
+html.lenis {
+  scroll-behavior: auto !important;
+}
+
+html.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Modals, dropdowns, carousels, etc. opt out via [data-lenis-prevent]
+   (see ui/dialog.tsx, ui/sheet.tsx, searchPopup.tsx) so their internal
+   scroll stays native and isolated from page-level smoothing. */
+[data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

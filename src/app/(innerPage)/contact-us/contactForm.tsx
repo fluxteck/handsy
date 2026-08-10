@@ -1,79 +1,116 @@
-'use client'; // This component needs to be a client component to use hooks
+"use client";
 
-import React, { useEffect } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Call, Email, Location } from '@/lib/icon';
-import { useActionState } from 'react'; // Import useActionState
-import { submitContactForm } from './actions'; // Import your server action
+import React, { useEffect, useRef, useState } from "react";
+import { useActionState } from "react";
+import toast from "react-hot-toast";
+import { motion } from "framer-motion";
+import { CheckCircle2, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { submitContactForm } from "./actions";
+
+const fieldClass =
+  "mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground transition-colors duration-300 focus-visible:border-primary focus-visible:ring-primary/20";
+
+const initialState = { success: false, message: "" };
 
 const ContactForm = () => {
-    const initialState = {
-        success: false,
-        message: '',
-    };
+  const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
+  const formRef = useRef<HTMLFormElement>(null);
+  const prevPending = useRef(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-    const [state, formAction] = useActionState(submitContactForm, initialState);
+  useEffect(() => {
+    if (isPending) {
+      setShowSuccess(false);
+      prevPending.current = true;
+      return;
+    }
 
+    if (prevPending.current && state.message) {
+      if (state.success) {
+        setShowSuccess(true);
+        formRef.current?.reset();
+      } else {
+        toast.error(state.message);
+      }
+    }
+    prevPending.current = false;
+  }, [isPending, state]);
 
-    return (
-        <div className='grid lg:grid-cols-[auto_28%] md:grid-cols-[auto_35%] items-start lg:gap-15 gap-10'>
-            <form action={formAction}>
-                <b className='mb-10 text-secondary-foreground text-xl font-medium block'>Contact Us</b>
-                <div className='flex md:flex-row flex-col gap-7.5 mb-7.5'>
-                    <Label htmlFor='name' className='text-gray-1-foreground text-base w-full'>
-                        Name<span className='text-primary-foreground'>*</span>
-                        <Input type='text' name='name' id='name' className='mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground' />
-                    </Label>
-                    <Label htmlFor='email' className='text-gray-1-foreground text-base w-full'>
-                        Email<span className='text-primary-foreground'>*</span>
-                        <Input type='email' name='email' id='email' className='mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground' />
-                    </Label>
+  return (
+    <section id="contact-form" className="bg-home-bg-1 lg:py-25 py-15" aria-label="Send us a message">
+      <div className="container">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="mx-auto max-w-3xl overflow-hidden rounded-3xl border border-gray-2 bg-background shadow-3xl"
+        >
+          <div className="relative overflow-hidden bg-home-bg-4 px-6 py-8 lg:px-10 lg:py-10">
+            <div
+              className="pointer-events-none absolute -top-16 -right-16 size-56 rounded-full bg-gradient-radial from-primary/15 to-transparent blur-2xl"
+              aria-hidden
+            />
+            <span className="relative flex size-12 items-center justify-center rounded-full bg-primary text-white">
+              <MessageSquare className="size-5" />
+            </span>
+            <p className="relative mt-4 text-heading capitalize text-secondary-foreground">Send Us a Message</p>
+            <p className="relative mt-2 max-w-md text-gray-1-foreground leading-[170%]">
+              Have a question about a product, an order, or a custom piece? Fill out the form below
+              and our team will get back to you shortly.
+            </p>
+          </div>
+
+          <div className="px-6 py-7.5 lg:px-10 lg:py-8.75">
+            {showSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="mb-7.5 flex items-start gap-3 rounded-2xl border border-primary/20 bg-primary/5 px-5 py-4"
+              >
+                <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" />
+                <div>
+                  <p className="text-secondary-foreground font-medium">Message sent</p>
+                  <p className="mt-1 text-sm text-gray-1-foreground leading-[160%]">{state.message}</p>
                 </div>
-                <Label htmlFor='message' className='text-gray-1-foreground text-base w-full'>
-                    Message
-                    <Textarea name='message' id='message' className='mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground min-h-[140px]' />
+              </motion.div>
+            )}
+
+            <form ref={formRef} action={formAction}>
+              <div className="grid sm:grid-cols-2 gap-6">
+                <Label htmlFor="name" className="text-gray-1-foreground text-base w-full">
+                  Name<span className="text-primary-foreground">*</span>
+                  <Input type="text" name="name" id="name" required placeholder="Your name" className={fieldClass} />
                 </Label>
-                <Button className='mt-10 lg:px-12.5' type='submit'>
-                    Submit
-                </Button>
-                {/* You can display state.message here for feedback */}
-                {state.message && <p className={state.success ? 'text-green-500' : 'text-red-500'}>{state.message}</p>}
+                <Label htmlFor="email" className="text-gray-1-foreground text-base w-full">
+                  Email<span className="text-primary-foreground">*</span>
+                  <Input type="email" name="email" id="email" required placeholder="you@email.com" className={fieldClass} />
+                </Label>
+              </div>
+              <Label htmlFor="message" className="text-gray-1-foreground text-base w-full mt-7.5 block">
+                Message<span className="text-primary-foreground">*</span>
+                <Textarea
+                  name="message"
+                  id="message"
+                  required
+                  placeholder="Tell us how we can help..."
+                  className={`${fieldClass} min-h-[140px]`}
+                />
+              </Label>
+              <Button type="submit" disabled={isPending} className="mt-10 min-w-[180px] lg:px-12.5">
+                {isPending ? "Sending..." : "Submit"}
+              </Button>
             </form>
-            <div className='bg-home-bg-1 lg:p-10 p-7 flex flex-col gap-7.5 rounded-lg'>
-                <div className='flex gap-5'>
-                    <div className='shrink-0 lg:w-15 lg:h-15 w-12 h-12 flex justify-center items-center border border-muted text-gray-1-foreground rounded-full'>
-                        <Location className='lg:size-[34px] size-7' />
-                    </div>
-                    <div>
-                        <p className='text-secondary-foreground text-lg font-medium leading-[150%] relative after:absolute after:left-0 after:bottom-0 after:w-14 after:h-px after:bg-primary'>Office Address</p>
-                        <p className='text-gray-1-foreground leading-[150%] mt-3'>265 New Ave, Califonia City-100, USA.</p>
-                    </div>
-                </div>
-                <div className='flex gap-5'>
-                    <div className='shrink-0 lg:w-15 lg:h-15 w-12 h-12 flex justify-center items-center border border-muted text-gray-1-foreground rounded-full'>
-                        <Email className='lg:size-[34px] size-7' />
-                    </div>
-                    <div>
-                        <p className='text-secondary-foreground text-lg font-medium leading-[150%] relative after:absolute after:left-0 after:bottom-0 after:w-14 after:h-px after:bg-primary'>Send Message</p>
-                        <Link href={"mailto:info@logistip.com"} className='text-gray-1-foreground leading-[150%] mt-3 inline-block hover:text-secondary-foreground transition-all duration-500'>info@yourdomin.com</Link>
-                    </div>
-                </div>
-                <div className='flex gap-5'>
-                    <div className='shrink-0 lg:w-15 lg:h-15 w-12 h-12 flex justify-center items-center border border-muted text-gray-1-foreground rounded-full'>
-                        <Call className='lg:size-[34px] size-7' />
-                    </div>
-                    <div>
-                        <p className='text-secondary-foreground text-lg font-medium leading-[150%] relative after:absolute after:left-0 after:bottom-0 after:w-14 after:h-px after:bg-primary'>Call Us</p>
-                        <Link href={"tel:2345 56789"} className='text-gray-1-foreground leading-[150%] mt-3 inline-block hover:text-secondary-foreground transition-all duration-500'>(+0123) 2345 56789</Link>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
 };
 
 export default ContactForm;

@@ -4,6 +4,7 @@ import { Instrument_Serif } from 'next/font/google'
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from "react-hot-toast";
+import SmoothScroll from "@/components/smoothScroll";
 // import WelcomePopup from "@/components/sections/welcomePopup";
 
 const satoshi = localFont({
@@ -62,6 +63,7 @@ export default function RootLayout({
         suppressContentEditableWarning={true}
       >
         <StoreProvider>
+          <SmoothScroll />
           {children}
           <Toaster position="top-right" reverseOrder={false} />
         </StoreProvider>
