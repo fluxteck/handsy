@@ -3,7 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { Minus, Plus, Heart } from "@/lib/icon";
-import { Share2, ShieldCheck } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import calcluteDiscount from "@/lib/calcluteDiscount";
@@ -231,20 +231,6 @@ const ProductInfoDetails = ({
           </div>
         </div>
       )}
-
-      <ul className="flex flex-wrap items-center gap-2 mt-7.5">
-        {["UPI", "GPay", "PhonePe", "RuPay", "VISA", "Mastercard", "Amex"].map((method) => (
-          <li
-            key={method}
-            className="text-xs font-medium text-gray-1-foreground border border-gray-2 rounded px-2.5 py-1.5"
-          >
-            {method}
-          </li>
-        ))}
-        <li className="text-gray-1-foreground" aria-label="Secure checkout">
-          <ShieldCheck className="size-5" strokeWidth={1.5} />
-        </li>
-      </ul>
 
       <div className="mt-7.5">
         <p className="text-secondary-foreground font-medium mb-3">Check estimated delivery</p>

@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import toast from "react-hot-toast";
 import {
   Award,
   Boxes,
-  CalendarClock,
   MessageCircle,
   PhoneIncoming,
   ShieldCheck,
@@ -40,6 +39,21 @@ type ContactDialogField = {
   label: string;
   type: string;
   placeholder: string;
+};
+
+const IST_OFFSET_MINUTES = 5 * 60 + 30; // UTC+5:30, no daylight saving
+const EXPERT_ONLINE_FROM_HOUR = 10; // 10:00 AM IST
+const EXPERT_ONLINE_UNTIL_HOUR = 18; // 6:00 PM IST
+
+/**
+ * Derived from the absolute UTC instant (not the visitor's local timezone),
+ * so this returns the same result on the server and after client hydration.
+ */
+const isExpertOnlineNowIST = () => {
+  const now = new Date();
+  const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const istHour = ((utcMinutes + IST_OFFSET_MINUTES) % (24 * 60)) / 60;
+  return istHour >= EXPERT_ONLINE_FROM_HOUR && istHour < EXPERT_ONLINE_UNTIL_HOUR;
 };
 
 const trustIndicators: { id: string; icon: typeof Zap; label: string }[] = [
@@ -194,6 +208,7 @@ export interface NeedHelpPropsType {
   /** Called after a visitor submits a bulk-quote request. */
   onRequestBulkQuote?: (payload: BulkRequestPayload) => void;
   expertName?: string;
+  /** Manual override; omit to derive live from the current time (Online 10 AM–6 PM IST, Offline otherwise). */
   isExpertOnline?: boolean;
   responseTime?: string;
   /** Sticks the card in view while scrolling on desktop. */
@@ -208,7 +223,7 @@ const NeedHelp = ({
   onRequestCallback,
   onRequestBulkQuote,
   expertName = "Product Expert",
-  isExpertOnline = true,
+  isExpertOnline,
   responseTime = "Usually responds within 5 minutes",
   sticky = true,
   className,
@@ -217,11 +232,23 @@ const NeedHelp = ({
   const waDigits = (whatsappNumber ?? phoneNumber).replace(/\D/g, "");
   const waHref = `https://wa.me/${waDigits}?text=${encodeURIComponent(whatsappMessage)}`;
 
+  // Live IST-business-hours status, re-checked every minute so it flips
+  // automatically without a page refresh. `isExpertOnline` still wins when
+  // explicitly passed in, for callers that need to force a state.
+  const [liveOnline, setLiveOnline] = useState(isExpertOnlineNowIST);
+  useEffect(() => {
+    const tick = () => setLiveOnline(isExpertOnlineNowIST());
+    tick();
+    const id = setInterval(tick, 60 * 1000);
+    return () => clearInterval(id);
+  }, []);
+  const online = isExpertOnline ?? liveOnline;
+
   return (
     <section
       aria-labelledby="need-help-heading"
       className={cn(
-        "rounded-2xl border border-gray-2 bg-background p-5 lg:p-6",
+        "rounded-2xl border border-gray-2 bg-background p-5 transition-shadow duration-300 hover:shadow-sm lg:p-6",
         sticky && "lg:sticky lg:top-28",
         className,
       )}
@@ -229,33 +256,36 @@ const NeedHelp = ({
       <div className="flex items-center justify-between gap-3">
         <h3
           id="need-help-heading"
-          className="text-lg font-medium text-secondary-foreground lg:text-xl"
+          className="font-medium text-secondary-foreground lg:text-lg"
         >
           Need Help in Buying?
         </h3>
-        {isExpertOnline && (
-          <span className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-gray-1-foreground">
-            <span className="relative flex size-2">
+        <span className="flex shrink-0 items-center gap-1.5 text-[11px] font-medium text-gray-1-foreground">
+          <span className="relative flex size-2">
+            {online && (
               <span
                 className="absolute inline-flex size-full animate-ping rounded-full bg-[#59994D]/60"
                 aria-hidden
               />
-              <span
-                className="relative inline-flex size-2 rounded-full bg-[#59994D]"
-                aria-hidden
-              />
-            </span>
-            {expertName} online
+            )}
+            <span
+              className={cn(
+                "relative inline-flex size-2 rounded-full",
+                online ? "bg-[#59994D]" : "bg-gray-3",
+              )}
+              aria-hidden
+            />
           </span>
-        )}
+          {expertName} {online ? "Online" : "Offline"}
+        </span>
       </div>
 
       {/* Call Now — icon, label, number, and response time share a single compact row */}
       <a
         href={`tel:${phoneDigits}`}
-        className="group mt-4 flex items-center gap-3 rounded-xl border border-gray-2 p-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+        className="group mt-3 flex items-center gap-3 rounded-xl border border-gray-2 p-3 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
       >
-        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
           <Call className="size-4" />
         </span>
         <span className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2">
@@ -266,14 +296,17 @@ const NeedHelp = ({
             {phoneNumber}
           </span>
         </span>
-        <span className="hidden shrink-0 items-center gap-1.5 text-[11px] text-gray-1-foreground sm:flex">
+        <span className="hidden shrink-0 items-center gap-1.5 text-[11px] text-gray-1-foreground lg:flex">
           <CallTime className="size-3.5 shrink-0" />
           {responseTime}
         </span>
       </a>
 
-      {/* Bulk Quote, WhatsApp, and Callback — equal-height compact action tiles */}
-      <div className="mt-2.5 grid grid-cols-3 gap-2.5">
+      {/* Bulk Quote, WhatsApp, and Callback — equal-height compact action tiles.
+          On mobile the columns are weighted (Bulk narrower) since "Bulk" is the
+          shortest label and "WhatsApp"/"Callback" need the extra room; tablet+
+          reverts to equal thirds. */}
+      <div className="mt-2 grid grid-cols-[0.8fr_1.2fr_1fr] gap-1.5 sm:grid-cols-3 sm:gap-2">
         <ContactDialog
           title="Request a Bulk Quote"
           description={`Share your details and a ${expertName.toLowerCase()} will send you bulk pricing.`}
@@ -291,12 +324,12 @@ const NeedHelp = ({
           trigger={
             <button
               type="button"
-              className="group flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-2 px-2 py-3 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+              className="group flex h-full w-full items-center justify-center gap-1 sm:gap-1.5 rounded-xl border border-gray-2 px-1 py-2.5 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
             >
-              <span className="flex size-9 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
-                <Boxes className="size-4" strokeWidth={1.5} />
+              <span className="flex size-6 sm:size-7 shrink-0 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
+                <Boxes className="size-3 sm:size-3.5" strokeWidth={1.5} />
               </span>
-              <span className="text-xs font-medium text-secondary-foreground">
+              <span className="whitespace-nowrap text-[11px] sm:text-xs font-medium text-secondary-foreground">
                 Bulk
               </span>
             </button>
@@ -307,10 +340,12 @@ const NeedHelp = ({
           href={waHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex h-full flex-col items-center justify-center gap-1.5 rounded-xl bg-[#25D366] px-2 py-3 text-center text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#1FB855] hover:shadow-md"
+          className="group flex h-full items-center justify-center gap-1 sm:gap-1.5 rounded-xl border border-gray-2 px-1 py-2.5 text-center transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
         >
-          <MessageCircle className="size-4" strokeWidth={1.5} />
-          <span className="text-xs font-medium">WhatsApp</span>
+          <span className="flex size-6 sm:size-7 shrink-0 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
+            <MessageCircle className="size-3 sm:size-3.5" strokeWidth={1.5} />
+          </span>
+          <span className="whitespace-nowrap text-[11px] sm:text-xs font-medium text-secondary-foreground">WhatsApp</span>
         </a>
 
         <ContactDialog
@@ -324,37 +359,29 @@ const NeedHelp = ({
           trigger={
             <button
               type="button"
-              className="group flex h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-gray-2 px-2 py-3 text-center text-secondary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
+              className="group flex h-full w-full items-center justify-center gap-1 sm:gap-1.5 rounded-xl border border-gray-2 px-1 py-2.5 text-center text-secondary-foreground transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:shadow-sm"
             >
-              <span className="flex size-9 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
-                <PhoneIncoming className="size-4" strokeWidth={1.5} />
+              <span className="flex size-6 sm:size-7 shrink-0 items-center justify-center rounded-full bg-[#F2F2F2] text-secondary-foreground transition-colors duration-300 group-hover:bg-primary group-hover:text-white">
+                <PhoneIncoming className="size-3 sm:size-3.5" strokeWidth={1.5} />
               </span>
-              <span className="text-xs font-medium">Callback</span>
+              <span className="whitespace-nowrap text-[11px] sm:text-xs font-medium">Callback</span>
             </button>
           }
         />
       </div>
 
-      <ul className="mt-4 grid grid-cols-3 divide-x divide-gray-2 border-t border-gray-2 pt-4">
+      {/* Trust indicators — a single compact line instead of a separate badge grid + footer note */}
+      <ul className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-gray-2 pt-3">
         {trustIndicators.map(({ id, icon: Icon, label }) => (
           <li
             key={id}
-            className="flex flex-col items-center gap-1.5 px-1 text-center transition-transform duration-300 hover:-translate-y-0.5"
+            className="flex items-center gap-1.5 text-[11px] font-medium text-gray-1-foreground"
           >
-            <span className="flex size-9 items-center justify-center rounded-full border border-gray-2 text-gray-1-foreground transition-colors duration-300 hover:border-primary hover:bg-primary hover:text-white">
-              <Icon className="size-3.5" strokeWidth={1.5} />
-            </span>
-            <span className="text-[10px] font-medium leading-tight text-gray-1-foreground">
-              {label}
-            </span>
+            <Icon className="size-3.5 shrink-0" strokeWidth={1.5} />
+            {label}
           </li>
         ))}
       </ul>
-
-      <div className="mt-4 flex items-center gap-2 border-t border-gray-2 pt-4 text-[11px] text-gray-3-foreground">
-        <CalendarClock className="size-3.5 shrink-0" strokeWidth={1.5} />
-        Flexible scheduling &middot; No spam calls &middot; Cancel anytime
-      </div>
     </section>
   );
 };
