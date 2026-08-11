@@ -1,6 +1,8 @@
 import InstagramGallery from "@/components/sections/instagramGallery";
 import Newsletter from "@/components/sections/newsletter";
 import PageHeader from "@/components/sections/pageHeader";
+import RecentlyViewed from "@/components/sections/recentlyViewed";
+import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import { Metadata } from "next";
 import WishlistProductsTable from "./wishlistProductsTable";
 
@@ -19,6 +21,8 @@ const Wishlist = () => {
         breadcrumbLabel="Shop"
       />
       <WishlistProductsTable />
+      <RecentlyViewed />
+      <RelatedProducts />
       <Newsletter />
       <InstagramGallery />
     </main>

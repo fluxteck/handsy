@@ -84,6 +84,7 @@
   --animate-spring-three: spring 3s ease-in-out 2s infinite;
   --animate-shimmer: shimmer-sweep 7s ease-in-out infinite;
   --animate-marquee: marquee 24s linear infinite;
+  --animate-page-header-pan: page-header-pan 20s ease-in-out infinite alternate;
 }
 
 :root {
@@ -389,6 +390,16 @@ html.lenis.lenis-stopped {
   }
   to {
     transform: translateX(-50%);
+  }
+}
+
+/* Slow, subtle Ken Burns drift for the shared PageHeader banner image. */
+@keyframes page-header-pan {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
   }
 }
 

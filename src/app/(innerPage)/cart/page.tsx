@@ -4,6 +4,7 @@ import InstagramGallery from "@/components/sections/instagramGallery";
 import Newsletter from "@/components/sections/newsletter";
 import PageHeader from "@/components/sections/pageHeader";
 import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
+import RecentlyViewed from "@/components/sections/recentlyViewed";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ const VIewCart = () => {
           <ProductCalculateCard />
         </div>
       </div>
+      <RecentlyViewed />
       <RelatedProducts />
       <Newsletter />
       <InstagramGallery />

@@ -4,7 +4,8 @@ import Image from 'next/image'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 import currencyFormatter from 'currency-formatter';
 import { Button } from '@/components/ui/button'
-import { Close } from '@/lib/icon'
+import ShopEmptyState from '@/components/ui/shopEmptyState'
+import { Close, Heart } from '@/lib/icon'
 import { useAppSelector } from '@/lib/reduxHooks'
 import calcluteDiscount from '@/lib/calcluteDiscount'
 import { addToCart } from '@/lib/features/AddToCartSlice';
@@ -83,7 +84,13 @@ const WishlistProductsTable = () => {
                         </TableBody>
                     </Table>
                     :
-                    <p className='text-secondary-foreground font-semibold text-2xl text-center capitalize'>No Products in your Wishlist page</p>
+                    <ShopEmptyState
+                        icon={Heart}
+                        title="Your Wishlist is Empty"
+                        description="Save the pieces you love and shop them whenever you're ready"
+                        ctaLabel="Explore Products"
+                        ctaHref="/shop"
+                    />
             }
         </div>
     )
