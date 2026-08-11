@@ -17,8 +17,9 @@ import {
   useContext,
   useState,
 } from "react";
-import ProductQuickView from "../sections/shopDetails/productQuickView";
-import { ProductShortInfoPropsType } from "../sections/shopDetails/productShortInfo";
+import ProductQuickView, {
+  ProductQuickViewProduct,
+} from "../sections/shopDetails/productQuickView";
 import Tooltip from "./tooltip";
 
 interface CardPropsType {
@@ -117,7 +118,7 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
   const dispatch = useAppDispatch();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] =
-    useState<ProductShortInfoPropsType>({
+    useState<ProductQuickViewProduct>({
       id: 0,
       thumbnail: "",
       price: 0,
@@ -147,14 +148,7 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
     handleQuickView: () => {
       if (product) {
         setIsDialogOpen(true);
-        setQuickViewProduct({
-          id: product.id,
-          thumbnail: product.thumbnail,
-          title: product.title,
-          price: product.price,
-          discountPercentage: product.discountPercentage,
-          stock: product.stock,
-        });
+        setQuickViewProduct(product);
       }
     },
     handleAddToCart: () => {

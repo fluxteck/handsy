@@ -25,9 +25,8 @@ import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
 import { addToCompare } from "@/lib/features/CompareProductsSlice";
 import { useAppDispatch } from "@/lib/reduxHooks";
 import { ProductType } from "@/types/productType";
-import ProductQuickView from "./productQuickView";
+import ProductQuickView, { ProductQuickViewProduct } from "./productQuickView";
 import ProductsCategory from "./productsCategory";
-import { ProductShortInfoPropsType } from "./productShortInfo";
 import ShopSidebar from "./shopSidebar";
 
 type ProductsViewPropsType = {
@@ -47,7 +46,7 @@ const ProductsView = ({
 }: ProductsViewPropsType) => {
   const [isGridView, setIsGridView] = useState<boolean>(isGridDefaultView);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [product, setProduct] = useState<ProductShortInfoPropsType>({
+  const [product, setProduct] = useState<ProductQuickViewProduct>({
     id: 0,
     thumbnail: "",
     price: 0,
@@ -116,17 +115,16 @@ const ProductsView = ({
               </div>
             ) : (
               <div className="flex flex-col gap-7.5 mt-7.5">
-                {data.map(
-                  ({
-                    category,
-                    discountPercentage,
-                    id,
-                    price,
-                    thumbnail,
-                    title,
-                    colors,
-                    stock,
-                  }) => {
+                {data.map((prd) => {
+                    const {
+                      discountPercentage,
+                      id,
+                      price,
+                      thumbnail,
+                      title,
+                      colors,
+                      stock,
+                    } = prd;
                     const finalPrice = discountPercentage
                       ? calcluteDiscount(price, discountPercentage)
                       : price;
@@ -231,15 +229,8 @@ const ProductsView = ({
                             >
                               <div
                                 onClick={() => {
-                                  setIsDialogOpen(true),
-                                    setProduct({
-                                      id,
-                                      thumbnail,
-                                      price,
-                                      discountPercentage,
-                                      title,
-                                      stock,
-                                    });
+                                  setIsDialogOpen(true);
+                                  setProduct(prd);
                                 }}
                                 className="w-9 h-9 rounded-sm flex items-center justify-center border-[1.5px] border-primary text-secondary-foreground cursor-pointer hover:bg-primary hover:text-white transition-all duration-500"
                               >

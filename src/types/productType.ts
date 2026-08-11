@@ -17,7 +17,7 @@ export type ProductType = {
         "image": string
     }[],
     "filter": string,
-    "images": String[],
+    "images": string[],
     "cardSize"?: string,
     "isSlider"?: boolean,
     "adsInfo"?: {

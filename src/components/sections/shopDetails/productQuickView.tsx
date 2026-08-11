@@ -5,39 +5,47 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { Close } from "@/lib/icon";
-import Image from "next/image";
+import { ProductType } from "@/types/productType";
 import Link from "next/link";
-import ProductShortInfo from "./productShortInfo";
+import ProductGalleryVertical from "./productGalleryVertical";
+import ProductInfoDetails, { ProductColorType } from "./productInfoDetails";
+
+/** Everything Quick View needs to match the PDP. The 6 core fields are required (every
+ * call site already has these); the richer PDP fields are optional so trigger sites with
+ * a slimmer product shape (e.g. the compare table's Redux-stored entries) still degrade
+ * gracefully instead of breaking. */
+export type ProductQuickViewProduct = Pick<
+  ProductType,
+  "id" | "thumbnail" | "title" | "price" | "discountPercentage" | "stock"
+> &
+  Partial<Pick<ProductType, "images" | "colors" | "description" | "category">>;
 
 export type ProductQuickViewType = {
   isDialogOpen: boolean;
   setIsDialogOpen: (open: boolean) => void;
-  product: {
-    id: string | number;
-    thumbnail: string;
-    title: string;
-    description?: string;
-    price: number;
-    discountPercentage: number;
-    rating?: number;
-    totalRating?: string;
-    stock: number;
-    category?: string;
-    tags?: [""];
-  };
+  product: ProductQuickViewProduct;
 };
+
 const ProductQuickView = ({
   isDialogOpen,
   setIsDialogOpen,
   product,
 }: ProductQuickViewType) => {
+  const images = product.images?.length ? product.images : [product.thumbnail];
+
+  const colors: ProductColorType[] = (product.colors ?? []).map((color, index) => ({
+    code: color.code,
+    label: `Color ${index + 1}`,
+    image: color.image || product.thumbnail,
+  }));
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      {/* <DialogTrigger className='text-primary-foreground'>Open</DialogTrigger> */}
       <DialogContent
         showCloseButton={false}
-        className="sm:max-w-[min(1230px,calc(100%-2rem))] p-0 border-0 overflow-visible"
+        className="sm:max-w-[min(880px,calc(100%-2rem))] p-0 border-0 overflow-visible"
       >
         <DialogTitle className="hidden"></DialogTitle>
         <DialogDescription className="hidden"></DialogDescription>
@@ -47,33 +55,27 @@ const ProductQuickView = ({
         >
           <Close className="w-5 h-5" />
         </DialogClose>
-        <div className="max-h-[92vh] h-full flex md:flex-row flex-col items-start gap-10 lg:p-8 p-5 overflow-y-auto scrollbar-hidden">
-          <div className="md:max-w-[380px] w-full relative bg-[#F2F2F2] rounded-lg">
-            <Image
-              width={560}
-              height={600}
-              sizes="100vw"
-              style={{ width: "100%", height: "auto" }}
-              src={product.thumbnail}
-              className="object-contain"
-              alt="img"
-            />
-            <Link
-              href="/product-details"
-              className="block w-full bg-primary text-white text-center text-xl font-medium leading-[150%] py-[15px] px-7.5 absolute bottom-0 left-0 cursor-pointer"
-            >
-              View Details
-            </Link>
+        <div className="max-h-[92vh] h-full flex md:flex-row flex-col items-start gap-7.5 lg:p-8 p-5 overflow-y-auto scrollbar-hidden">
+          <div className="md:max-w-[320px] w-full shrink-0">
+            <ProductGalleryVertical images={images} showThumbnails={false} enableZoom={false} />
+            <Button asChild className="w-full mt-4">
+              <Link href="/product-details">View Full Details</Link>
+            </Button>
           </div>
-          <ProductShortInfo
-            id={product.id}
-            thumbnail={product.thumbnail}
-            title={product?.title}
-            price={product.price}
-            discountPercentage={product.discountPercentage}
-            stock={product.stock}
-            compact
-          />
+          <div className="min-w-0 w-full">
+            <ProductInfoDetails
+              id={product.id}
+              title={product.title}
+              price={product.price}
+              discountPercentage={product.discountPercentage}
+              thumbnail={product.thumbnail}
+              stock={product.stock}
+              colors={colors}
+              offers={[]}
+              description={product.description}
+              compact
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>

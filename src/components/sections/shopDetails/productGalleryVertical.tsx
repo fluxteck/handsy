@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { PhotoSlider } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
@@ -9,15 +9,25 @@ import { ChevronLeft, ChevronRight, Close, Expand } from "@/lib/icon";
 const zoomNavButtonClass =
   "fixed top-1/2 z-[2001] flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-gray-2 bg-background/80 text-secondary-foreground backdrop-blur-sm transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white hover:shadow-md disabled:pointer-events-none disabled:opacity-30 sm:size-11";
 
+/** Minimum horizontal travel (px) before a touch gesture counts as a swipe rather than a tap/scroll. */
+const SWIPE_THRESHOLD = 40;
+
 const ProductGalleryVertical = ({
   images,
   badge,
+  showThumbnails = true,
+  enableZoom = true,
 }: {
   images: string[];
   badge?: string;
+  /** Hide the thumbnail rail — used by the compact Quick View gallery. Defaults to on for the full PDP layout. */
+  showThumbnails?: boolean;
+  /** Hide the expand button and fullscreen zoom viewer — used by the compact Quick View gallery. Defaults to on for the full PDP layout. */
+  enableZoom?: boolean;
 }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
   const isFirst = activeIndex === 0;
   const isLast = activeIndex === images.length - 1;
@@ -32,48 +42,72 @@ const ProductGalleryVertical = ({
 
   const closeZoom = () => setIsZoomOpen(false);
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-[86px_1fr] gap-4">
-      <ul className="flex lg:flex-col gap-3 order-2 lg:order-1 overflow-x-auto lg:overflow-visible scrollbar-hidden">
-        {images.map((img, index) => (
-          <li key={index} className="shrink-0">
-            <button
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`View image ${index + 1}`}
-              className={cn(
-                "block bg-[#F2F2F2] size-[70px] lg:size-[86px] overflow-hidden border rounded-sm transition-colors duration-300",
-                activeIndex === index ? "border-secondary-foreground" : "border-transparent"
-              )}
-            >
-              <Image
-                width={86}
-                height={86}
-                src={img}
-                alt={`Thumbnail ${index + 1}`}
-                sizes="100px"
-                className="w-full h-full object-contain aspect-square"
-              />
-            </button>
-          </li>
-        ))}
-      </ul>
+  const handleTouchStart = (event: React.TouchEvent) => {
+    touchStartX.current = event.touches[0].clientX;
+  };
 
-      <div className="relative bg-[#F2F2F2] order-1 lg:order-2 overflow-hidden">
+  const handleTouchEnd = (event: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const deltaX = event.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD) return;
+    if (deltaX > 0) {
+      goToPrevious();
+    } else {
+      goToNext();
+    }
+  };
+
+  return (
+    <div className={cn("grid grid-cols-1 gap-4", showThumbnails && "lg:grid-cols-[86px_1fr]")}>
+      {showThumbnails && (
+        <ul className="flex lg:flex-col gap-3 order-2 lg:order-1 overflow-x-auto lg:overflow-visible scrollbar-hidden">
+          {images.map((img, index) => (
+            <li key={index} className="shrink-0">
+              <button
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`View image ${index + 1}`}
+                className={cn(
+                  "block bg-[#F2F2F2] size-[70px] lg:size-[86px] overflow-hidden border rounded-sm transition-colors duration-300",
+                  activeIndex === index ? "border-secondary-foreground" : "border-transparent"
+                )}
+              >
+                <Image
+                  width={86}
+                  height={86}
+                  src={img}
+                  alt={`Thumbnail ${index + 1}`}
+                  sizes="100px"
+                  className="w-full h-full object-contain aspect-square"
+                />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div
+        className="relative bg-[#F2F2F2] order-1 lg:order-2 overflow-hidden touch-pan-y"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {badge && (
           <span className="absolute top-5 left-5 z-10 bg-primary text-white text-xs font-medium px-3 py-1.5 rounded-sm">
             {badge}
           </span>
         )}
 
-        <button
-          type="button"
-          onClick={() => setIsZoomOpen(true)}
-          aria-label="View full-screen image"
-          className="text-gray-1-foreground absolute top-5 right-5 z-10 cursor-pointer transition-transform duration-300 hover:scale-110"
-        >
-          <Expand />
-        </button>
+        {enableZoom && (
+          <button
+            type="button"
+            onClick={() => setIsZoomOpen(true)}
+            aria-label="View full-screen image"
+            className="text-gray-1-foreground absolute top-5 right-5 z-10 cursor-pointer transition-transform duration-300 hover:scale-110"
+          >
+            <Expand />
+          </button>
+        )}
 
         <Image
           key={activeIndex}
@@ -110,16 +144,18 @@ const ProductGalleryVertical = ({
         )}
       </div>
 
-      <PhotoSlider
-        images={images.map((src, index) => ({ key: index, src }))}
-        index={activeIndex}
-        onIndexChange={setActiveIndex}
-        visible={isZoomOpen}
-        onClose={closeZoom}
-        photoClassName="bg-[#F2F2F2]"
-      />
+      {enableZoom && (
+        <PhotoSlider
+          images={images.map((src, index) => ({ key: index, src }))}
+          index={activeIndex}
+          onIndexChange={setActiveIndex}
+          visible={isZoomOpen}
+          onClose={closeZoom}
+          photoClassName="bg-[#F2F2F2]"
+        />
+      )}
 
-      {isZoomOpen && (
+      {enableZoom && isZoomOpen && (
         <>
           {/* The library's own backdrop doesn't paint reliably in this environment
               (see globals.css), so the viewer renders its own instead. */}

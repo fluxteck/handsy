@@ -4,12 +4,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Close, Eye } from '@/lib/icon'
 import { Button } from '@/components/ui/button'
-import ProductQuickView, { ProductQuickViewType } from '@/components/sections/shopDetails/productQuickView'
+import ProductQuickView, { ProductQuickViewProduct } from '@/components/sections/shopDetails/productQuickView'
 import calcluteDiscount from '@/lib/calcluteDiscount'
 import currencyFormatter from 'currency-formatter';
 import { useAppDispatch, useAppSelector } from '@/lib/reduxHooks'
 import { addToCart } from '@/lib/features/AddToCartSlice'
-import { ProductShortInfoPropsType } from '@/components/sections/shopDetails/productShortInfo'
 import { useDispatch } from 'react-redux'
 import { removeToCompare } from '@/lib/features/CompareProductsSlice'
 
@@ -99,7 +98,7 @@ type CardProps = {
 const Card = ({ id, title, thumbnail, price, discountPercentage, stock }: CardProps) => {
     const dispatch = useDispatch()
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [product, setProduct] = useState<ProductShortInfoPropsType>({ id: 0, thumbnail: "", title: "", price: 0, discountPercentage: 0, stock: 0 })
+    const [product, setProduct] = useState<ProductQuickViewProduct>({ id: 0, thumbnail: "", title: "", price: 0, discountPercentage: 0, stock: 0 })
 
     return (
         <div>

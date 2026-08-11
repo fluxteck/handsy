@@ -38,6 +38,10 @@ export interface ProductInfoDetailsPropsType {
   stock: number;
   colors: ProductColorType[];
   offers: ProductOfferType[];
+  /** Short product description shown under the price. Omit to match the original PDP layout, which surfaces the full description via the accordion instead. */
+  description?: string;
+  /** Trims the panel to just what's needed for a fast purchase decision — hides the trust-badge marquee and delivery pincode checker. Used by Quick View; the PDP omits it so its full layout is unchanged. */
+  compact?: boolean;
 }
 
 const ProductInfoDetails = ({
@@ -49,9 +53,13 @@ const ProductInfoDetails = ({
   stock,
   colors,
   offers,
+  description,
+  compact = false,
 }: ProductInfoDetailsPropsType) => {
   const dispatch = useAppDispatch();
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
+  const [selectedColor, setSelectedColor] = useState<ProductColorType>(
+    colors[0] ?? { code: "", label: "", image: thumbnail }
+  );
   const [productQuantity, setProductQuantity] = useState(1);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [pincode, setPincode] = useState("");
@@ -151,6 +159,12 @@ const ProductInfoDetails = ({
       </p>
       <p className="text-gray-3-foreground text-sm mt-1">Tax included</p>
 
+      {description && (
+        <p className="text-gray-1-foreground leading-[170%] mt-4 line-clamp-3">
+          {description}
+        </p>
+      )}
+
       {colors.length > 0 && (
         <div className="mt-6">
           <p className="text-gray-1-foreground font-medium">Color: {selectedColor.label}</p>
@@ -216,7 +230,7 @@ const ProductInfoDetails = ({
         </button>
       </div>
 
-      <UspMarquee />
+      {!compact && <UspMarquee />}
 
       {offers.length > 0 && (
         <div className="mt-7.5">
@@ -232,22 +246,24 @@ const ProductInfoDetails = ({
         </div>
       )}
 
-      <div className="mt-7.5">
-        <p className="text-secondary-foreground font-medium mb-3">Check estimated delivery</p>
-        <div className="flex gap-3">
-          <input
-            type="text"
-            inputMode="numeric"
-            maxLength={6}
-            value={pincode}
-            onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
-            placeholder="Enter your pincode"
-            className="flex-1 min-w-0 border border-gray-2 rounded-full px-5 py-2.5 text-sm outline-none focus:border-secondary-foreground transition-colors duration-300"
-          />
-          <Button onClick={handleCheckDelivery}>Check</Button>
+      {!compact && (
+        <div className="mt-7.5">
+          <p className="text-secondary-foreground font-medium mb-3">Check estimated delivery</p>
+          <div className="flex gap-3">
+            <input
+              type="text"
+              inputMode="numeric"
+              maxLength={6}
+              value={pincode}
+              onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
+              placeholder="Enter your pincode"
+              className="flex-1 min-w-0 border border-gray-2 rounded-full px-5 py-2.5 text-sm outline-none focus:border-secondary-foreground transition-colors duration-300"
+            />
+            <Button onClick={handleCheckDelivery}>Check</Button>
+          </div>
+          {deliveryEstimate && <p className="text-gray-1-foreground text-sm mt-2.5">{deliveryEstimate}</p>}
         </div>
-        {deliveryEstimate && <p className="text-gray-1-foreground text-sm mt-2.5">{deliveryEstimate}</p>}
-      </div>
+      )}
     </div>
   );
 };
