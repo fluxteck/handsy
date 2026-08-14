@@ -1,8 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Headphones, Percent, Truck } from 'lucide-react'
-import { Separator } from "@/components/ui/separator"
+import { Globe, Headphones, Package, PackageSearch, Percent, Store, Truck, Building2 } from 'lucide-react'
 
 type PromoItem = {
     id: number
@@ -19,37 +18,39 @@ const promoItems: PromoItem[] = [
     {
         id: 2,
         icon: Percent,
-        content: <>15% Off First Order - <Link href={"/register"} className='multiline-hover hover:text-[#C9A968] transition-colors duration-500'>Sign Up</Link> Today</>,
+        content: <>15% Off First Order - <Link href={"/register"} className='multiline-hover hover:text-[#C9A968]'>Sign Up</Link> Today</>,
     },
     {
         id: 3,
         icon: Headphones,
-        content: <>24/7 Customer Support</>,
+        content: <>Exclusive Deals for Bulk Orders</>,
+    },
+    {
+        id: 4,
+        icon: Package,
+        content: <>Shop Handmade. Support Artisans.</>,
+    },
+    {
+        id: 5,
+        icon: Globe,
+        content: <>Worldwide Shipping Available</>,
     },
 ]
 
-const ROTATE_INTERVAL_MS = 4000
-
-const PromoMessage = ({
-    icon: Icon,
-    children,
-    delay = 0,
-}: {
+type TopHeaderLink = {
+    id: number
     icon: React.ElementType
-    children: React.ReactNode
-    delay?: number
-}) => (
-    <p
-        style={{ animationDelay: `${delay}ms` }}
-        className='group flex items-center gap-1.5 text-[11px] lg:text-xs uppercase tracking-[0.12em] font-medium leading-[150%] text-gray-1-foreground shrink-0 animate-in fade-in slide-in-from-top-1 duration-500 fill-mode-both'
-    >
-        <Icon
-            className='size-3.5 text-[#C9A968] shrink-0 transition-transform duration-500 ease-out group-hover:scale-110 group-hover:-translate-y-px'
-            strokeWidth={1.75}
-        />
-        {children}
-    </p>
-)
+    label: string
+    href: string
+}
+
+const topHeaderLinks: TopHeaderLink[] = [
+    { id: 1, icon: Store, label: 'Sell on Handsy', href: '/vendor' },
+    { id: 2, icon: Building2, label: 'Handsy for Business', href: '/b2b' },
+    { id: 3, icon: PackageSearch, label: 'Track Order', href: '/account/orders' },
+]
+
+const ROTATE_INTERVAL_MS = 4500
 
 const TopHeader = () => {
     const [activeIndex, setActiveIndex] = useState(0)
@@ -68,41 +69,42 @@ const TopHeader = () => {
         return () => clearInterval(timer)
     }, [])
 
-    const pause = () => { isPausedRef.current = true }
-    const resume = () => { isPausedRef.current = false }
-
     const activeItem = promoItems[activeIndex]
+    const ActiveIcon = activeItem.icon
 
     return (
-        <div className='relative overflow-hidden bg-home-bg-1 border-b border-b-[#C9A968]/20'>
-            <div
-                aria-hidden
-                className='promo-shimmer animate-shimmer pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-[#C9A968]/10 to-transparent'
-            />
-            <div className='container'>
-                {/* Desktop / tablet: full horizontal row */}
-                <div className='hidden lg:flex items-center justify-center gap-8 h-8'>
-                    {promoItems.map(({ id, icon, content }, index) => (
-                        <React.Fragment key={id}>
-                            <PromoMessage icon={icon} delay={index * 150}>{content}</PromoMessage>
-                            {index < promoItems.length - 1 && (
-                                <Separator orientation="vertical" className='bg-[#C9A968]/25 data-[orientation=vertical]:h-3 shrink-0' />
-                            )}
-                        </React.Fragment>
-                    ))}
-                </div>
+        <div className='bg-home-bg-1 border-b border-b-[#C9A968]/20'>
+            <div className='container flex flex-col lg:flex-row items-center lg:justify-between gap-1.5 lg:gap-4 py-2 lg:h-8 lg:py-0'>
+                <nav aria-label="Seller and order links" className='w-full lg:w-auto overflow-x-auto scrollbar-hidden'>
+                    <ul className='flex items-center justify-center lg:justify-start gap-4 lg:gap-6 whitespace-nowrap'>
+                        {topHeaderLinks.map(({ id, icon: Icon, label, href }) => (
+                            <li key={id} className='shrink-0'>
+                                <Link
+                                    href={href}
+                                    className='flex items-center gap-1.5 text-[11px] lg:text-xs uppercase tracking-[0.12em] font-medium text-gray-1-foreground hover:text-secondary-foreground transition-colors duration-300'
+                                >
+                                    <Icon className='size-3.5 text-[#C9A968] shrink-0' strokeWidth={1.75} aria-hidden />
+                                    {label}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
 
-                {/* Mobile: one message at a time, auto-rotating */}
                 <div
-                    className='lg:hidden flex items-center justify-center text-center px-6 py-2 min-h-9'
-                    onPointerEnter={pause}
-                    onPointerLeave={resume}
-                    onTouchStart={pause}
-                    onTouchEnd={resume}
+                    className='w-full lg:w-auto lg:max-w-xs flex items-center justify-center lg:justify-end overflow-hidden min-w-0'
+                    onPointerEnter={() => { isPausedRef.current = true }}
+                    onPointerLeave={() => { isPausedRef.current = false }}
+                    onTouchStart={() => { isPausedRef.current = true }}
+                    onTouchEnd={() => { isPausedRef.current = false }}
                 >
-                    <PromoMessage key={activeItem.id} icon={activeItem.icon}>
-                        {activeItem.content}
-                    </PromoMessage>
+                    <p
+                        key={activeItem.id}
+                        className='flex items-center gap-1.5 text-[11px] lg:text-xs uppercase tracking-[0.12em] font-medium leading-[150%] text-gray-1-foreground min-w-0 animate-in fade-in slide-in-from-top-1 duration-500 fill-mode-both'
+                    >
+                        <ActiveIcon className='size-3.5 text-[#C9A968] shrink-0' strokeWidth={1.75} />
+                        <span className='truncate'>{activeItem.content}</span>
+                    </p>
                 </div>
             </div>
         </div>

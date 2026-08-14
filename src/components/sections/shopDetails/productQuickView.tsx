@@ -74,6 +74,7 @@ const ProductQuickView = ({
               offers={[]}
               description={product.description}
               compact
+              titleHref="/product-details"
             />
           </div>
         </div>

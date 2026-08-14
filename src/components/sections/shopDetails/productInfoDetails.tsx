@@ -1,9 +1,8 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import toast from "react-hot-toast";
+import Link from "next/link";
 import { Minus, Plus, Heart } from "@/lib/icon";
-import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import calcluteDiscount from "@/lib/calcluteDiscount";
@@ -42,6 +41,8 @@ export interface ProductInfoDetailsPropsType {
   description?: string;
   /** Trims the panel to just what's needed for a fast purchase decision — hides the trust-badge marquee and delivery pincode checker. Used by Quick View; the PDP omits it so its full layout is unchanged. */
   compact?: boolean;
+  /** Makes the title a link to the product's PDP. Omit on the PDP itself, where the title is already the page you're on. */
+  titleHref?: string;
 }
 
 const ProductInfoDetails = ({
@@ -55,6 +56,7 @@ const ProductInfoDetails = ({
   offers,
   description,
   compact = false,
+  titleHref,
 }: ProductInfoDetailsPropsType) => {
   const dispatch = useAppDispatch();
   const [selectedColor, setSelectedColor] = useState<ProductColorType>(
@@ -105,22 +107,6 @@ const ProductInfoDetails = ({
     );
   };
 
-  const handleShare = async () => {
-    const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-    if (typeof navigator !== "undefined" && navigator.share) {
-      try {
-        await navigator.share({ title, url: shareUrl });
-      } catch {
-        // user cancelled the share sheet
-      }
-      return;
-    }
-    if (typeof navigator !== "undefined" && navigator.clipboard) {
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success("Link copied to clipboard");
-    }
-  };
-
   const handleCheckDelivery = () => {
     if (!/^\d{6}$/.test(pincode)) {
       setDeliveryEstimate("Please enter a valid 6-digit pincode");
@@ -135,19 +121,18 @@ const ProductInfoDetails = ({
 
   return (
     <div className="min-w-0">
-      <div className="flex items-start justify-between gap-4">
+      {titleHref ? (
+        <Link
+          href={titleHref}
+          className="text-secondary-foreground text-heading font-semibold capitalize block hover:text-gray-1-foreground transition-colors duration-300"
+        >
+          {title}
+        </Link>
+      ) : (
         <strong className="text-secondary-foreground text-heading font-semibold capitalize block">
           {title}
         </strong>
-        <button
-          type="button"
-          onClick={handleShare}
-          aria-label="Share this product"
-          className="size-10 shrink-0 rounded-full border border-gray-2 flex items-center justify-center text-gray-1-foreground hover:bg-primary hover:text-white hover:border-primary transition-all duration-500"
-        >
-          <Share2 className="size-4" />
-        </button>
-      </div>
+      )}
 
       <p className="text-xl lg:text-2xl xl:text-3xl text-secondary-foreground mt-4">
         {currencyFormatter.format(finalPrice)}{" "}

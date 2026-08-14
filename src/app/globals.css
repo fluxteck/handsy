@@ -82,7 +82,6 @@
   --animate-spring-one: spring 3s ease-in-out 0s infinite;
   --animate-spring-two: spring 3s ease-in-out 1s infinite;
   --animate-spring-three: spring 3s ease-in-out 2s infinite;
-  --animate-shimmer: shimmer-sweep 7s ease-in-out infinite;
   --animate-marquee: marquee 24s linear infinite;
   --animate-page-header-pan: page-header-pan 20s ease-in-out infinite alternate;
 }
@@ -374,16 +373,6 @@ html.lenis.lenis-stopped {
   }
 }
 
-@keyframes shimmer-sweep {
-  0% {
-    transform: translateX(-150%);
-  }
-  55%,
-  100% {
-    transform: translateX(250%);
-  }
-}
-
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -400,11 +389,5 @@ html.lenis.lenis-stopped {
   }
   to {
     transform: scale(1.08);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .promo-shimmer {
-    animation: none;
   }
 }
