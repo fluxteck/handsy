@@ -37,14 +37,14 @@ const promoItems: PromoItem[] = [
     },
 ]
 
-type TopHeaderLink = {
+export type TopHeaderLink = {
     id: number
     icon: React.ElementType
     label: string
     href: string
 }
 
-const topHeaderLinks: TopHeaderLink[] = [
+export const topHeaderLinks: TopHeaderLink[] = [
     { id: 1, icon: Store, label: 'Sell on Handsy', href: '/vendor' },
     { id: 2, icon: Building2, label: 'Handsy for Business', href: '/b2b' },
     { id: 3, icon: PackageSearch, label: 'Track Order', href: '/account/orders' },
@@ -75,7 +75,7 @@ const TopHeader = () => {
     return (
         <div className='bg-home-bg-1 border-b border-b-[#C9A968]/20'>
             <div className='container flex flex-col lg:flex-row items-center lg:justify-between gap-1 lg:gap-4 py-1.5 lg:h-7 lg:py-0'>
-                <nav aria-label="Seller and order links" className='w-full lg:w-auto overflow-x-auto scrollbar-hidden'>
+                <nav aria-label="Seller and order links" className='hidden lg:block lg:w-auto overflow-x-auto scrollbar-hidden'>
                     <ul className='flex items-center justify-center lg:justify-start gap-4 lg:gap-6 whitespace-nowrap'>
                         {topHeaderLinks.map(({ id, icon: Icon, label, href }) => (
                             <li key={id} className='shrink-0'>
