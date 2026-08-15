@@ -10,8 +10,8 @@ import { getBlogData } from '@/lib/data'
 import { BlogType } from '@/types/blogType'
 
 export const metadata: Metadata = {
-    title: "Blog",
-    description: "Read our latest blog posts."
+    title: "Furniture & Home Decor Blog",
+    description: "Guides and inspiration on wooden furniture, home decor, and craftsmanship from the Handsy Market team."
 }
 
 const BlogOne = async () => {

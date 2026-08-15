@@ -121,8 +121,8 @@ export const privacyPolicyData: PrivacyPolicType[] = [
         description:
             'If you have any questions or concerns about this Privacy Policy or our data practices, please contact us at:',
         details: [
-            { label: 'Email:', content: 'support@yourdomain.com' },
-            { label: 'Address:', content: '255 New Ave, California City-100, USA.' },
+            { label: 'Email:', content: 'hello@handsymarket.com' },
+            { label: 'Address:', content: 'Jodhpur, Rajasthan, India.' },
         ],
     },
 ];

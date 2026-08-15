@@ -16,7 +16,7 @@ const page = async () => {
   const { featuredProducts }: { featuredProducts: ProductType[] } = await getProductsData();
   return (
     <main>
-      <PageHeader pageTitle='' currentPage='Category' />
+      <PageHeader pageTitle='Shop by Category' currentPage='Category' />
       <ProductsView
         isCategoryShow={false}
         isSortingProductTop={true}

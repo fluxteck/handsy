@@ -6,14 +6,32 @@ import { FaqDataType } from '@/db/faqData'
 
 const FaqSection = async () => {
     const faqData:FaqDataType[] = await getFaqData();
+
+    const faqJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": faqData.map(({ title, ans }) => ({
+            "@type": "Question",
+            "name": title,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": ans,
+            },
+        })),
+    };
+
     return (
         <section className='container lg:py-25 py-15'>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+            />
             <h5 className='text-gray-1-foreground'>Frequently Asked Questions</h5>
             <div className='mt-10 grid lg:grid-cols-[40.846%_auto] md:grid-cols-2 grid-cols-1 lg:gap-15 gap-8'>
                 <div>
                     <Image width={580} height={582} sizes='100vw' style={{ width: "100%", height: "auto" }} src={"/images/faq.webp"} alt='img' />
                     <p className='lg:text-2xl text-xl font-medium text-secondary-foreground md:mt-10 mt-7.5'>Customer support</p>
-                    <p className='text-xl leading-[170%] text-gray-1-foreground'>support@yourdomain.com</p>
+                    <p className='text-xl leading-[170%] text-gray-1-foreground'>hello@handsymarket.com</p>
                 </div>
                 <div>
                     <Accordion type="single" defaultValue={"one"} collapsible>

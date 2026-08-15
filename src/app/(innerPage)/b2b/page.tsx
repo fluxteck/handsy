@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 const B2b = () => {
   return (
     <main>
-      <PageHeader pageTitle="B2B & Wholesale" currentPage="B2B" />
+      <PageHeader pageTitle="B2B & Wholesale" currentPage="B2B" renderHeading={false} />
       <B2bHero />
       <B2bAudiences />
       <B2bCapabilities />

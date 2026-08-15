@@ -5,35 +5,35 @@ import { Facebook, Instagram, Linkedin, Twitter } from "@/lib/icon";
 
 const footerLinks = [
   {
-    title: "Home Decor Solutions",
+    title: "Shop",
     links: [
-      { label: "Interior Designer", href: "#" },
-      { label: "Furniture Analytics", href: "#" },
-      { label: "Boutique Furniture Store", href: "#" },
+      { label: "Furniture", href: "/category/furniture" },
+      { label: "Home Decor", href: "/category/home-decor" },
+      { label: "Kitchen & Dining", href: "/category/kitchen-dining" },
+      { label: "Lamps & Lighting", href: "/category/lamps-lighting" },
     ],
   },
   {
-    title: "Handsy Market",
+    title: "Company",
     links: [
-      { label: "About Handsy Market", href: "#" },
-      { label: "Join Our Team", href: "#" },
-      { label: "Get in Touch", href: "#" },
+      { label: "About Us", href: "/about-us" },
+      { label: "Contact Us", href: "/contact-us" },
     ],
   },
   {
-    title: "Resources",
+    title: "For Business",
     links: [
-      { label: "Our Customers", href: "#" },
-      { label: "Smart Furniture Finance", href: "#" },
-      { label: "Guides on Furniture Design", href: "#" },
+      { label: "Wholesale & B2B", href: "/b2b" },
+      { label: "Sell on Handsy", href: "/vendor" },
+      { label: "Track Your Order", href: "/account/orders" },
     ],
   },
   {
-    title: "Our Features",
+    title: "Support",
     links: [
-      { label: "Interior Designer", href: "#" },
-      { label: "Furniture Analytics", href: "#" },
-      { label: "Boutique Furniture Store", href: "#" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Terms & Conditions", href: "/terms-conditions" },
     ],
   },
 ];
@@ -67,8 +67,9 @@ const Footer = () => {
               />
             </Link>
             <p className="mt-6 text-base text-white/60 leading-[170%]">
-              Handsy Market provides you with the essential pieces to build a
-              stunning online store for your furniture business.
+              Handcrafted wooden furniture and home decor from independent
+              Indian artisans — for your home, or for your business, shipped
+              worldwide.
             </p>
             <div className="mt-7 flex items-center gap-3">
               {socialLinks.map(({ Icon, href, label }) => (

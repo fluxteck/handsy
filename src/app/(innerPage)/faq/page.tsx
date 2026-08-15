@@ -6,8 +6,8 @@ import InstagramGallery from '@/components/sections/instagramGallery'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-    title: "FAQ",
-    description: "Frequently asked questions."
+    title: "FAQ — Shipping, Returns, Payments & Orders",
+    description: "Answers to common questions about shipping, returns, payments, and ordering — for retail and wholesale/bulk buyers at Handsy Market."
 }
 
 const Faq = () => {

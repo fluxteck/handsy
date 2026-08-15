@@ -1,3 +1,11 @@
 # start of file
 user-agent: *
 disallow: /downloads/
+disallow: /account/
+disallow: /cart
+disallow: /checkout
+disallow: /wishlist
+disallow: /compare
+
+# TODO: update to the real production domain once it's confirmed.
+sitemap: https://your-domain.com/sitemap.xml

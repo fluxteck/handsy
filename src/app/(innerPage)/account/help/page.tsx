@@ -41,10 +41,10 @@ const HelpPage = async () => {
                         <div>
                             <p className="font-medium text-secondary-foreground">Email</p>
                             <Link
-                                href="mailto:info@yourdomin.com"
+                                href="mailto:hello@handsymarket.com"
                                 className="text-sm text-gray-1-foreground transition-all duration-300 hover:text-secondary-foreground"
                             >
-                                info@yourdomin.com
+                                hello@handsymarket.com
                             </Link>
                         </div>
                     </div>
@@ -55,10 +55,10 @@ const HelpPage = async () => {
                         <div>
                             <p className="font-medium text-secondary-foreground">Call Us</p>
                             <Link
-                                href="tel:2345 56789"
+                                href="tel:+912912345678"
                                 className="text-sm text-gray-1-foreground transition-all duration-300 hover:text-secondary-foreground"
                             >
-                                (+0123) 2345 56789
+                                +91 291 234 5678
                             </Link>
                         </div>
                     </div>
@@ -68,7 +68,7 @@ const HelpPage = async () => {
                         </span>
                         <div>
                             <p className="font-medium text-secondary-foreground">Office Address</p>
-                            <p className="text-sm text-gray-1-foreground">265 New Ave, Califonia City-100, USA.</p>
+                            <p className="text-sm text-gray-1-foreground">Jodhpur, Rajasthan, India.</p>
                         </div>
                     </div>
                 </div>

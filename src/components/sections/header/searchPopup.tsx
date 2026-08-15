@@ -179,7 +179,7 @@ const SearchPopup = ({ data }: { data: ProductType[] }) => {
         </button>
       </div>
       {isMobileOpen && (
-        <div className="fixed top-16 left-0 w-full bg-background [&_.close-orginal]:hidden pt-5 pb-6 px-5 shadow-lg rounded-b-md z-50">
+        <div className="fixed top-14 left-0 w-full bg-background [&_.close-orginal]:hidden pt-5 pb-6 px-5 shadow-lg rounded-b-md z-50">
           <button
             aria-label="close-btn"
             onClick={() => setIsMobileOpen(false)}

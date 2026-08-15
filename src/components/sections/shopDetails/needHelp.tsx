@@ -197,9 +197,9 @@ const ContactDialog = ({
 };
 
 export interface NeedHelpPropsType {
-  /** Display phone number, e.g. "+91-9205028025". Also used to build the tel: link. */
+  /** Display phone number, e.g. "+91 291 234 5678". Also used to build the tel: link. */
   phoneNumber?: string;
-  /** WhatsApp number in international format without symbols, e.g. "919205028025". Defaults to phoneNumber digits. */
+  /** WhatsApp number in international format without symbols, e.g. "912912345678". Defaults to phoneNumber digits. */
   whatsappNumber?: string;
   /** Prefilled WhatsApp message. */
   whatsappMessage?: string;
@@ -217,7 +217,7 @@ export interface NeedHelpPropsType {
 }
 
 const NeedHelp = ({
-  phoneNumber = "+91-9205028025",
+  phoneNumber = "+91 291 234 5678",
   whatsappNumber,
   whatsappMessage = "Hi! I'd like some help choosing the right product.",
   onRequestCallback,

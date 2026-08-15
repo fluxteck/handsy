@@ -8,7 +8,8 @@ import { getProductsData } from '@/lib/data'
 
 export const metadata: Metadata = {
     title: "Shop",
-    description: "Browse our products."
+    description: "Browse our products.",
+    robots: { index: false, follow: false },
 }
 
 const ShopThree = async () => {

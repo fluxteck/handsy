@@ -8,20 +8,20 @@ export type HeroDataType = {
 export const heroData: HeroDataType[] = [
     {
         "id": 1,
-        "title": "Modern & Elegant Furniture",
-        "description": "Showcase your furniture collections most appealing way driving customer engagement and boosting sales.",
+        "title": "Handcrafted Wooden Furniture, Made to Last",
+        "description": "Solid wood furniture and home decor crafted by independent Indian artisans — shop single pieces or order in bulk for your business.",
         "thumbnail": "/images/home-1/hero/img-1.webp",
     },
     {
         "id": 2,
-        "title": "Furniture That Speaks Quality",
-        "description": "Explore our collection of chairs and sofas, crafted for comfort and elegance in your home spaces.",
+        "title": "Home Decor With Real Craftsmanship",
+        "description": "From dining tables to wall art, every piece is shaped and finished by hand — not mass-produced.",
         "thumbnail": "/images/home-1/hero/img-2.webp",
     },
     {
         "id": 3,
-        "title": "Modern Furniture for Every Space",
-        "description": "Showcase your furniture collections most appealing way driving customer engagement and boosting sales.",
+        "title": "Wholesale Wooden Furniture, Shipped Worldwide",
+        "description": "Retailers, hospitality buyers, and designers source handcrafted wood furniture from us in bulk, with export shipping to 30+ countries.",
         "thumbnail": "/images/home-1/hero/img-1.webp",
     },
 ]

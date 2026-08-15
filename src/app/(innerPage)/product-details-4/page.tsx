@@ -11,7 +11,8 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
     title: "Product Details",
-    description: "View product details."
+    description: "View product details.",
+    robots: { index: false, follow: false },
 }
 
 const ProductDetailsFour = () => {

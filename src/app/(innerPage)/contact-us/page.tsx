@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const ContactUs = () => {
     return (
         <main>
-            <PageHeader pageTitle='Contact Us' currentPage='Contact Us' />
+            <PageHeader pageTitle='Contact Us' currentPage='Contact Us' renderHeading={false} />
             <ContactHero />
             <ContactInfoCards />
             <ContactForm />

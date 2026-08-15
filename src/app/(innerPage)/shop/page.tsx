@@ -8,8 +8,8 @@ import InstagramGallery from '@/components/sections/instagramGallery'
 import { getProductsData } from '@/lib/data'
 
 export const metadata: Metadata = {
-    title: "Shop",
-    description: "Browse our products."
+    title: "Shop Wooden Furniture & Home Decor",
+    description: "Shop handcrafted wooden furniture and home decor online — filter by category, price, and style. Retail and bulk orders available."
 }
 
 const ShopOne = async () => {

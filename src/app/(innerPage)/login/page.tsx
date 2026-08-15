@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 // stays the same plain home-bg-1 section background used across the rest of the site.
 const Login = () => {
     return (
-        <main className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-home-bg-1 px-4 py-16 lg:min-h-[calc(100vh-90px)]">
+        <main className="flex min-h-[calc(100vh-56px)] items-center justify-center bg-home-bg-1 px-4 py-16 lg:min-h-[calc(100vh-80px)]">
             <AuthCard />
         </main>
     )

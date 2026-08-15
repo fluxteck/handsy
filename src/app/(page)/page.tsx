@@ -14,8 +14,8 @@ import ShopTheLook from '@/components/sections/shopTheLook'
 import { getBlogData, getBrandsData, getCategoriesData, getHeroData, getPromoCardsData, getProductsData, getShopTheLookData, getTestimonialsData } from '@/lib/data'
 
 export const metadata: Metadata = {
-  title: "Home",
-  description: "Welcome to our furniture store."
+  title: "Handcrafted Wooden Furniture & Home Decor",
+  description: "Shop handcrafted wooden furniture and home decor from independent Indian artisans. Retail and wholesale/bulk orders, with export shipping worldwide."
 }
 
 const Home = async () => {

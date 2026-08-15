@@ -12,7 +12,8 @@ import { BlogType } from '@/types/blogType'
 
 export const metadata: Metadata = {
     title: "Blog",
-    description: "Read our latest blog posts."
+    description: "Read our latest blog posts.",
+    robots: { index: false, follow: false },
 }
 
 const BlogTwo = async () => {

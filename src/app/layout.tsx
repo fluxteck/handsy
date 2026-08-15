@@ -44,10 +44,40 @@ const displaySerif = Instrument_Serif({
 })
 
 
+// TODO: replace with the real production domain (or set NEXT_PUBLIC_SITE_URL) —
+// nothing in the codebase states it yet, so this placeholder keeps metadataBase/JSON-LD
+// valid without presenting a guessed domain as fact.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://your-domain.com";
+
 export const metadata: Metadata = {
-  title: "Handsy Market - E-Commerce Template",
-  description: "Handsy Market - e-commerce template create by technology next.js, tailwind css, shadcn",
-  keywords: ["ecommerce", "handsy market", "product", "site", "react.js", "next.js", "tailwind css",],
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Handsy Market — Handcrafted Wooden Furniture & Home Decor",
+    template: "%s | Handsy Market",
+  },
+  description: "Shop handcrafted wooden furniture and home decor from independent Indian artisans. Retail and wholesale/bulk orders, with export shipping worldwide.",
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Handsy Market",
+  url: siteUrl,
+  logo: `${siteUrl}/images/logo.png`,
+  contactPoint: {
+    "@type": "ContactPoint",
+    telephone: "+91-291-234-5678",
+    email: "hello@handsymarket.com",
+    contactType: "customer service",
+    areaServed: ["IN"],
+    availableLanguage: ["English"],
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Jodhpur",
+    addressRegion: "Rajasthan",
+    addressCountry: "IN",
+  },
 };
 
 export default function RootLayout({
@@ -62,6 +92,10 @@ export default function RootLayout({
         suppressHydrationWarning={true}
         suppressContentEditableWarning={true}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
         <StoreProvider>
           <SmoothScroll />
           {children}

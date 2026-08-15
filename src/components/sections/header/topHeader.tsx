@@ -74,7 +74,7 @@ const TopHeader = () => {
 
     return (
         <div className='bg-home-bg-1 border-b border-b-[#C9A968]/20'>
-            <div className='container flex flex-col lg:flex-row items-center lg:justify-between gap-1.5 lg:gap-4 py-2 lg:h-8 lg:py-0'>
+            <div className='container flex flex-col lg:flex-row items-center lg:justify-between gap-1 lg:gap-4 py-1.5 lg:h-7 lg:py-0'>
                 <nav aria-label="Seller and order links" className='w-full lg:w-auto overflow-x-auto scrollbar-hidden'>
                     <ul className='flex items-center justify-center lg:justify-start gap-4 lg:gap-6 whitespace-nowrap'>
                         {topHeaderLinks.map(({ id, icon: Icon, label, href }) => (

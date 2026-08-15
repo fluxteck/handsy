@@ -23,7 +23,7 @@ const AboutUs = async () => {
 
     return (
         <main>
-            <PageHeader pageTitle='About Us' currentPage='About Us' />
+            <PageHeader pageTitle='About Us' currentPage='About Us' renderHeading={false} />
             <AboutHero />
             <AboutValues />
             <AboutCraftsmanship />

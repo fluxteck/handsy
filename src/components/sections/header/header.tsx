@@ -18,7 +18,7 @@ const Header = async () => {
     await getProductsData();
   return (
     <StickyHeader topHeaderContent={<TopHeader />}>
-      <div className="lg:h-[90px] h-16 bg-home-bg-1 [.header-pinned_&]:shadow-md">
+      <div className="lg:h-20 h-14 bg-home-bg-1 [.header-pinned_&]:shadow-md">
         <div className="container flex items-center gap-4 lg:gap-8 h-full relative">
           <div className="flex items-center gap-3 shrink-0">
             <MobileMenu data={menuList} featuredProducts={featuredProducts} />

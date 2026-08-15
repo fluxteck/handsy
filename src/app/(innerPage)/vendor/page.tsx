@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 const Vendor = () => {
   return (
     <main>
-      <PageHeader pageTitle="Sell on Handsy" currentPage="Vendor" />
+      <PageHeader pageTitle="Sell on Handsy" currentPage="Vendor" renderHeading={false} />
       <VendorHero />
       <VendorWhySell />
       <VendorBenefits />
