@@ -8,10 +8,10 @@ import currencyFormatter from 'currency-formatter';
 import { cn } from '@/lib/utils'
 import { ProductType } from '@/types/productType'
 
-const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredProducts: ProductType[] }) => {
+const MegaMenu = ({ data, featuredProducts, forceClosed, onNavigate }: { data: MegamenuType[], featuredProducts: ProductType[], forceClosed?: boolean, onNavigate?: () => void }) => {
 
     return (
-        <div className='static lg:absolute lg:z-50 lg:left-0 bg-home-bg-1 flex lg:flex-row flex-col justify-between w-full transition-all duration-500 lg:h-0 h-auto overflow-hidden lg:group-hover:h-[400px] shadow-lg rounded-b-lg'>
+        <div className={cn('static lg:absolute lg:z-50 lg:left-0 bg-home-bg-1 flex lg:flex-row flex-col justify-between w-full transition-all duration-500 lg:h-0 h-auto overflow-hidden lg:group-hover:h-[400px] shadow-lg rounded-b-lg', forceClosed && 'lg:h-0!')}>
             {
                 data.map(({ menus, id }) => {
                     return (
@@ -26,7 +26,7 @@ const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredPr
                                                     items.map(({ id, path, label }) => {
                                                         return (
                                                             <div key={id}>
-                                                                <Link aria-label='nav' href={path} className={cn('dropdown-item text-base text-gray-1-foreground py-1.5 inline-block capitalize hover:text-secondary-foreground transition-all duration-500')}>
+                                                                <Link aria-label='nav' href={path} onClick={onNavigate} className={cn('dropdown-item text-base text-gray-1-foreground py-1.5 inline-block capitalize hover:text-secondary-foreground transition-all duration-500')}>
                                                                     {label}
                                                                 </Link>
 
@@ -50,11 +50,11 @@ const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredPr
 
                         return (
                             <div key={id} className='flex items-center gap-3'>
-                                <Link href={'/product-details'} className='inline-block overflow-hidden bg-slate-100 max-h-[900px] group/img'>
+                                <Link href={'/product-details'} onClick={onNavigate} className='inline-block overflow-hidden bg-slate-100 max-h-[900px] group/img'>
                                     <Image width={80} height={80} sizes='100vw' src={thumbnail} alt='img' className='group-hover/img:scale-110 transition-all duration-500 rounded-[4px]' />
                                 </Link>
                                 <div className='max-w-[200px]'>
-                                    <Link href={"/product-details"} className='text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500 capitalize line-clamp-2'>
+                                    <Link href={"/product-details"} onClick={onNavigate} className='text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500 capitalize line-clamp-2'>
                                         {title}
                                     </Link>
                                     <p className='text-gray-1-foreground text-sm'>
@@ -73,7 +73,7 @@ const MegaMenu = ({ data, featuredProducts }: { data: MegamenuType[], featuredPr
                         <p className='text-primary-foreground'>Handsy Market's Special Offer</p>
                         <p className='lg:text-4xl text-3xl font-semibold text-primary-foreground'>Sale <span className='text-orange-500'>up to 30%</span> Only today!</p>
                         <Button asChild className='lg:text-[15px] mt-7.5 hover:bg-primary hover:text-white hover:opacity-85 uppercase'>
-                            <Link href={"/shop"}>Shop Now</Link>
+                            <Link href={"/shop"} onClick={onNavigate}>Shop Now</Link>
                         </Button>
                     </div>
                 </div>

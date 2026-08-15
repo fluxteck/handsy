@@ -51,7 +51,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
             <SheetTrigger
                 aria-label='Menu'
                 aria-expanded={open}
-                className='flex lg:hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl text-gray-1-foreground transition-colors duration-300 hover:bg-home-bg-1 active:bg-home-bg-1 active:scale-95'
+                className='flex lg:hidden h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-border/60 bg-background shadow-3xl transition-all duration-300 hover:border-border hover:bg-home-bg-1 active:scale-95 text-gray-1-foreground'
             >
                 <HamburgerIcon open={open} />
             </SheetTrigger>
@@ -62,12 +62,12 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                 <SheetTitle className='sr-only'>Navigation Menu</SheetTitle>
 
                 <div className='flex shrink-0 items-center justify-between border-b border-border px-5 py-4'>
-                    <Link href={"/"} aria-label='Handsy Market home' className='shrink-0'>
+                    <Link href={"/"} aria-label='Handsy Market home' onClick={() => setOpen(false)} className='shrink-0'>
                         <Image width={64} height={40} src={"/images/logo.png"} alt='logo' className='h-8 w-auto' />
                     </Link>
                     <SheetClose
                         aria-label='Close menu'
-                        className='flex h-9 w-9 items-center justify-center rounded-full text-gray-1-foreground transition-all duration-300 hover:bg-home-bg-1 hover:text-secondary-foreground active:scale-95'
+                        className='flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-border/60 bg-background shadow-3xl transition-all duration-300 hover:border-border hover:bg-home-bg-1 hover:text-secondary-foreground active:scale-95 text-gray-1-foreground'
                     >
                         <Close className='w-4 h-4' />
                     </SheetClose>
@@ -86,6 +86,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                         <div className={cn('flex items-center rounded-xl transition-colors duration-300', isExpanded && 'bg-home-bg-1')}>
                                             <Link
                                                 href={item.path}
+                                                onClick={() => setOpen(false)}
                                                 className={cn(
                                                     'flex flex-1 items-center gap-3 rounded-xl px-2.5 py-2.5 text-gray-1-foreground transition-colors duration-300 hover:text-secondary-foreground',
                                                     isExpanded && 'text-secondary-foreground'
@@ -122,6 +123,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                                                 <li key={dropItem.id}>
                                                                     <Link
                                                                         href={dropItem.path}
+                                                                        onClick={() => setOpen(false)}
                                                                         className='block rounded-lg py-2.5 pl-[58px] pr-3 text-[14px] text-gray-1-foreground capitalize transition-colors duration-300 hover:bg-home-bg-1 hover:text-secondary-foreground'
                                                                     >
                                                                         {dropItem.label}
@@ -135,7 +137,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                         )}
                                         {item.megaMenu && (
                                             <div className={cn('overflow-hidden transition-all duration-300 ease-in-out', isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0')}>
-                                                <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} />
+                                                <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} onNavigate={() => setOpen(false)} />
                                             </div>
                                         )}
                                     </li>
@@ -153,6 +155,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                 <li key={id}>
                                     <Link
                                         href={href}
+                                        onClick={() => setOpen(false)}
                                         className='group flex items-center gap-3 rounded-xl px-2.5 py-2.5 text-gray-1-foreground transition-colors duration-300 hover:bg-home-bg-1 hover:text-secondary-foreground'
                                     >
                                         <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#C9A968]/10'>
@@ -181,10 +184,10 @@ export default MobileMenu
 
 const HamburgerIcon = ({ open }: { open: boolean }) => {
     return (
-        <span className='relative flex h-3.5 w-4 flex-col justify-between'>
-            <span className={cn('h-[1.5px] w-full origin-center rounded-full bg-current transition-all duration-300 ease-out', open && 'translate-y-[6px] rotate-45')} />
-            <span className={cn('h-[1.5px] w-full rounded-full bg-current transition-opacity duration-200 ease-out', open && 'opacity-0')} />
-            <span className={cn('h-[1.5px] w-full origin-center rounded-full bg-current transition-all duration-300 ease-out', open && '-translate-y-[6px] -rotate-45')} />
+        <span className='relative flex h-4 w-[18px] flex-col justify-between'>
+            <span className={cn('h-0.5 w-full origin-center rounded-full bg-current transition-all duration-300 ease-out', open && 'translate-y-[7px] rotate-45')} />
+            <span className={cn('h-0.5 w-full rounded-full bg-current transition-opacity duration-200 ease-out', open && 'opacity-0')} />
+            <span className={cn('h-0.5 w-full origin-center rounded-full bg-current transition-all duration-300 ease-out', open && '-translate-y-[7px] -rotate-45')} />
         </span>
     )
 }
