@@ -23,6 +23,7 @@ import { returnsData } from "@/db/returnsData";
 import { customerReviewsData } from "@/db/customerReviewsData";
 import { recentlyViewedData } from "@/db/recentlyViewedData";
 import { productReviewsData } from "@/db/productReviewsData";
+import { vendorsData, vendorProductsData } from "@/db/vendorsData";
 
 const baseUrl = 'https://furnisy.vercel.app';
 
@@ -222,6 +223,23 @@ export const getProductReviewsData = cache(async (productId: number | string) =>
     // in production yet. That route is new in this release, so it isn't served by baseUrl (the live
     // site) until this deploy goes live. Once it is, switch this back to match the pattern above.
     return productReviewsData.filter((review) => String(review.productId) === String(productId));
+});
+
+export const getVendorData = cache(async (vendorSlug: string) => {
+    // TODO: unlike the sibling fetchers above, this doesn't call `${baseUrl}/api/vendors/[slug]`
+    // yet — the vendor storefront API is new and hasn't shipped to the live site. Once it has,
+    // switch this to fetch from baseUrl in production, matching the pattern above.
+    return vendorsData.find((vendor) => vendor.slug === vendorSlug) ?? null;
+});
+
+export const getAllVendorsData = cache(async () => {
+    // TODO: same as getVendorData — switch to `${baseUrl}/api/vendors` once it exists.
+    return vendorsData;
+});
+
+export const getVendorProductsData = cache(async (vendorSlug: string) => {
+    // TODO: same as getVendorData — switch to `${baseUrl}/api/vendors/[slug]/products` once it exists.
+    return vendorProductsData.filter((product) => product.vendorSlug === vendorSlug);
 });
 
 export const getTestimonialsData = cache(async () => {
