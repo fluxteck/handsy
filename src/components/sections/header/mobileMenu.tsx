@@ -61,7 +61,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
             >
                 <SheetTitle className='sr-only'>Navigation Menu</SheetTitle>
 
-                <div className='flex shrink-0 items-center justify-between border-b border-border px-5 py-4'>
+                <div className='flex shrink-0 items-center justify-between border-b border-border px-5 py-3'>
                     <Link href={"/"} aria-label='Handsy Market home' onClick={() => setOpen(false)} className='shrink-0'>
                         <Image width={64} height={40} src={"/images/logo.png"} alt='logo' className='h-8 w-auto' />
                     </Link>
@@ -73,9 +73,9 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                     </SheetClose>
                 </div>
 
-                <div className='flex-1 min-h-0 overflow-y-auto px-5 py-5'>
-                    <p className='mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'>Shop</p>
-                    <ul className='flex flex-col gap-0.5'>
+                <div className='flex-1 min-h-0 overflow-y-auto px-5 py-4'>
+                    <p className='mb-1.5 px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'>Shop</p>
+                    <ul className='flex flex-col'>
                         {
                             data.map((item) => {
                                 const isExpandable = Boolean(item.dropdownList || item.megaMenu)
@@ -88,14 +88,14 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                                 href={item.path}
                                                 onClick={() => setOpen(false)}
                                                 className={cn(
-                                                    'flex flex-1 items-center gap-3 rounded-xl px-2.5 py-2.5 text-gray-1-foreground transition-colors duration-300 hover:text-secondary-foreground',
+                                                    'flex flex-1 items-center gap-2.5 rounded-xl px-2.5 py-2 text-gray-1-foreground transition-colors duration-300 hover:text-secondary-foreground',
                                                     isExpanded && 'text-secondary-foreground'
                                                 )}
                                             >
-                                                <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-home-bg-2'>
+                                                <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-home-bg-2'>
                                                     <ItemIcon className='size-4' strokeWidth={1.75} />
                                                 </span>
-                                                <span className={cn('text-[15px] capitalize', isExpanded && 'font-medium')}>
+                                                <span className={cn('text-sm capitalize', isExpanded && 'font-medium')}>
                                                     {item.label}
                                                 </span>
                                             </Link>
@@ -105,7 +105,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                                     aria-label={isExpanded ? `Collapse ${item.label}` : `Expand ${item.label}`}
                                                     aria-expanded={isExpanded}
                                                     onClick={() => handleDropDown(item.id, item.dropdownList, item.megaMenu)}
-                                                    className='p-3 text-gray-1-foreground hover:text-secondary-foreground transition-colors duration-300'
+                                                    className='p-2.5 text-gray-1-foreground hover:text-secondary-foreground transition-colors duration-300'
                                                 >
                                                     <ChevronDown
                                                         size={16}
@@ -116,7 +116,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                         </div>
                                         {item.dropdownList && (
                                             <div className={cn('overflow-hidden transition-all duration-300 ease-in-out', isExpanded ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0')}>
-                                                <ul className='flex flex-col gap-0.5 pb-1 pt-1'>
+                                                <ul className='flex flex-col pb-1 pt-0.5'>
                                                     {
                                                         item.dropdownList?.map((dropItem) => {
                                                             return (
@@ -124,7 +124,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                                                     <Link
                                                                         href={dropItem.path}
                                                                         onClick={() => setOpen(false)}
-                                                                        className='block rounded-lg py-2.5 pl-[58px] pr-3 text-[14px] text-gray-1-foreground capitalize transition-colors duration-300 hover:bg-home-bg-1 hover:text-secondary-foreground'
+                                                                        className='block rounded-lg py-2 pl-[52px] pr-3 text-[13px] text-gray-1-foreground capitalize transition-colors duration-300 hover:bg-home-bg-1 hover:text-secondary-foreground'
                                                                     >
                                                                         {dropItem.label}
                                                                     </Link>
@@ -146,22 +146,22 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                         }
                     </ul>
 
-                    <Separator className='my-5' />
+                    <Separator className='my-3' />
 
-                    <p className='mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'>Quick Links</p>
-                    <ul className='flex flex-col gap-0.5'>
+                    <p className='mb-1.5 px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'>Quick Links</p>
+                    <ul className='flex flex-col'>
                         {
                             topHeaderLinks.map(({ id, icon: Icon, label, href }) => (
                                 <li key={id}>
                                     <Link
                                         href={href}
                                         onClick={() => setOpen(false)}
-                                        className='group flex items-center gap-3 rounded-xl px-2.5 py-2.5 text-gray-1-foreground transition-colors duration-300 hover:bg-home-bg-1 hover:text-secondary-foreground'
+                                        className='group flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-gray-1-foreground transition-colors duration-300 hover:bg-home-bg-1 hover:text-secondary-foreground'
                                     >
-                                        <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#C9A968]/10'>
+                                        <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#C9A968]/10'>
                                             <Icon className='size-4 text-black' strokeWidth={1.75} aria-hidden />
                                         </span>
-                                        <span className='flex-1 text-[15px]'>{label}</span>
+                                        <span className='flex-1 text-sm'>{label}</span>
                                         <ChevronRight className='size-4 shrink-0 text-gray-2-foreground transition-transform duration-300 group-hover:translate-x-0.5' aria-hidden />
                                     </Link>
                                 </li>
@@ -169,9 +169,9 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                         }
                     </ul>
 
-                    <Separator className='my-5' />
+                    <Separator className='my-3' />
 
-                    <p className='mb-3 px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'>Currency</p>
+                    <p className='mb-2 px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'>Currency</p>
                     <HeaderExtraInfo />
                 </div>
             </SheetContent>
