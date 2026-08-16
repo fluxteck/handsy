@@ -7,6 +7,8 @@ type PropsType = {
   currentPage: string;
   /** Set false on pages that already render their own visible <h1> elsewhere, to avoid a duplicate. */
   renderHeading?: boolean;
+  /** Escape hatch for trails deeper than Home > [one link] > Current — supply the full items array directly. */
+  items?: BreadcrumbItemType[];
 };
 
 const PageHeader = ({
@@ -15,8 +17,9 @@ const PageHeader = ({
   breadcrumbLabel,
   currentPage,
   renderHeading = true,
+  items,
 }: PropsType) => {
-  const items: BreadcrumbItemType[] = [
+  const breadcrumbItems: BreadcrumbItemType[] = items ?? [
     { label: "Home", href: "/" },
     ...(breadcrumbLink ? [{ label: breadcrumbLabel ?? "", href: breadcrumbLink }] : []),
     { label: currentPage },
@@ -27,7 +30,7 @@ const PageHeader = ({
       <div className="container">
         {renderHeading && <h1 className="sr-only">{pageTitle}</h1>}
         <Breadcrumb
-          items={items}
+          items={breadcrumbItems}
           className="py-2 lg:py-2.5 [&_a]:text-sm [&_span]:text-sm"
         />
       </div>

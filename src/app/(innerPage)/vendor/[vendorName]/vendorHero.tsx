@@ -32,7 +32,9 @@ const VendorHero = ({ vendor, productCount }: { vendor: VendorType; productCount
                 Home
               </Link>
               <ChevronRight className="size-3.5 text-white/40" aria-hidden />
-              <span>Vendors</span>
+              <Link href="/vendor" className="transition-colors duration-300 hover:text-white">
+                Vendors
+              </Link>
               <ChevronRight className="size-3.5 text-white/40" aria-hidden />
               <span className="line-clamp-1 font-medium text-white" aria-current="page">
                 {vendor.name}
