@@ -19,7 +19,7 @@ const MobileNavbar = () => {
 
     return (
         <div className='fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 lg:hidden'>
-            <div className='flex items-center justify-between gap-1 rounded-2xl border border-border/60 bg-home-bg-1/95 px-2 py-1.5 shadow-3xl backdrop-blur-md'>
+            <div className='flex items-center justify-between gap-1 rounded-full border border-border/60 bg-home-bg-1/95 px-2 py-1.5 backdrop-blur-md'>
                 {navItems.map(({ href, label, icon: Icon }) => {
                     const isActive = href === '/account'
                         ? currentPathname === href || currentPathname.startsWith(`${href}/`)

@@ -83,7 +83,7 @@ const TopHeader = () => {
                                     href={href}
                                     className='flex items-center gap-1.5 text-[11px] lg:text-xs uppercase tracking-[0.12em] font-medium text-gray-1-foreground hover:text-secondary-foreground transition-colors duration-300'
                                 >
-                                    <Icon className='size-3.5 text-[#C9A968] shrink-0' strokeWidth={1.75} aria-hidden />
+                                    <Icon className='size-3.5 text-black shrink-0' strokeWidth={1.75} aria-hidden />
                                     {label}
                                 </Link>
                             </li>
@@ -102,7 +102,7 @@ const TopHeader = () => {
                         key={activeItem.id}
                         className='flex items-center gap-1.5 text-[11px] lg:text-xs uppercase tracking-[0.12em] font-medium leading-[150%] text-gray-1-foreground min-w-0 animate-in fade-in slide-in-from-top-1 duration-500 fill-mode-both'
                     >
-                        <ActiveIcon className='size-3.5 text-[#C9A968] shrink-0' strokeWidth={1.75} />
+                        <ActiveIcon className='size-3.5 text-black shrink-0' strokeWidth={1.75} />
                         <span className='truncate'>{activeItem.content}</span>
                     </p>
                 </div>

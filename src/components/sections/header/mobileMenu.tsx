@@ -159,7 +159,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                         className='group flex items-center gap-3 rounded-xl px-2.5 py-2.5 text-gray-1-foreground transition-colors duration-300 hover:bg-home-bg-1 hover:text-secondary-foreground'
                                     >
                                         <span className='flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#C9A968]/10'>
-                                            <Icon className='size-4 text-[#C9A968]' strokeWidth={1.75} aria-hidden />
+                                            <Icon className='size-4 text-black' strokeWidth={1.75} aria-hidden />
                                         </span>
                                         <span className='flex-1 text-[15px]'>{label}</span>
                                         <ChevronRight className='size-4 shrink-0 text-gray-2-foreground transition-transform duration-300 group-hover:translate-x-0.5' aria-hidden />
