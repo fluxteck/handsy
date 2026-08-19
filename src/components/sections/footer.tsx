@@ -24,6 +24,7 @@ const footerLinks = [
     title: "For Business",
     links: [
       { label: "Wholesale & B2B", href: "/b2b" },
+      { label: "Interior & Home Decor Solutions", href: "/interior-solutions" },
       { label: "Sell on Handsy", href: "/vendor" },
       { label: "Track Your Order", href: "/account/orders" },
     ],
@@ -47,14 +48,8 @@ const socialLinks = [
 
 const Footer = () => {
   return (
-    <footer className="relative overflow-hidden bg-primary text-white">
-      {/* Ambient accents for a premium, futuristic feel — built from the theme's
-          own gradient tokens, no new colors introduced. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-      <div className="pointer-events-none absolute -top-40 right-[-10%] h-[420px] w-[420px] rounded-full bg-gradient-radial from-white/10 via-white/0 to-transparent blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-48 left-[-10%] h-[420px] w-[420px] rounded-full bg-gradient-radial from-white/[0.06] via-white/0 to-transparent blur-3xl" />
-
-      <div className="container relative lg:pt-20 pt-14 pb-7.5">
+    <footer className="relative bg-primary text-white mx-4 md:mx-6 lg:mx-8 mb-4 md:mb-6 lg:mb-8 rounded-3xl shadow-3xl">
+      <div className="container relative pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5">
         <div className="flex lg:flex-row flex-col justify-between gap-x-10 gap-y-12">
           <div className="lg:max-w-[300px]">
             <Link href={"/"}>
