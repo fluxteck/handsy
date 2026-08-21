@@ -160,6 +160,8 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
           addToCart({
             id: product.id,
             price: finalPrice,
+            originalPrice: product.price,
+            discountPercentage: product.discountPercentage,
             quantity: 1,
             thumbnail: product.thumbnail,
             title: product.title,

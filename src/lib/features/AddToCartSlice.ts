@@ -10,6 +10,9 @@ interface Product {
     thumbnail: string;
     color: string;
     size: string;
+    /** Pre-discount price, for showing a compare-at price on the cart line item. Omitted when the product has no discount. */
+    originalPrice?: number;
+    discountPercentage?: number;
 }
 
 const loadStateFromLocalStorage = (): Product[] => {

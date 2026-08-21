@@ -57,7 +57,7 @@ const WishlistPopup = () => {
                                                     <Button
                                                         variant={"outline"}
                                                         size={"sm"}
-                                                        onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
+                                                        onClick={() => dispatch(addToCart({ id, price: finalPrice, originalPrice: price, discountPercentage, quantity: 1, thumbnail, title, color, size }))}
                                                         className='text-gray-1-foreground border-gray-1 ml-auto'
                                                     >
                                                         Add To cart

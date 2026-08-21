@@ -6,10 +6,10 @@ import { Button } from '@/components/ui/button'
 const CouponCodeForm = () => {
     return (
         <Dialog>
-            <div className='text-gray-1-foreground mt-2'>
-                Have a coupon? {' '}
-                <DialogTrigger className='text-secondary-foreground multiline-hover'>
-                    Click here to enter your code
+            <div className='inline-flex items-center gap-1.5'>
+                <span className='text-gray-1-foreground'>Have a coupon?</span>
+                <DialogTrigger className='text-secondary-foreground font-medium multiline-hover'>
+                    Enter code
                 </DialogTrigger>
             </div>
 

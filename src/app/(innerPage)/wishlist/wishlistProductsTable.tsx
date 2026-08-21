@@ -65,7 +65,7 @@ const WishlistProductsTable = () => {
                                                 <div className='flex items-center gap-15'>
                                                     <Button
                                                         size={"sm"}
-                                                        onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
+                                                        onClick={() => dispatch(addToCart({ id, price: finalPrice, originalPrice: price, discountPercentage, quantity: 1, thumbnail, title, color, size }))}
                                                     >
                                                         Add To cart
                                                     </Button>

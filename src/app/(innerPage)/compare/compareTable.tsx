@@ -64,7 +64,7 @@ const CompareTable = () => {
                                                     <p className='font-medium text-secondary-foreground lg:text-xl text-lg 2xl:w-[280px] lg:w-[200px] w-[160px]'>Add to cart</p>
                                                 }
                                                 <Button
-                                                    onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
+                                                    onClick={() => dispatch(addToCart({ id, price: finalPrice, originalPrice: price, discountPercentage, quantity: 1, thumbnail, title, color, size }))}
                                                     
                                                     size={'sm'}
                                                 >

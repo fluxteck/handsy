@@ -223,6 +223,8 @@ const ProductShortInfo = ({
                 thumbnail,
                 quantity: productQuantity,
                 price: finalPrice,
+                originalPrice: price,
+                discountPercentage,
                 color: selectColor,
                 size: selectSize,
                 title,

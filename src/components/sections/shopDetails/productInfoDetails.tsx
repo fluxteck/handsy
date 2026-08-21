@@ -84,6 +84,8 @@ const ProductInfoDetails = ({
         thumbnail,
         quantity: productQuantity,
         price: finalPrice,
+        originalPrice: price,
+        discountPercentage,
         color: selectedColor.code,
         size: "",
         title,

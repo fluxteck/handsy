@@ -1,11 +1,9 @@
 import CheckoutForm from "@/app/(innerPage)/checkout/checkoutForm";
 import CheckoutPayment from "@/app/(innerPage)/checkout/checkoutPayment";
-import InstagramGallery from "@/components/sections/instagramGallery";
-import Newsletter from "@/components/sections/newsletter";
 import PageHeader from "@/components/sections/pageHeader";
 import { Metadata } from "next";
+import Link from "next/link";
 import CouponCodeForm from "./couponCodeForm";
-import LoginForm from "./loginForm";
 
 export const metadata: Metadata = {
   title: "Checkout",
@@ -21,18 +19,29 @@ const Checkout = () => {
         breadcrumbLink="/shop-2"
         breadcrumbLabel="Shop"
       />
-      <div className="container lg:pt-25 lg:pb-30 pt-15 pb-15">
-        <div className="grid lg:grid-cols-[auto_48.6%] grid-cols-1 gap-7.5">
-          <div>
-            <LoginForm />
-            <CouponCodeForm />
-            <CheckoutForm />
-          </div>
+      <div className="container lg:py-10 py-6">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 mb-5 text-sm">
+          {/* Reuses the site's existing /login flow (authCard/signInForm) instead of a
+              second, checkout-only login dialog. */}
+          <Link
+            href="/login"
+            className="text-gray-1-foreground hover:text-secondary-foreground transition-colors duration-300"
+          >
+            Returning customer?{" "}
+            <span className="text-secondary-foreground font-medium multiline-hover">
+              Login
+            </span>
+          </Link>
+          <span className="text-gray-2-foreground" aria-hidden="true">
+            •
+          </span>
+          <CouponCodeForm />
+        </div>
+        <div className="grid lg:grid-cols-[auto_23.75rem] grid-cols-1 gap-6 items-start">
+          <CheckoutForm />
           <CheckoutPayment />
         </div>
       </div>
-      <Newsletter />
-      <InstagramGallery />
     </main>
   );
 };

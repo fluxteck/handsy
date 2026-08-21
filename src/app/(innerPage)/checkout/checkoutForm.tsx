@@ -15,35 +15,32 @@ const CheckoutForm = () => {
     console.log(formData);
   };
 
+  const fieldClass =
+    "border border-[#999796] text-sm text-gray-1-foreground font-medium px-3.5 py-2.5 mt-1.5";
+  const labelClass = "text-gray-1-foreground w-full text-sm";
+
   return (
-    <div>
-      <form action={submitForm} className="mt-10">
-        <div className="flex flex-col gap-7.5">
-          <div className="flex sm:flex-row flex-col justify-between gap-x-[22px] gap-y-7.5">
-            <label
-              htmlFor="first_name"
-              className="text-gray-1-foreground w-full text-base"
-            >
+    <div className="rounded-xl border border-border p-5 sm:p-6">
+      <p className="text-secondary-foreground font-semibold text-lg mb-5">
+        Billing details
+      </p>
+      <form action={submitForm}>
+        <div className="flex flex-col gap-4">
+          <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-4 gap-y-4">
+            <label htmlFor="first_name" className={labelClass}>
               First name<span className="text-red-400">*</span>
               <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
+                className={fieldClass}
                 type={"text"}
                 name={"first_name"}
                 id="first_name"
                 required
               />
             </label>
-            <label
-              htmlFor="last_name"
-              className="text-gray-1-foreground w-full text-base"
-            >
+            <label htmlFor="last_name" className={labelClass}>
               Last name<span className="text-red-400">*</span>
               <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
+                className={fieldClass}
                 type={"text"}
                 name={"last_name"}
                 id="last_name"
@@ -51,31 +48,21 @@ const CheckoutForm = () => {
               />
             </label>
           </div>
-          <div className="flex sm:flex-row flex-col justify-between gap-x-[22px] gap-y-7.5">
-            <label
-              htmlFor="email"
-              className="text-gray-1-foreground w-full text-base"
-            >
+          <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-4 gap-y-4">
+            <label htmlFor="email" className={labelClass}>
               Email address<span className="text-red-400">*</span>
               <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
+                className={fieldClass}
                 type={"email"}
                 name={"email"}
                 id="email"
                 required
               />
             </label>
-            <label
-              htmlFor="phone"
-              className="text-gray-1-foreground w-full text-base"
-            >
+            <label htmlFor="phone" className={labelClass}>
               Phone<span className="text-red-400">*</span>
               <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
+                className={fieldClass}
                 type={"number"}
                 name={"phone"}
                 id="phone"
@@ -83,43 +70,35 @@ const CheckoutForm = () => {
               />
             </label>
           </div>
-          <div>
-            <label
-              htmlFor="country"
-              className="text-gray-1-foreground text-base"
-            >
-              Country/Region<span className="text-red-400">*</span>
-            </label>
-            <Select name="country" required>
-              <SelectTrigger
-                id="country"
-                className="h-12.5 py-2.5 border-[1.5px] border-[#999796] text-base text-gray-1-foreground mt-2.5"
-              >
-                <SelectValue placeholder="Select a country" />
-              </SelectTrigger>
-              <SelectContent className="py-[14px] bg-background ">
-                <SelectItem value="united-states" className="cursor-pointer">
-                  United States
-                </SelectItem>
-                <SelectItem value="united-kingdom" className="cursor-pointer">
-                  United Kingdom
-                </SelectItem>
-                <SelectItem value="bangladesh" className="cursor-pointer">
-                  Bangladesh
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label
-              htmlFor="town"
-              className="text-gray-1-foreground w-full text-base"
-            >
+          <div className="grid sm:grid-cols-2 grid-cols-1 gap-x-4 gap-y-4">
+            <div>
+              <label htmlFor="country" className={labelClass}>
+                Country/Region<span className="text-red-400">*</span>
+              </label>
+              <Select name="country" required>
+                <SelectTrigger
+                  id="country"
+                  className="h-10 py-2 border border-[#999796] text-sm text-gray-1-foreground mt-1.5"
+                >
+                  <SelectValue placeholder="Select a country" />
+                </SelectTrigger>
+                <SelectContent className="py-[14px] bg-background ">
+                  <SelectItem value="united-states" className="cursor-pointer">
+                    United States
+                  </SelectItem>
+                  <SelectItem value="united-kingdom" className="cursor-pointer">
+                    United Kingdom
+                  </SelectItem>
+                  <SelectItem value="bangladesh" className="cursor-pointer">
+                    Bangladesh
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <label htmlFor="town" className={labelClass}>
               Town / City<span className="text-red-400">*</span>
               <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
+                className={fieldClass}
                 type={"text"}
                 name={"town"}
                 id="town"
@@ -127,33 +106,21 @@ const CheckoutForm = () => {
               />
             </label>
           </div>
-          <div>
-            <label
-              htmlFor="street"
-              className="text-gray-1-foreground w-full text-base"
-            >
+          <div className="grid sm:grid-cols-[1fr_11rem] grid-cols-1 gap-x-4 gap-y-4">
+            <label htmlFor="street" className={labelClass}>
               Street address<span className="text-red-400">*</span>
               <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
+                className={fieldClass}
                 type={"text"}
                 name={"street"}
                 id="street"
                 required
               />
             </label>
-          </div>
-          <div>
-            <label
-              htmlFor="zip"
-              className="text-gray-1-foreground w-full text-base"
-            >
+            <label htmlFor="zip" className={labelClass}>
               ZIP Code<span className="text-red-400">*</span>
               <Input
-                className={
-                  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5"
-                }
+                className={fieldClass}
                 type={"text"}
                 name={"zip"}
                 id="zip"
@@ -161,23 +128,16 @@ const CheckoutForm = () => {
               />
             </label>
           </div>
-          <label
-            htmlFor="notes"
-            className="text-gray-1-foreground w-full text-base"
-          >
-            Additional information (optional)
+          <label htmlFor="notes" className={labelClass}>
+            Additional information (optional)
             <Textarea
-              className={
-                "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5 min-h-[140px]"
-              }
+              className={fieldClass + " min-h-[80px]"}
               name={"notes"}
               id="notes"
             />
           </label>
         </div>
         <RegisterForm />
-        {/* <Button type="submit"  className="w-full mt-5 lg:px-6 lg:py-3 lg:text-lg">Submit Order</Button> */}
-        {/* {state?.message && <p className="mt-4 text-green-600 text-center">{state.message}</p>} */}
       </form>
     </div>
   );

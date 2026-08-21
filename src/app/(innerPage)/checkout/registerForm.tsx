@@ -19,7 +19,7 @@ const RegisterForm = () => {
   };
   return (
     <Dialog open={open} onOpenChange={() => setOpen(!open)}>
-      <div className="flex items-center gap-2.5 mt-5">
+      <div className="flex items-center gap-2.5 mt-4">
         <Checkbox
           checked={open}
           onCheckedChange={(value: boolean) =>
@@ -28,7 +28,7 @@ const RegisterForm = () => {
           id="extra"
           className="rounded-[4px] border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
         />
-        <Label htmlFor="extra" className="text-base text-secondary-foreground">
+        <Label htmlFor="extra" className="text-sm text-secondary-foreground">
           Create an account?
         </Label>
       </div>

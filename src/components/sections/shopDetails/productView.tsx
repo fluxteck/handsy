@@ -186,6 +186,8 @@ const ProductsView = ({
                                     thumbnail,
                                     quantity: 1,
                                     price: finalPrice,
+                                    originalPrice: price,
+                                    discountPercentage,
                                     color: "red",
                                     size: "m",
                                     title,

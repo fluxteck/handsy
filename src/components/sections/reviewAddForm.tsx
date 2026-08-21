@@ -123,7 +123,7 @@ const ReviewAddForm = ({ productId }: { productId: number | string }) => {
           required
           minLength={10}
           placeholder="What did you like or dislike? What did you use this product for?"
-          className="min-h-[160px] rounded-md mt-2 border-input text-gray-1-foreground"
+          className="min-h-[160px] mt-2 border-input text-gray-1-foreground"
         />
       </div>
 
