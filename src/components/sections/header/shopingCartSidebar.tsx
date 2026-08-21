@@ -197,7 +197,7 @@ const ShopingCartSidebar = () => {
               ) : (
                 <div className="px-7.5 py-6 w-full">
                   <Button size={"sm"} asChild className="w-full">
-                    <Link href={"/shop"}>Browse Shop</Link>
+                    <Link href={"/shop-2"}>Browse Shop</Link>
                   </Button>
                 </div>
               )}

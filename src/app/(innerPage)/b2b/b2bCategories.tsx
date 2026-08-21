@@ -22,7 +22,7 @@ const B2bCategories = () => {
             <h5 className="mt-3">Featured categories for business orders</h5>
           </div>
           <Link
-            href="/shop"
+            href="/shop-2"
             className="text-secondary-foreground font-medium multiline-hover"
           >
             View full catalog

@@ -5,7 +5,7 @@ import "./globals.css";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from "react-hot-toast";
 import SmoothScroll from "@/components/smoothScroll";
-// import WelcomePopup from "@/components/sections/welcomePopup";
+import WelcomePopup from "@/components/sections/welcomePopup";
 
 const satoshi = localFont({
   src: [
@@ -99,6 +99,7 @@ export default function RootLayout({
         <StoreProvider>
           <SmoothScroll />
           {children}
+          <WelcomePopup />
           <Toaster position="top-right" reverseOrder={false} />
         </StoreProvider>
       </body>

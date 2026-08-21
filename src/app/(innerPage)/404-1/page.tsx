@@ -20,7 +20,7 @@ const page = () => {
                     <p className='mt-5 lg:text-4xl text-3xl lg:leading-[135%] text-black font-medium'>Opps! Something Wrong</p>
                     <p className='text-base text-gray-3-foreground'>Sorry but the page you are looking for doesn’t exist. </p>
                     <Button asChild className='mt-10 group lg:leading-[170%] leading-[170%]'>
-                        <Link href={'/shop'}>Shop Now <ArrowUp className='group-hover:rotate-45 transition-transform duration-500'/> </Link>
+                        <Link href={'/shop-2'}>Shop Now <ArrowUp className='group-hover:rotate-45 transition-transform duration-500'/> </Link>
                     </Button>
                 </div>
             </section>

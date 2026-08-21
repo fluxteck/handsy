@@ -216,7 +216,7 @@ const ShopTheLook = ({ data, className }: { data: ShopTheLookData; className?: s
   if (!firstRoomId) return null;
 
   return (
-    <section className={cn("bg-home-bg-3 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5", className)}>
+    <section className={cn("bg-home-bg-1 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5", className)}>
       <div className="container">
         <Tabs defaultValue={firstRoomId}>
           <div className="flex flex-wrap items-end justify-between gap-5 mb-7 lg:mb-8">

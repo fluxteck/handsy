@@ -19,7 +19,7 @@ const ShopEmptyState = ({
   title,
   description,
   ctaLabel,
-  ctaHref = "/shop",
+  ctaHref = "/shop-2",
   className,
 }: ShopEmptyStateProps) => {
   return (

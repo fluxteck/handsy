@@ -81,7 +81,7 @@ const LoginForm = () => {
           <p className="text-center mt-5 text-base text-gray-1-foreground">
             New customer?{" "}
             <Link
-              href={"/register"}
+              href={"/login"}
               className="text-secondary-foreground font-medium"
             >
               Sign up

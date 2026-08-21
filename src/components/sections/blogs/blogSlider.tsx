@@ -90,7 +90,7 @@ const BlogSlider = ({ blogs }: { blogs: BlogType[] }) => {
                                         author={{ name: author?.name || '', href: '' }}
                                     />
 
-                                    <BlogCard.Title href="/blog-single">
+                                    <BlogCard.Title href="/blog-3">
                                         {title}
                                     </BlogCard.Title>
 

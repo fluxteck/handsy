@@ -37,7 +37,7 @@ const ProductDetailsOne = () => {
     <main>
       <PageHeader
         pageTitle="Opal Accent Chair"
-        breadcrumbLink="/shop"
+        breadcrumbLink="/shop-2"
         breadcrumbLabel="Accent Chair"
         currentPage="Opal Accent Chair"
       />

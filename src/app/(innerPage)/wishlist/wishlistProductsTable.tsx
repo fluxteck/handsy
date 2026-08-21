@@ -89,7 +89,7 @@ const WishlistProductsTable = () => {
                         title="Your Wishlist is Empty"
                         description="Save the pieces you love and shop them whenever you're ready"
                         ctaLabel="Explore Products"
-                        ctaHref="/shop"
+                        ctaHref="/shop-2"
                     />
             }
         </div>

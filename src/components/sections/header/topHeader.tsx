@@ -18,7 +18,7 @@ const promoItems: PromoItem[] = [
     {
         id: 2,
         icon: Percent,
-        content: <>15% Off First Order - <Link href={"/register"} className='multiline-hover hover:text-[#C9A968]'>Sign Up</Link> Today</>,
+        content: <>15% Off First Order - <Link href={"/login"} className='multiline-hover hover:text-[#C9A968]'>Sign Up</Link> Today</>,
     },
     {
         id: 3,
