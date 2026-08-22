@@ -68,7 +68,7 @@ const CategoryLandingPage = async ({ params, searchParams }: PageProps) => {
   ])
   return (
     <main>
-      <PageHeader pageTitle={label} currentPage={label} renderHeading={false} />
+      <PageHeader pageTitle={label} currentPage={label} breadcrumbLink="/category" breadcrumbLabel="Category" renderHeading={false} />
       {content && (
         <section className="container pt-8 lg:pt-10 pb-4 lg:pb-6">
           <h1 className="text-heading capitalize text-secondary-foreground font-normal">{label}</h1>

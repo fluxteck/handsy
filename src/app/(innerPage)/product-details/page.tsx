@@ -6,7 +6,7 @@ import ProductAccordionInfo from "@/components/sections/shopDetails/productAccor
 import NeedHelp from "@/components/sections/shopDetails/needHelp";
 import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import ProductReviews from "@/components/sections/shopDetails/productReviews";
-import Breadcrumb from "@/components/ui/breadcrumb";
+import PageHeader from "@/components/sections/pageHeader";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -35,15 +35,13 @@ const productOffers = [
 const ProductDetailsOne = () => {
   return (
     <main>
-      <div className="container">
-        <Breadcrumb
-          className="lg:mt-25 mt-15 mb-7.5"
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Accent Chair", href: "/shop" },
-            { label: "Opal Accent Chair" },
-          ]}
-        />
+      <PageHeader
+        pageTitle="Opal Accent Chair"
+        breadcrumbLink="/shop-2"
+        breadcrumbLabel="Accent Chair"
+        currentPage="Opal Accent Chair"
+      />
+      <div className="container pt-8 lg:pt-10">
         <div className="flex flex-col md:flex-row md:items-start gap-x-10 xl:gap-x-15">
           <div className="contents md:flex md:min-w-0 md:w-1/2 md:flex-col lg:w-[52%]">
             <div className="order-1 min-w-0">

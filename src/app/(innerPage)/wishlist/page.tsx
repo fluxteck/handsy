@@ -21,7 +21,7 @@ const Wishlist = async () => {
       <PageHeader
         currentPage="Wishlist"
         pageTitle="Wishlist"
-        breadcrumbLink="/shop"
+        breadcrumbLink="/shop-2"
         breadcrumbLabel="Shop"
       />
       <WishlistProductsTable />

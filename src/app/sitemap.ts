@@ -6,9 +6,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://your-domain.com";
 
 const staticRoutes = [
   "",
-  "/shop",
   "/about-us",
   "/b2b",
+  "/interior-solutions",
   "/vendor",
   "/contact-us",
   "/faq",

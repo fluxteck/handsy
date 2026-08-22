@@ -10,8 +10,8 @@ const AccountLayout = async ({ children }: { children: ReactNode }) => {
 
     return (
         <main className="bg-home-bg-1">
+            <AccountBreadcrumb />
             <div className="container pt-6 pb-15 lg:pt-10 lg:pb-25">
-                <AccountBreadcrumb className="mb-6" />
                 <div className="flex items-start gap-6 lg:gap-8">
                     <AccountSidebar unreadCount={unreadCount} />
                     <div className="min-w-0 flex-1">{children}</div>

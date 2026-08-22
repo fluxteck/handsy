@@ -22,7 +22,7 @@ const VIewCart = async () => {
       <PageHeader
         currentPage="View Cart"
         pageTitle="View Cart"
-        breadcrumbLink="/shop"
+        breadcrumbLink="/shop-2"
         breadcrumbLabel="Shop"
       />
       <div className="container lg:pt-25 lg:pb-25 pt-15 pb-15">

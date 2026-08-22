@@ -380,7 +380,7 @@ const WriteReviewModal = ({
                       required
                       minLength={10}
                       placeholder="What did you like or dislike? What did you use this product for?"
-                      className="min-h-[160px] rounded-md mt-5 border-input text-gray-1-foreground"
+                      className="min-h-[160px] mt-5 border-input text-gray-1-foreground"
                     />
                     {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
                   </div>

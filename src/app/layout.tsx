@@ -7,7 +7,7 @@ import { CartProvider } from "@/lib/cart/cart-context";
 import { WishlistProvider } from "@/lib/wishlist/wishlist-context";
 import { Toaster } from "react-hot-toast";
 import SmoothScroll from "@/components/smoothScroll";
-// import WelcomePopup from "@/components/sections/welcomePopup";
+import WelcomePopup from "@/components/sections/welcomePopup";
 
 const satoshi = localFont({
   src: [
@@ -106,6 +106,7 @@ export default function RootLayout({
             <WishlistProvider>
             <SmoothScroll />
             {children}
+            <WelcomePopup />
             <Toaster position="top-right" reverseOrder={false} />
             </WishlistProvider>
           </CartProvider>

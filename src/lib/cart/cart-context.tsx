@@ -50,6 +50,15 @@ export interface CartLineView {
   thumbnail: string;
   /** Major units, for display. */
   price: number;
+  /**
+   * Pre-discount unit price, for a strikethrough and a "you saved" total.
+   *
+   * Left undefined for now: the SDK's cart line carries `unitPrice` but no
+   * compare-at, so there is nothing truthful to put here. Consumers guard on it
+   * and simply omit the strikethrough — better than inventing a number. Populate
+   * this once the cart line carries a compare-at price.
+   */
+  originalPrice?: number;
   quantity: number;
   currency: string;
   /** Awaiting the server's acknowledgement; no real item id yet. */

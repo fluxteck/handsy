@@ -97,7 +97,7 @@ const BlogSIdebar = () => {
                 />
                 <div>
                   <Link
-                    href={"/blog-single"}
+                    href={"/blog-3"}
                     className="text-gray-1-foreground font-medium leading-[155%] capitalize multiline-hover"
                   >
                     {title}

@@ -2,19 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Handshake } from "lucide-react";
+import { Factory } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "@/lib/icon";
-import Parallax from "@/lib/animations/parallax";
+import B2bEnquiryModal from "../b2b/b2bEnquiryModal";
 
-const AboutHero = () => {
+const InteriorSolutionsHero = () => {
   return (
-    <section className="pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5" aria-label="Who Handsy Market is">
+    <section className="pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5" aria-label="B2B interior and home decor solutions">
       <div className="container">
-        <div className="relative overflow-hidden rounded-3xl bg-home-bg-3 px-6 py-12 lg:px-12 lg:py-16">
+        <div className="relative overflow-hidden rounded-3xl bg-home-bg-2 px-6 py-12 lg:px-12 lg:py-16">
           <div
             className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-gradient-radial from-primary/10 to-transparent blur-2xl"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -bottom-24 -left-24 size-56 rounded-full bg-gradient-radial from-primary/[0.06] to-transparent blur-2xl"
             aria-hidden
           />
 
@@ -24,46 +28,42 @@ const AboutHero = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, ease: "easeOut" }}
+              className="lg:order-1 order-2"
             >
               <p className="flex items-center gap-2.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
-                Who We Are <span className="h-px w-8 bg-gray-2" aria-hidden />
+                B2B Interior &amp; Home Decor Solutions <span className="h-px w-8 bg-gray-2" aria-hidden />
               </p>
               <h1 className="mt-3 text-heading capitalize text-secondary-foreground font-normal">
-                Handcrafted wood, <span className="font-display italic">trusted</span> in homes worldwide
+                Handcrafted interiors, <span className="font-display italic">engineered for scale</span>
               </h1>
               <p className="mt-4 max-w-lg text-gray-1-foreground leading-[170%]">
-                Handsy Market brings authentic wooden furniture and home décor from independent
-                artisans and vendors to customers everywhere. Every piece is handmade, every
-                material is chosen with care, and every order — from a single accent piece to a
-                bulk wholesale shipment — is treated with the same attention to craft.
+                Handsy Market is a one-stop provider of handcrafted interior and home decor
+                solutions for architects, builders, and hospitality groups worldwide — backed by
+                trusted partners, collaborating brands, and state-of-the-art manufacturing at
+                competitive B2B pricing.
               </p>
               <div className="mt-7.5 flex flex-wrap items-center gap-4">
-                <Button asChild className="group/cta">
-                  <Link href="/shop-2">
-                    Shop All
-                    <ArrowRight className="size-4 transition-transform duration-300 group-hover/cta:translate-x-1" />
-                  </Link>
-                </Button>
+                <B2bEnquiryModal />
                 <Button asChild variant="outline">
-                  <Link href="/contact-us">Talk to Our Team</Link>
+                  <Link href="#segments">Explore Collaboration Segments</Link>
                 </Button>
               </div>
 
               <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md">
                 <div>
-                  <dt className="sr-only">Partner artisans and vendors</dt>
-                  <dd className="text-2xl font-medium text-secondary-foreground">150+</dd>
-                  <p className="mt-1 text-sm text-gray-3-foreground">Partner artisans &amp; vendors</p>
+                  <dt className="sr-only">Trusted partners and collaborating brands</dt>
+                  <dd className="text-2xl font-medium text-secondary-foreground">500+</dd>
+                  <p className="mt-1 text-sm text-gray-3-foreground">Partners &amp; brands</p>
                 </div>
                 <div>
-                  <dt className="sr-only">Countries served</dt>
+                  <dt className="sr-only">Countries delivered to</dt>
                   <dd className="text-2xl font-medium text-secondary-foreground">30+</dd>
                   <p className="mt-1 text-sm text-gray-3-foreground">Countries served</p>
                 </div>
                 <div>
-                  <dt className="sr-only">Handcrafted products</dt>
-                  <dd className="text-2xl font-medium text-secondary-foreground">12K+</dd>
-                  <p className="mt-1 text-sm text-gray-3-foreground">Handcrafted products</p>
+                  <dt className="sr-only">Handcrafted product SKUs</dt>
+                  <dd className="text-2xl font-medium text-secondary-foreground">1,200+</dd>
+                  <p className="mt-1 text-sm text-gray-3-foreground">Handcrafted SKUs</p>
                 </div>
               </dl>
             </motion.div>
@@ -73,28 +73,26 @@ const AboutHero = () => {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-              className="relative"
+              className="relative lg:order-2 order-1"
             >
               <div className="group/image relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
-                <Parallax strength={24} className="absolute -inset-y-6 inset-x-0">
-                  <Image
-                    src="/images/about/img-2.webp"
-                    alt="Artisan workshop crafting handmade wooden furniture and home decor"
-                    fill
-                    sizes="(min-width: 1024px) 45vw, 100vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover/image:scale-105"
-                  />
-                </Parallax>
+                <Image
+                  src="/images/about/img-1.webp"
+                  alt="Handcrafted interior furniture and decor produced for B2B architecture, build, and hospitality projects"
+                  fill
+                  sizes="(min-width: 1024px) 45vw, 100vw"
+                  className="object-cover transition-transform duration-700 ease-out group-hover/image:scale-105"
+                />
               </div>
 
               <div className="absolute -bottom-6 left-6 flex items-center gap-3 rounded-2xl border border-gray-2 bg-background px-5 py-4 shadow-3xl">
                 <span className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-primary text-white">
                   <span className="absolute inset-0 rounded-full bg-primary/40 animate-spring-one" aria-hidden />
-                  <Handshake className="relative size-5" />
+                  <Factory className="relative size-5" />
                 </span>
                 <div>
-                  <p className="text-lg font-semibold leading-none text-secondary-foreground">150+ artisan partners</p>
-                  <p className="mt-1 text-xs text-gray-1-foreground">Independent makers across the globe</p>
+                  <p className="text-lg font-semibold leading-none text-secondary-foreground">State-of-the-art manufacturing</p>
+                  <p className="mt-1 text-xs text-gray-1-foreground">Built for project-scale delivery</p>
                 </div>
               </div>
             </motion.div>
@@ -105,4 +103,4 @@ const AboutHero = () => {
   );
 };
 
-export default AboutHero;
+export default InteriorSolutionsHero;

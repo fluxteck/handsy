@@ -53,7 +53,7 @@ const Header = async () => {
             >
               <User />
             </Link>
-            <ShopingCartSidebar />
+            <ShopingCartSidebar featuredProducts={featuredProducts} />
           </div>
         </div>
       </div>

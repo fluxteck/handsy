@@ -105,7 +105,7 @@ const ProductsCartTable = () => {
               <Button>Apply coupon</Button>
             </div>
             <Button variant={"outline"} asChild>
-              <Link href={"/shop"}>Continue Shopping</Link>
+              <Link href={"/shop-2"}>Continue Shopping</Link>
             </Button>
           </div>
         </div>
@@ -116,7 +116,7 @@ const ProductsCartTable = () => {
           title="Your Cart is Empty"
           description="Let's fill it with something you'll love"
           ctaLabel="Continue Shopping"
-          ctaHref="/shop"
+          ctaHref="/shop-2"
         />
       )}
     </>

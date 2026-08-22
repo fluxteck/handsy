@@ -44,7 +44,7 @@ const BlogThree = async () => {
                                         author={{ name: author?.name || '', href: '' }}
                                     />
 
-                                    <BlogCard.Title href="/blog-single" className='lg:text-xl text-lg'>
+                                    <BlogCard.Title href="/blog-3" className='lg:text-xl text-lg'>
                                         {title}
                                     </BlogCard.Title>
 
