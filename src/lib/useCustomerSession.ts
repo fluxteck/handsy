@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import { getSupabaseBrowserClient } from './supabase/browser-client';
 
 const STORAGE_KEY = 'handsy_customer_session';
 
@@ -9,34 +10,88 @@ export type CustomerSession = {
   email: string;
 };
 
-// Placeholder for real authentication. This project has no session/cookie layer yet — see the
-// TODO in `login/actions.ts`'s verifyOtp ("In a real application, you would create a
-// session/cookie here"). This hook mirrors that same mock-auth convention on the client so
-// features that need to know "is the visitor signed in" (e.g. the review modal) have something
-// concrete to read. `signIn` is called from the OTP sign-in success step. Replace the internals
-// with a real session/cookie check once auth exists — callers only need `isLoggedIn`/`session`.
+/**
+ * Who the visitor is, on the client.
+ *
+ * The real Supabase session is authoritative: once someone verifies an email
+ * OTP they are signed in, and that wins over anything in local storage.
+ *
+ * The local-storage record is kept as a *fallback only*, for the guest review
+ * flow — `writeReviewModal` collects a name and email from someone who never
+ * signed in and wants to remember them between visits. It is not an
+ * authentication mechanism and grants no access; anything that gates real
+ * customer data must use the Supabase session (server-side, via
+ * `getServerSession()`), never this.
+ */
 export function useCustomerSession() {
   const [session, setSession] = useState<CustomerSession | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    let active = true;
+
+    // Guest fallback first so the UI has something immediately.
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) setSession(JSON.parse(raw));
     } catch {
       // ignore malformed/inaccessible storage
     }
-    setHydrated(true);
-  }, []);
 
-  const signIn = useCallback((customer: CustomerSession) => {
+    const applyUser = (user: { email?: string; user_metadata?: Record<string, unknown> } | null) => {
+      if (!active) return;
+      if (!user?.email) {
+        setIsAuthenticated(false);
+        return;
+      }
+      setIsAuthenticated(true);
+      setSession({
+        email: user.email,
+        name: (user.user_metadata?.name as string | undefined) ?? undefined,
+      });
+    };
+
+    let unsubscribe = () => {};
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(customer));
+      const supabase = getSupabaseBrowserClient();
+      supabase.auth
+        .getUser()
+        .then(({ data }) => applyUser(data.user))
+        .catch(() => {})
+        .finally(() => active && setHydrated(true));
+
+      const { data } = supabase.auth.onAuthStateChange((_event, sb) => {
+        applyUser(sb?.user ?? null);
+      });
+      unsubscribe = () => data.subscription.unsubscribe();
     } catch {
-      // ignore write failures (e.g. private browsing)
+      // Supabase unconfigured — guest fallback only.
+      setHydrated(true);
     }
-    setSession(customer);
+
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, []);
 
-  return { session, isLoggedIn: !!session, hydrated, signIn };
+  /**
+   * Remember a guest's details locally. Ignored once genuinely signed in —
+   * the verified session must never be overwritten by unverified input.
+   */
+  const signIn = useCallback(
+    (customer: CustomerSession) => {
+      if (isAuthenticated) return;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(customer));
+      } catch {
+        // ignore write failures (e.g. private browsing)
+      }
+      setSession(customer);
+    },
+    [isAuthenticated],
+  );
+
+  return { session, isLoggedIn: !!session, isAuthenticated, hydrated, signIn };
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useActionState } from "react";
+import type React from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { Boxes, CheckCircle2, Globe2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -19,7 +19,7 @@ import {
 import { ArrowRight } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import { categorySlugLabels } from "@/db/menuList";
-import { submitB2bEnquiry } from "./actions";
+import { useEnquiry } from "@commercekitsdk/react";
 
 const countries = [
   "United States", "United Kingdom", "Canada", "Australia", "Germany", "France",
@@ -31,26 +31,47 @@ const countries = [
 const fieldClass = "mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground";
 const selectTriggerClass = "h-12.5 py-2.5 border-[1.5px] border-[#999796] text-base text-gray-1-foreground mt-2.5 w-full";
 
-const initialState = { success: false, message: "" };
+const SUCCESS_MESSAGE =
+  "Thanks — our wholesale team will review your enquiry and reply by email within 2–3 business days.";
 
 const B2bEnquiryModal = ({ className }: { className?: string }) => {
   const [open, setOpen] = useState(false);
-  const [state, formAction, isPending] = useActionState(submitB2bEnquiry, initialState);
+  /* Posted through the SDK to the server's enquiries endpoint, keyed by type
+     so wholesale leads land in their own queue. The wholesale-specific answers
+     ride along in `fields`, which is why adding a question to this form needs
+     no schema or contract change. */
+  const { submit, isSubmitting, isSuccess, error, reset } = useEnquiry("b2b");
   const formRef = useRef<HTMLFormElement>(null);
-  const prevPending = useRef(false);
 
-  useEffect(() => {
-    if (prevPending.current && !isPending && state.message) {
-      if (!state.success) toast.error(state.message);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const result = await submit({
+      name: String(data.get("fullName") ?? ""),
+      email: String(data.get("email") ?? ""),
+      phone: String(data.get("phone") ?? ""),
+      subject: "Wholesale enquiry",
+      message: String(data.get("message") ?? ""),
+      fields: {
+        companyName: String(data.get("companyName") ?? ""),
+        country: String(data.get("country") ?? ""),
+        category: String(data.get("category") ?? ""),
+        quantity: String(data.get("quantity") ?? ""),
+      },
+    });
+    // From the result, not `error` state: this closure predates the update.
+    if (!result.ok) {
+      toast.error(result.error.message || "We couldn't send your enquiry. Please try again.");
     }
-    prevPending.current = isPending;
-  }, [isPending, state]);
+  };
 
   const handleOpenChange = (next: boolean) => {
     setOpen(next);
     if (!next) {
       setTimeout(() => {
         formRef.current?.reset();
+        // Clear success/error so reopening shows the form, not the last result.
+        reset();
       }, 200);
     }
   };
@@ -63,19 +84,19 @@ const B2bEnquiryModal = ({ className }: { className?: string }) => {
       </Button>
 
       <DialogContent
-        showCloseButton={!state.success}
+        showCloseButton={!isSuccess}
         className="max-w-[640px] w-[calc(100%-2rem)] sm:w-full p-0 gap-0 rounded-3xl overflow-hidden border border-gray-2 shadow-3xl max-h-[90vh] overflow-y-auto"
       >
         <DialogTitle className="sr-only">Request a bulk quote</DialogTitle>
 
-        {state.success ? (
+        {isSuccess ? (
           <div className="flex flex-col items-center justify-center text-center px-8 py-16">
             <div className="relative flex size-16 items-center justify-center rounded-full bg-primary text-white">
               <span className="absolute inset-0 rounded-full bg-primary/30 animate-spring-one" aria-hidden />
               <CheckCircle2 className="relative size-8" strokeWidth={1.5} />
             </div>
             <p className="mt-6 text-secondary-foreground text-xl lg:text-2xl font-medium">Enquiry Sent</p>
-            <p className="mt-2 max-w-sm text-gray-1-foreground leading-[170%]">{state.message}</p>
+            <p className="mt-2 max-w-sm text-gray-1-foreground leading-[170%]">{SUCCESS_MESSAGE}</p>
             <Button type="button" className="mt-7.5 min-w-[160px]" onClick={() => handleOpenChange(false)}>
               Done
             </Button>
@@ -97,7 +118,7 @@ const B2bEnquiryModal = ({ className }: { className?: string }) => {
               </p>
             </div>
 
-            <form ref={formRef} action={formAction} className="px-6 py-7.5 lg:px-10 lg:py-8.75">
+            <form ref={formRef} onSubmit={handleSubmit} className="px-6 py-7.5 lg:px-10 lg:py-8.75">
               <div className="grid sm:grid-cols-2 gap-6">
                 <Label htmlFor="fullName" className="text-gray-1-foreground text-base w-full">
                   Full Name<span className="text-primary-foreground">*</span>
@@ -163,13 +184,13 @@ const B2bEnquiryModal = ({ className }: { className?: string }) => {
                 </Label>
               </div>
 
-              {!state.success && state.message && (
-                <p className="mt-5 text-sm text-red-500">{state.message}</p>
+              {!isSuccess && error && (
+                <p className="mt-5 text-sm text-red-500">{error.message}</p>
               )}
 
               <div className="mt-7.5 flex items-center gap-4">
-                <Button type="submit" disabled={isPending} className="min-w-[180px]">
-                  {isPending ? "Submitting..." : "Submit Enquiry"}
+                <Button type="submit" disabled={isSubmitting} className="min-w-[180px]">
+                  {isSubmitting ? "Submitting..." : "Submit Enquiry"}
                 </Button>
                 <p className="flex items-center gap-1.5 text-xs text-gray-3-foreground">
                   <Globe2 className="size-3.5" /> Trusted by 500+ businesses worldwide

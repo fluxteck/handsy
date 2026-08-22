@@ -8,6 +8,7 @@ import { Navigation } from 'swiper/modules'
 import type { Swiper as TypeSwiper } from 'swiper'
 import 'swiper/css';
 import { ProductType } from '@/types/productType'
+import { productPath } from '@/lib/productPath'
 
 // Shared product-card carousel used by every home section that slides through products
 // (Top Collections, Featured Products' Best Sellers/New Arrivals/Featured tabs). Nav buttons
@@ -61,14 +62,14 @@ const ProductCarousel = ({ data, slidesOffset }: { data: ProductType[]; slidesOf
                         <SwiperSlide key={prd.id}>
                             <Card key={prd.id}>
                                 <CardHeader>
-                                    <CardImg src={prd.thumbnail} height={400} width={340} path="/product-details" />
+                                    <CardImg src={prd.thumbnail} height={400} width={340} path={productPath(prd)} />
                                     <CardLabel isLabel={prd.label ? prd.label : false}>{prd.label}</CardLabel>
                                     <CardDiscount isDiscountTrue={prd.discountPercentage ? prd.discountPercentage : false}>-{prd.discountPercentage}%</CardDiscount>
                                     <CardIcons product={prd} />
                                 </CardHeader>
                                 <CardFooter>
-                                    <CardTitle path="/product-details">{prd.title}</CardTitle>
-                                    <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
+                                    <CardTitle path={productPath(prd)}>{prd.title}</CardTitle>
+                                    <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} currency={prd.currency} />
                                 </CardFooter>
                             </Card>
                         </SwiperSlide>

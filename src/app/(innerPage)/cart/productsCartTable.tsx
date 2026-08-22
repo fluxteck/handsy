@@ -9,20 +9,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  dicrementProductQuentity,
-  incrementProductQuentity,
-  removeToCart,
-} from "@/lib/features/AddToCartSlice";
 import { Close, Minus, Plus, ShopCart } from "@/lib/icon";
-import { useAppDispatch, useAppSelector } from "@/lib/reduxHooks";
+import { useCart } from "@/lib/cart/cart-context";
 import ShopEmptyState from "@/components/ui/shopEmptyState";
 import Image from "next/image";
 import Link from "next/link";
+import currencyFormatter from "currency-formatter";
 
 const ProductsCartTable = () => {
-  const { products } = useAppSelector((state) => state.addToCart);
-  const dispatch = useAppDispatch();
+  const { products, increment, decrement, remove, currency } = useCart();
   return (
     <>
       {products.length ? (
@@ -46,7 +41,7 @@ const ProductsCartTable = () => {
             </TableHeader>
             <TableBody>
               {products.map(({ id, price, thumbnail, title, quantity }) => {
-                const totalPrice = (price * quantity).toFixed(2);
+                const totalPrice = currencyFormatter.format(price * quantity, { code: currency || "INR" });
                 return (
                   <TableRow key={id}>
                     <TableCell className="flex items-center gap-5 py-5 px-7.5 w-[370px]">
@@ -63,13 +58,13 @@ const ProductsCartTable = () => {
                       </b>
                     </TableCell>
                     <TableCell className="text-lg font-medium text-secondary-foreground py-5 px-7.5 w-[165px]">
-                      ${price.toFixed(2)}
+                      {currencyFormatter.format(price, { code: currency || "INR" })}
                     </TableCell>
                     <TableCell className="py-5 px-7.5 w-[190px]">
                       <div className="max-w-25 border border-gray-1 flex items-center gap-4 px-[14px] py-[11px] text-sm font-medium text-gray-1-foreground">
                         <span
                           onClick={() =>
-                            dispatch(dicrementProductQuentity({ id }))
+                            decrement(id)
                           }
                           className="cursor-pointer h-5 flex items-center"
                         >
@@ -78,7 +73,7 @@ const ProductsCartTable = () => {
                         {quantity}
                         <span
                           onClick={() =>
-                            dispatch(incrementProductQuentity({ id }))
+                            increment(id)
                           }
                           className="cursor-pointer h-5 flex items-center"
                         >
@@ -91,7 +86,7 @@ const ProductsCartTable = () => {
                     </TableCell>
                     <TableCell
                       className="text-gray-1-foreground cursor-pointer py-5 px-7.5"
-                      onClick={() => dispatch(removeToCart(id))}
+                      onClick={() => remove(id)}
                     >
                       <Close className="size-7.5" />
                     </TableCell>

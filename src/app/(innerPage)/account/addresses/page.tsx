@@ -1,4 +1,3 @@
-import { getAddressesData } from "@/lib/data";
 import { Metadata } from "next";
 import AddressesContent from "./addressesContent";
 
@@ -7,9 +6,8 @@ export const metadata: Metadata = {
     description: "Manage your saved shipping addresses.",
 };
 
-const AddressesPage = async () => {
-    const addresses = await getAddressesData();
-    return <AddressesContent initialAddresses={addresses} />;
+const AddressesPage = () => {
+    return <AddressesContent />;
 };
 
 export default AddressesPage;

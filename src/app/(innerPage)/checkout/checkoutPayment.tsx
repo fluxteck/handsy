@@ -1,11 +1,27 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Image from "next/image";
 import Link from "next/link";
+import currencyFormatter from "currency-formatter";
+import { useCart } from "@/lib/cart/cart-context";
+import { useCheckout } from "@/lib/checkout/checkout-context";
 
 const CheckoutPayment = () => {
+  const { products, subTotal, currency } = useCart();
+  const {
+    paymentMethod,
+    setPaymentMethod,
+    termsAccepted,
+    setTermsAccepted,
+    isPlacing,
+    placeOrder,
+  } = useCheckout();
+  const money = (amount: number) =>
+    currencyFormatter.format(amount, { code: currency || "INR" });
+
   return (
     <div className="bg-[#F5F5F5] sm:p-10 p-7 rounded-xl">
       <div className="border border-[#999796] sm:p-7.5 p-5 rounded-lg">
@@ -24,28 +40,30 @@ const CheckoutPayment = () => {
             </div>
 
             <div className="mt-7.5 flex flex-col gap-5 border-b-[1.5px] border-b-[#999796] pb-7.5">
-              <div className="flex justify-between">
+              {products.map((line) => (
+              <div className="flex justify-between" key={line.id}>
                 <div className="flex items-center gap-5">
                   <Image
                     width={70}
                     height={70}
-                    src={"/images/cart/img-1.webp"}
+                    src={line.thumbnail}
                     alt="img"
                     className="bg-white max-h-[70px] object-contain"
                   />
                   <div>
                     <p className="text-secondary-foreground lg:text-xl sm:text-lg text-base font-medium">
-                      Modern Tolik Chair
+                      {line.title}
                     </p>
                     <span className="text-base text-secondary-foreground">
-                      Qty: 2
+                      Qty: {line.quantity}
                     </span>
                   </div>
                 </div>
                 <p className="text-secondary-foreground lg:text-xl sm:text-lg text-base font-semibold lg:leading-[150%] mt-2">
-                  $350.00
+                  {money(line.price * line.quantity)}
                 </p>
               </div>
+              ))}
             </div>
 
             <div className="flex justify-between border-b-[1.5px] border-b-[#999796] pb-5 mt-7.5">
@@ -53,7 +71,7 @@ const CheckoutPayment = () => {
                 Subtotal
               </p>
               <p className="lg:text-xl text-lg lg:leading-[150%] font-medium text-secondary-foreground">
-                $1000.00
+                {money(subTotal)}
               </p>
             </div>
 
@@ -98,7 +116,7 @@ const CheckoutPayment = () => {
                 Total
               </p>
               <p className="text-xl leading-[150%] font-medium text-secondary-foreground">
-                $1025.00
+                {money(subTotal)}
               </p>
             </div>
           </div>
@@ -106,7 +124,7 @@ const CheckoutPayment = () => {
       </div>
 
       <div className="mt-10">
-        <RadioGroup defaultValue="bank-transfer" className="gap-y-5">
+        <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="gap-y-5">
           <div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem
@@ -186,6 +204,8 @@ const CheckoutPayment = () => {
         <div className="flex items-center gap-2.5 mt-10">
           <Checkbox
             id="terms"
+            checked={termsAccepted}
+            onCheckedChange={(v) => setTermsAccepted(v === true)}
             className="rounded-[4px] border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
           />
           <Label
@@ -200,7 +220,7 @@ const CheckoutPayment = () => {
           </Label>
         </div>
 
-        <Button className="w-full mt-10">Place Order</Button>
+        <Button className="w-full mt-10" onClick={() => void placeOrder()} disabled={isPlacing}>{isPlacing ? "Placing Order…" : "Place Order"}</Button>
       </div>
     </div>
   );

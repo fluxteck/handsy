@@ -26,7 +26,7 @@ const VendorReach = () => {
           </p>
           <h5 className="mt-3">Grow from local shelves to global shipments</h5>
           <p className="mt-4 text-gray-1-foreground leading-[170%]">
-            Whether you're fulfilling orders in your own city or shipping across borders, Handsy
+            Whether you&apos;re fulfilling orders in your own city or shipping across borders, Handsy
             gives you the reach and logistics support to sell wherever your customers are.
           </p>
 

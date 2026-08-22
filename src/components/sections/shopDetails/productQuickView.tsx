@@ -18,7 +18,7 @@ import ProductInfoDetails, { ProductColorType } from "./productInfoDetails";
  * gracefully instead of breaking. */
 export type ProductQuickViewProduct = Pick<
   ProductType,
-  "id" | "thumbnail" | "title" | "price" | "discountPercentage" | "stock"
+  "id" | "thumbnail" | "title" | "price" | "discountPercentage" | "stock" | "variantId"
 > &
   Partial<Pick<ProductType, "images" | "colors" | "description" | "category">>;
 
@@ -72,6 +72,7 @@ const ProductQuickView = ({
               stock={product.stock}
               colors={colors}
               offers={[]}
+              variantId={product.variantId}
               description={product.description}
               compact
               titleHref="/product-details"

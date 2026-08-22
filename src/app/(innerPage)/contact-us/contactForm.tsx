@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { useActionState } from "react";
+import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import { CheckCircle2, MessageSquare } from "lucide-react";
@@ -9,36 +8,45 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { submitContactForm } from "./actions";
+import { useEnquiry } from "@commercekitsdk/react";
 
 const fieldClass =
   "mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground transition-colors duration-300 focus-visible:border-primary focus-visible:ring-primary/20";
 
-const initialState = { success: false, message: "" };
+const SUCCESS_MESSAGE = "Thanks for reaching out — we'll reply by email shortly.";
 
 const ContactForm = () => {
-  const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
+  /* `useEnquiry` posts through the SDK to the server's enquiries endpoint,
+     which stores the message so it can actually be answered. The form
+     previously ran a server action that validated, slept, logged to the
+     console and reported success — every message sent through it was
+     discarded. */
+  const { submit, isSubmitting } = useEnquiry("contact");
   const formRef = useRef<HTMLFormElement>(null);
-  const prevPending = useRef(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  useEffect(() => {
-    if (isPending) {
-      setShowSuccess(false);
-      prevPending.current = true;
-      return;
-    }
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    setShowSuccess(false);
 
-    if (prevPending.current && state.message) {
-      if (state.success) {
-        setShowSuccess(true);
-        formRef.current?.reset();
-      } else {
-        toast.error(state.message);
-      }
+    const result = await submit({
+      name: String(data.get("name") ?? ""),
+      email: String(data.get("email") ?? ""),
+      message: String(data.get("message") ?? ""),
+    });
+
+    if (result.ok) {
+      setShowSuccess(true);
+      form.reset();
+    } else {
+      /* Read from the returned result, not from `error` state — this closure
+         predates the state update. The server's validation messages are
+         written for the sender to act on. */
+      toast.error(result.error.message || "We couldn't send your message. Please try again.");
     }
-    prevPending.current = false;
-  }, [isPending, state]);
+  };
 
   return (
     <section id="contact-form" className="bg-home-bg-1 lg:py-25 py-15" aria-label="Send us a message">
@@ -76,12 +84,12 @@ const ContactForm = () => {
                 <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" />
                 <div>
                   <p className="text-secondary-foreground font-medium">Message sent</p>
-                  <p className="mt-1 text-sm text-gray-1-foreground leading-[160%]">{state.message}</p>
+                  <p className="mt-1 text-sm text-gray-1-foreground leading-[160%]">{SUCCESS_MESSAGE}</p>
                 </div>
               </motion.div>
             )}
 
-            <form ref={formRef} action={formAction}>
+            <form ref={formRef} onSubmit={handleSubmit}>
               <div className="grid sm:grid-cols-2 gap-6">
                 <Label htmlFor="name" className="text-gray-1-foreground text-base w-full">
                   Name<span className="text-primary-foreground">*</span>
@@ -102,8 +110,8 @@ const ContactForm = () => {
                   className={`${fieldClass} min-h-[140px]`}
                 />
               </Label>
-              <Button type="submit" disabled={isPending} className="mt-10 min-w-[180px] lg:px-12.5">
-                {isPending ? "Sending..." : "Submit"}
+              <Button type="submit" disabled={isSubmitting} className="mt-10 min-w-[180px] lg:px-12.5">
+                {isSubmitting ? "Sending..." : "Submit"}
               </Button>
             </form>
           </div>

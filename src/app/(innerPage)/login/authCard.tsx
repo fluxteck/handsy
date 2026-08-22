@@ -10,6 +10,10 @@ import SignUpForm from './signUpForm'
 const AuthCard = () => {
     const [tab, setTab] = useState<'signup' | 'signin'>('signup')
     const [prefillEmail, setPrefillEmail] = useState('')
+    // Set only when arriving from the Sign-up tab, which has already emailed
+    // the code — the Sign-in tab then opens straight on the code entry.
+    const [prefillName, setPrefillName] = useState('')
+    const [startAtOtp, setStartAtOtp] = useState(false)
 
     return (
         <div className="relative w-full max-w-[400px] rounded-2xl border border-gray-2 bg-background p-5 shadow-sm lg:p-6">
@@ -39,14 +43,20 @@ const AuthCard = () => {
 
                 <TabsContent value="signup" className="mt-6">
                     <SignUpForm
-                        onSignedUp={(email) => {
+                        onSignedUp={(email, name) => {
                             setPrefillEmail(email)
+                            setPrefillName(name)
+                            setStartAtOtp(true)
                             setTab('signin')
                         }}
                     />
                 </TabsContent>
                 <TabsContent value="signin" className="mt-6">
-                    <SignInForm initialEmail={prefillEmail} />
+                    <SignInForm
+                        initialEmail={prefillEmail}
+                        initialName={prefillName}
+                        startAtOtp={startAtOtp}
+                    />
                 </TabsContent>
             </Tabs>
         </div>

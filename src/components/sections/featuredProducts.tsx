@@ -9,7 +9,7 @@ import ProductCarousel from "./productCarousel";
 const FeaturedProducts = ({ featuredProducts }: { featuredProducts: ProductType[] }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [slidesOffset, setSlidesOffset] = useState(0);
-    let filterList: string[] = ["Best Sellers", "New arrivals", "featured"];
+    const filterList: string[] = ["Best Sellers", "New arrivals", "featured"];
 
     useEffect(() => {
         function updateOffset() {

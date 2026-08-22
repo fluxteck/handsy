@@ -9,13 +9,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  dicrementProductQuentity,
-  incrementProductQuentity,
-  removeToCart,
-} from "@/lib/features/AddToCartSlice";
 import { Close, Minus, Plus, ShopCart } from "@/lib/icon";
-import { useAppDispatch, useAppSelector } from "@/lib/reduxHooks";
+import { useCart } from "@/lib/cart/cart-context";
 import currencyFormatter from "currency-formatter";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,13 +21,10 @@ const ShopingCartSidebar = () => {
   const pathName = usePathname();
   const [isClient, setIsClient] = useState(false);
   const [open, setOpen] = useState(false);
-  const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.addToCart.products);
+  const { products, increment, decrement, remove, subTotal, currency } = useCart();
 
-  const totalPrice = products.reduce(
-    (total, product) => total + product.price * product.quantity,
-    0
-  );
+  // Server-computed subtotal — see the note in productCalculateCard.
+  const totalPrice = subTotal;
   const totalProducts = products.reduce(
     (total, product) => total + product.quantity,
     0
@@ -91,7 +83,7 @@ const ShopingCartSidebar = () => {
                           <span
                             className="cursor-pointer h-4 w-5 inline-flex items-center justify-center"
                             onClick={() =>
-                              dispatch(dicrementProductQuentity({ id }))
+                              decrement(id)
                             }
                           >
                             <Minus />
@@ -104,18 +96,18 @@ const ShopingCartSidebar = () => {
                           <span
                             className="cursor-pointer h-4 w-5 inline-flex items-center justify-center"
                             onClick={() =>
-                              dispatch(incrementProductQuentity({ id }))
+                              increment(id)
                             }
                           >
                             <Plus />
                           </span>
                         </div>
                         <span className="text-secondary-foreground text-base">
-                          ${price.toFixed(2)}
+                          {currencyFormatter.format(price, { code: currency || "INR" })}
                         </span>
                       </div>
                       <p
-                        onClick={() => dispatch(removeToCart(id))}
+                        onClick={() => remove(id)}
                         className="text-gray-1-foreground capitalize underline decoration-skip-ink-none text-underline-position decoration-[#666564] cursor-pointer leading-[150%] text-base hover:text-secondary-foreground transition-all duration-500"
                       >
                         remove
@@ -137,7 +129,7 @@ const ShopingCartSidebar = () => {
                       Subtotal:
                     </p>
                     <p className="text-secondary-foreground font-medium">
-                      {currencyFormatter.format(totalPrice, { code: "USD" })}
+                      {currencyFormatter.format(totalPrice, { code: currency || "INR" })}
                     </p>
                   </div>
                   <div className="px-7.5 pt-7.5">

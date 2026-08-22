@@ -5,6 +5,7 @@ import Newsletter from "@/components/sections/newsletter";
 import PageHeader from "@/components/sections/pageHeader";
 import { Metadata } from "next";
 import CouponCodeForm from "./couponCodeForm";
+import { CheckoutProvider } from "@/lib/checkout/checkout-context";
 import LoginForm from "./loginForm";
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ const Checkout = () => {
         breadcrumbLink="/shop"
         breadcrumbLabel="Shop"
       />
+      <CheckoutProvider>
       <div className="container lg:pt-25 lg:pb-30 pt-15 pb-15">
         <div className="grid lg:grid-cols-[auto_48.6%] grid-cols-1 gap-7.5">
           <div>
@@ -31,6 +33,7 @@ const Checkout = () => {
           <CheckoutPayment />
         </div>
       </div>
+      </CheckoutProvider>
       <Newsletter />
       <InstagramGallery />
     </main>

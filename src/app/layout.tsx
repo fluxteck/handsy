@@ -3,6 +3,8 @@ import localFont from 'next/font/local'
 import { Instrument_Serif } from 'next/font/google'
 import "./globals.css";
 import StoreProvider from "./StoreProvider";
+import { CartProvider } from "@/lib/cart/cart-context";
+import { WishlistProvider } from "@/lib/wishlist/wishlist-context";
 import { Toaster } from "react-hot-toast";
 import SmoothScroll from "@/components/smoothScroll";
 // import WelcomePopup from "@/components/sections/welcomePopup";
@@ -97,9 +99,16 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <StoreProvider>
-          <SmoothScroll />
-          {children}
-          <Toaster position="top-right" reverseOrder={false} />
+          {/* Cart and wishlist come from the server via the SDK. Redux still
+              backs "compare", which has no server-side equivalent, so the
+              store provider stays mounted. */}
+          <CartProvider>
+            <WishlistProvider>
+            <SmoothScroll />
+            {children}
+            <Toaster position="top-right" reverseOrder={false} />
+            </WishlistProvider>
+          </CartProvider>
         </StoreProvider>
       </body>
     </html>

@@ -5,24 +5,63 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CustomerType } from "@/types/accountType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useMyProfile } from "@/lib/account/use-account";
 
 // No account-settings API exists yet — both forms below only show a success toast on submit.
-// TODO: connect to real update-profile / change-password endpoints once available.
-const SettingsContent = ({ customer }: { customer: CustomerType }) => {
-    const [profile, setProfile] = useState({ name: customer.name, email: customer.email, phone: customer.phone });
+// Profile is wired to `users.update` via the SDK. There is no password to
+// change — sign-in is an emailed one-time code.
+const SettingsContent = () => {
+    const { data: customer, loading, save } = useMyProfile();
+    const [profile, setProfile] = useState({ name: "", email: "", phone: "" });
+
+    // Adopt the fetched profile once it arrives (the form starts empty because
+    // the read is owner-scoped and happens in the browser).
+    useEffect(() => {
+        if (customer) setProfile({ name: customer.name, email: customer.email, phone: customer.phone });
+    }, [customer]);
     const [preferences, setPreferences] = useState({ orderUpdates: true, offers: true, wishlistAlerts: false });
 
     const handleProfileSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        toast.success("Profile updated successfully");
+        // Name is stored as first/last on the server; split on the first space.
+        /* Email is the account's identity — it's the address the sign-in code
+           is sent to — and `UpdateCustomerInput` accepts only name and phone.
+           Saying "updated" after someone edits it would be a lie, so say what
+           actually happens instead. */
+        if (customer && profile.email.trim() !== customer.email) {
+            toast("Your email is your sign-in address and can't be changed here.");
+        }
+        /* Guard against saving the empty initial form: the read is
+           owner-scoped and resolves in the browser, so submitting before it
+           lands would overwrite the customer's stored name and phone with "". */
+        if (loading) {
+            toast("Still loading your profile — one moment.");
+            return;
+        }
+        // Loaded but absent means the read failed; saying "still loading" would
+        // send the customer back to a button that will never work.
+        if (!customer) {
+            toast.error("We couldn't load your profile. Please refresh and try again.");
+            return;
+        }
+        const [firstName, ...rest] = profile.name.trim().split(" ");
+        void save({
+            firstName: firstName ?? "",
+            lastName: rest.join(" "),
+            phone: profile.phone,
+        })
+            .then(() => toast.success("Profile updated successfully"))
+            .catch(() => toast.error("Couldn't save your profile. Please try again."));
     };
 
+    /* This store is passwordless — sign-in is an emailed one-time code, so
+       there is no password to change. Say so rather than reporting success for
+       something that never happened. */
     const handlePasswordSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        toast.success("Password changed successfully");
+        toast("This store signs you in with an emailed code — there's no password to change.");
         (event.target as HTMLFormElement).reset();
     };
 
@@ -60,7 +99,7 @@ const SettingsContent = ({ customer }: { customer: CustomerType }) => {
                         />
                     </div>
                     <div className="sm:col-span-2">
-                        <Button type="submit" size="sm">
+                        <Button type="submit" size="sm" disabled={loading}>
                             Save Changes
                         </Button>
                     </div>

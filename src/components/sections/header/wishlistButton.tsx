@@ -2,11 +2,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Heart } from "@/lib/icon";
-import { useAppSelector } from "@/lib/reduxHooks";
+import { useWishlist } from "@/lib/wishlist/wishlist-context";
 
 const WishlistButton = () => {
   const [isClient, setIsClient] = useState(false);
-  const products = useAppSelector((state) => state.addToWishlist.products);
+  const { products } = useWishlist();
 
   useEffect(() => {
     setIsClient(true);

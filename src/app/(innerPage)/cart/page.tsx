@@ -6,13 +6,17 @@ import PageHeader from "@/components/sections/pageHeader";
 import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import RecentlyViewed from "@/components/sections/recentlyViewed";
 import { Metadata } from "next";
+import { getTopRatedProducts } from "@/lib/sdk";
 
 export const metadata: Metadata = {
   title: "Cart",
   description: "View your shopping cart and proceed to checkout.",
 };
 
-const VIewCart = () => {
+const VIewCart = async () => {
+  /* Suggestions come from the catalogue — the mock fallback would put sample
+     products next to a real cart. */
+  const suggestions = await getTopRatedProducts(4);
   return (
     <main>
       <PageHeader
@@ -28,7 +32,7 @@ const VIewCart = () => {
         </div>
       </div>
       <RecentlyViewed />
-      <RelatedProducts />
+      <RelatedProducts products={suggestions} />
       <Newsletter />
       <InstagramGallery />
     </main>

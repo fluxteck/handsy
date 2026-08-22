@@ -26,7 +26,11 @@ export type OrderTrackingStepType = {
 };
 
 export type OrderType = {
+    /** Stable identifier used for routing and `orders.get`. */
     id: string;
+    /** Human-facing reference shown to the customer (e.g. "#1042"). Optional
+     *  so the static sample data, which only has a display id, still fits. */
+    number?: string;
     placedOn: string;
     status: OrderStatus;
     total: number;
@@ -104,6 +108,10 @@ export type CustomerReviewType = {
     rating: number;
     comment: string;
     date: string;
+    /** Product slug, so the row can link to the product. */
+    slug?: string;
+    /** Moderation state — `pending` means it isn't public yet. */
+    status?: "pending" | "published" | "rejected";
 };
 
 export type RecentlyViewedType = {

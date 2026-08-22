@@ -18,7 +18,7 @@ const TermsConditions = async () => {
             <PageHeader pageTitle='Terms & Conditions' currentPage='Terms & Conditions' />
             <section className='container lg:py-25 py-15'>
                 <h5 className='mb-5'>Terms & Conditions for Handsy Market</h5>
-                <p className='lg:text-xl text-lg font-medium leading-[170%] text-gray-1-foreground'>Thank you for visiting Handsy Market.  These Terms and Conditions ("Terms") govern your use of our website and services. By accessing or using our website, you agree to comply with and be bound by these Terms. Please read them carefully.</p>
+                <p className='lg:text-xl text-lg font-medium leading-[170%] text-gray-1-foreground'>Thank you for visiting Handsy Market.  These Terms and Conditions (&quot;Terms&quot;) govern your use of our website and services. By accessing or using our website, you agree to comply with and be bound by these Terms. Please read them carefully.</p>
                 <ol className='mt-10 list-decimal list-inside grid gap-5'>
                     {
                         termsAndConditionsData.map(({ description, title, details }, index) => {

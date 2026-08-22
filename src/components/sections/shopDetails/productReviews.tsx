@@ -3,17 +3,22 @@ import ReviewsList from "@/components/sections/shopDetails/reviewsList";
 import WriteReviewModal from "@/components/sections/shopDetails/writeReviewModal";
 import { getProductReviewsData } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import type { ReviewType } from "@/types/reviewType";
 
 const ProductReviews = async ({
   productId,
   productName,
   className,
+  reviews: providedReviews,
 }: {
   productId: number | string;
   productName?: string;
   className?: string;
+  /** Supplied by SDK-backed pages; omitted elsewhere, which falls back to the
+   *  static review data the rest of the template still uses. */
+  reviews?: ReviewType[];
 }) => {
-  const reviews = await getProductReviewsData(productId);
+  const reviews = providedReviews ?? (await getProductReviewsData(productId));
 
   return (
     <section className={cn("lg:mt-25 mt-15", className)}>

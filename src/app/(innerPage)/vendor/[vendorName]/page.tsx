@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { Globe, LifeBuoy, Lock, ShieldCheck } from "lucide-react";
 import Newsletter from "@/components/sections/newsletter";
 import TrustBadges, { TrustBadgeItem } from "@/app/(innerPage)/login/trustBadges";
-import { getAllVendorsData, getVendorData, getVendorProductsData } from "@/lib/data";
+import { getVendorBySlug, getVendorProducts, getVendorSlugs } from "@/lib/sdk/catalog";
+import { toVendorType } from "@/lib/mappers/vendor";
+import { productPath } from "@/lib/productPath";
 import VendorAbout from "./vendorAbout";
 import VendorHero from "./vendorHero";
 import VendorProducts from "./vendorProducts";
@@ -20,14 +22,15 @@ const trustItems: TrustBadgeItem[] = [
 ];
 
 export const generateStaticParams = async () => {
-  const vendors = await getAllVendorsData();
-  return vendors.map((vendor) => ({ vendorName: vendor.slug }));
+  const slugs = await getVendorSlugs();
+  return slugs.map((vendorName) => ({ vendorName }));
 };
 
 export const generateMetadata = async ({ params }: PageProps): Promise<Metadata> => {
   const { vendorName } = await params;
-  const vendor = await getVendorData(vendorName);
-  if (!vendor) return {};
+  const brand = await getVendorBySlug(vendorName);
+  if (!brand) return {};
+  const vendor = toVendorType(brand);
 
   const description =
     vendor.description.length > 155 ? `${vendor.description.slice(0, 152)}...` : vendor.description;
@@ -55,11 +58,19 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
 
 const VendorStorefrontPage = async ({ params }: PageProps) => {
   const { vendorName } = await params;
-  const vendor = await getVendorData(vendorName);
-  if (!vendor) notFound();
+  const brand = await getVendorBySlug(vendorName);
+  if (!brand) notFound();
 
-  const products = await getVendorProductsData(vendor.slug);
-  const reviewCount = Number.parseInt(vendor.totalReviews.replace(/[^0-9]/g, ""), 10) || undefined;
+  // Categories come from the maker's own products, so the filter pills can
+  // never offer a category that matches nothing.
+  const { products, categories } = await getVendorProducts(brand.slug);
+  const vendor = toVendorType(brand, categories);
+  // `VendorProductType` is a ProductType tagged with its maker; the tag is part
+  // of the component's contract even though it renders nothing today.
+  const vendorProducts = products.map((product) => ({ ...product, vendorSlug: brand.slug }));
+  // Straight from the aggregate rather than parsed back out of the display
+  // string, which loses precision once it reads "1.2k".
+  const reviewCount = brand.reviewCount || undefined;
 
   // TODO: once a canonical NEXT_PUBLIC_SITE_URL is available, prefix these with the absolute
   // origin instead of a site-relative path, and swap the product `url`s for real per-product
@@ -89,7 +100,7 @@ const VendorStorefrontPage = async ({ params }: PageProps) => {
       name: product.title,
       price: product.price,
       priceCurrency: product.currency,
-      url: "/product-details",
+      url: productPath(product),
     })),
   };
 
@@ -97,12 +108,12 @@ const VendorStorefrontPage = async ({ params }: PageProps) => {
     <main>
       <script
         type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
+         
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <VendorHero vendor={vendor} productCount={products.length} />
       <VendorAbout vendor={vendor} />
-      <VendorProducts vendor={vendor} products={products} />
+      <VendorProducts vendor={vendor} products={vendorProducts} />
       <section aria-label={`Why shop with ${vendor.name} on Handsy Market`} className="border-t border-gray-2 bg-home-bg-1 py-8">
         <div className="container">
           <TrustBadges

@@ -7,7 +7,7 @@ const Rating = ({ star, iconSize, className }: { star: number, iconSize?: string
   return (
     <ul className={cn('flex gap-[5px]', className)}>
       {Array.from({ length: 5 }).map((elem, index) => {
-        let number = index + 0.5;
+        const number = index + 0.5;
         return (
           <li key={index} className='text-[#FFA34E]'>
             {

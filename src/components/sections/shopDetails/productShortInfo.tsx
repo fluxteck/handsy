@@ -3,8 +3,6 @@ import { Button } from "@/components/ui/button";
 import Rating from "@/components/ui/rating";
 import { cn } from "@/lib/utils";
 import calcluteDiscount from "@/lib/calcluteDiscount";
-import { addToCart } from "@/lib/features/AddToCartSlice";
-import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
 import { addToCompare } from "@/lib/features/CompareProductsSlice";
 import {
   ChevronRight,
@@ -21,12 +19,18 @@ import { useAppDispatch } from "@/lib/reduxHooks";
 import currencyFormatter from "currency-formatter";
 import Link from "next/link";
 import { useState } from "react";
+import { useCart } from "@/lib/cart/cart-context";
+import { useWishlist } from "@/lib/wishlist/wishlist-context";
+import { getStoreCurrency } from "@/lib/config";
 
 const colors = ["#E56F45", "#B4CBBB", "#CDA477", "#EADDC9", "#E5E2E1"];
 const sizes = ["s", "m", "l"];
 
 export interface ProductShortInfoPropsType {
   id: number | string;
+  /** Purchasable variant — the server's cart keys lines by variant, not
+   *  product. Absent on sample data, which can't be ordered. */
+  variantId?: string;
   isSiteMapShow?: boolean;
   title: string;
   price: number;
@@ -38,6 +42,7 @@ export interface ProductShortInfoPropsType {
 }
 const ProductShortInfo = ({
   id,
+  variantId,
   isSiteMapShow,
   title,
   price,
@@ -47,6 +52,8 @@ const ProductShortInfo = ({
   compact = false,
 }: ProductShortInfoPropsType) => {
   const dispatch = useAppDispatch();
+  const { add: addToCartLine } = useCart();
+  const { add: addToWishlistEntry } = useWishlist();
   const [selectSize, setSelectSize] = useState("m");
   const [selectColor, setSelectColor] = useState("#E56F45");
   const [productQuantity, setProductQuantity] = useState(1);
@@ -156,10 +163,10 @@ const ProductShortInfo = ({
       >
         {discountPercentage ? (
           <del className="text-gray-3-foreground">
-            {currencyFormatter.format(price, { code: "USD" })}
+            {currencyFormatter.format(price, { code: getStoreCurrency() })}
           </del>
         ) : null}{" "}
-        <span>{currencyFormatter.format(finalPrice, { code: "USD" })}</span>
+        <span>{currencyFormatter.format(finalPrice, { code: getStoreCurrency() })}</span>
       </p>
       <p
         className={cn(
@@ -217,17 +224,7 @@ const ProductShortInfo = ({
         <Button
           size={"sm"}
           onClick={() =>
-            dispatch(
-              addToCart({
-                id,
-                thumbnail,
-                quantity: productQuantity,
-                price: finalPrice,
-                color: selectColor,
-                size: selectSize,
-                title,
-              })
-            )
+            void addToCartLine({ variantId, quantity: productQuantity, title, thumbnail, price: finalPrice, currency: getStoreCurrency() })
           }
         >
           Add To Cart
@@ -236,18 +233,25 @@ const ProductShortInfo = ({
       <div className={cn("flex gap-4", compact ? "mt-4" : "mt-[22px]")}>
         <div
           onClick={() =>
-            dispatch(
-              addToWishlist({
-                id,
-                date: "May 14, 2025",
-                price,
-                thumbnail,
-                title,
-                color: selectColor,
-                size: selectSize,
-                stock,
-              })
-            )
+            void addToWishlistEntry({
+              id,
+              title,
+              description: "",
+              price,
+              currency: getStoreCurrency(),
+              discountPercentage,
+              rating: 0,
+              totalRating: "0",
+              stock,
+              brand: "",
+              label: "",
+              category: "",
+              thumbnail,
+              colors: [],
+              filter: "",
+              images: [],
+              ...(variantId ? { variantId } : {}),
+            })
           }
           className="flex items-center gap-2 text-gray-1-foreground cursor-pointer hover:text-secondary-foreground transition-all duration-500"
         >

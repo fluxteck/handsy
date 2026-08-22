@@ -5,16 +5,14 @@ import currencyFormatter from 'currency-formatter';
 import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger, } from "@/components/ui/dialog"
 import { Close } from '@/lib/icon'
 import { Button } from '@/components/ui/button'
-import { useAppSelector } from '@/lib/reduxHooks'
 import calcluteDiscount from '@/lib/calcluteDiscount'
-import { useDispatch } from 'react-redux';
-import { addToCart } from '@/lib/features/AddToCartSlice';
 import Link from 'next/link';
-import { removeToWishlist } from '@/lib/features/AddToWishlistSlice';
+import { useCart } from "@/lib/cart/cart-context";
+import { useWishlist } from "@/lib/wishlist/wishlist-context";
 
 const WishlistPopup = () => {
-    const products = useAppSelector((product) => product.addToWishlist.products)
-    const dispatch = useDispatch()
+    const { add: addToCartLine } = useCart();
+    const { products, remove } = useWishlist()
     return (
         <Dialog>
             <DialogTrigger className='text-primary-foreground'>Wishlist</DialogTrigger>
@@ -32,13 +30,13 @@ const WishlistPopup = () => {
 
                                 <div className='min-w-[600px]'>
                                     {
-                                        products.map(({ date, id, price, discountPercentage, thumbnail, title, color, size }) => {
+                                        products.map(({ date, id, price, discountPercentage, thumbnail, title, color, size, variantId, currency }) => {
                                             const finalPrice = discountPercentage ? calcluteDiscount(price, discountPercentage) : price;
 
                                             return (
                                                 <div key={id} className='px-7.5 py-5 flex items-center gap-5  border-b-[1.5px] border-[#E5E2E1]'>
                                                     <p
-                                                        onClick={() => dispatch(removeToWishlist(id))}
+                                                        onClick={() => void remove(id)}
                                                         className='text-gray-1-foreground cursor-pointer hover:text-secondary-foreground transition-all duration-500'
                                                     >
                                                         <Close className='size-7.5' />
@@ -49,15 +47,15 @@ const WishlistPopup = () => {
                                                     <div>
                                                         <p className='text-secondary-foreground capitalize'>{title}</p>
                                                         <span className='text-secondary-foreground text-base block mt-1'>
-                                                            {discountPercentage ? <del className='text-gray-3-foreground font-normal'>{currencyFormatter.format(price, { code: 'USD' })}</del> : null} {' '}
-                                                            <span>{currencyFormatter.format(finalPrice, { code: 'USD' })}</span>
+                                                            {discountPercentage ? <del className='text-gray-3-foreground font-normal'>{currencyFormatter.format(price, { code: currency || 'USD' })}</del> : null} {' '}
+                                                            <span>{currencyFormatter.format(finalPrice, { code: currency || 'USD' })}</span>
                                                         </span>
                                                         <span className='text-gray-3-foreground text-base block mt-1'>{date}</span>
                                                     </div>
                                                     <Button
                                                         variant={"outline"}
                                                         size={"sm"}
-                                                        onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
+                                                        onClick={() => void addToCartLine({ variantId, quantity: 1, title })}
                                                         className='text-gray-1-foreground border-gray-1 ml-auto'
                                                     >
                                                         Add To cart

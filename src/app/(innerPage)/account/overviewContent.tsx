@@ -2,9 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Call, Email, Heart } from "@/lib/icon";
-import { useAppSelector } from "@/lib/reduxHooks";
 import { cn } from "@/lib/utils";
-import { CustomerType, OrderType } from "@/types/accountType";
+import { CustomerType } from "@/types/accountType";
 import currencyFormatter from "currency-formatter";
 import { ChevronRight, PackageCheck, PackageSearch, ShieldCheck, ShoppingBag } from "lucide-react";
 import Image from "next/image";
@@ -13,6 +12,12 @@ import { useEffect, useState } from "react";
 import { AccountMobileMenu } from "@/components/sections/account/accountSidebar";
 import { Panel } from "@/components/sections/account/panel";
 import { StatusBadge } from "@/components/sections/account/statusBadge";
+import { useMyOrders, useMyProfile } from "@/lib/account/use-account";
+import { getStoreCurrency } from "@/lib/config";
+import { useWishlist } from "@/lib/wishlist/wishlist-context";
+
+/** Orders are priced in the store's currency, not a hardcoded dollar. */
+const storeCurrency = getStoreCurrency();
 
 const StatCard = ({
     icon: Icon,
@@ -40,17 +45,24 @@ const StatCard = ({
     </Panel>
 );
 
-const OverviewContent = ({
-    customer,
-    orders,
-    unreadCount,
-}: {
-    customer: CustomerType;
-    orders: OrderType[];
-    unreadCount: number;
-}) => {
+const OverviewContent = ({ unreadCount }: { unreadCount: number }) => {
+    // Owner-scoped reads happen in the browser — see use-account.ts.
+    const { data: profile } = useMyProfile();
+    const { data: orders } = useMyOrders();
+    /* The profile arrives asynchronously. Rather than sprinkle null checks
+       through the markup, fall back to a blank record with the same shape so
+       the panels render their normal skeleton of labels while it loads. */
+    const customer: CustomerType = profile ?? {
+        id: "",
+        name: "",
+        email: "",
+        phone: "",
+        avatar: "",
+        verified: false,
+        memberSince: "",
+    };
     const [isClient, setIsClient] = useState(false);
-    const wishlistProducts = useAppSelector((state) => state.addToWishlist.products);
+    const { products: wishlistProducts } = useWishlist();
 
     useEffect(() => {
         setIsClient(true);
@@ -185,10 +197,10 @@ const OverviewContent = ({
                                     />
                                 </div>
                                 <div>
-                                    <p className="font-medium text-secondary-foreground">{order.id}</p>
+                                    <p className="font-medium text-secondary-foreground">{order.number ?? order.id}</p>
                                     <p className="text-sm text-gray-1-foreground">
                                         {order.items.length} item{order.items.length > 1 ? "s" : ""} ·{" "}
-                                        {currencyFormatter.format(order.total, { code: "USD" })}
+                                        {currencyFormatter.format(order.total, { code: storeCurrency })}
                                     </p>
                                 </div>
                             </div>

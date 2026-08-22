@@ -7,9 +7,9 @@ import { OtpInput } from '@/components/ui/otp-input'
 import { AppleIcon, ArrowLeft, GoogleIcon } from '@/lib/icon'
 import { Headphones, RotateCcw, ShieldCheck } from 'lucide-react'
 import { useEffect, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { useCustomerSession } from '@/lib/useCustomerSession'
-import { sendOtp, verifyOtp } from './actions'
+import { requestEmailOtp, setDisplayName, verifyEmailOtp } from '@/lib/auth/otp'
 import { SOCIAL_LOGIN_ENABLED } from './config'
 import TrustBadges from './trustBadges'
 
@@ -21,19 +21,53 @@ const signInReassurance = [
 
 const RESEND_SECONDS = 30
 
-const SignInForm = ({ initialEmail = '' }: { initialEmail?: string }) => {
-    const [step, setStep] = useState<'email' | 'otp' | 'success'>('email')
+/**
+ * Where to land after signing in. Middleware sends guests to
+ * `/login?from=<path>`, so honour that and drop them back where they were
+ * headed. Read from `window.location` rather than `useSearchParams` so the
+ * login page can still be statically prerendered without a Suspense boundary.
+ * Only same-origin paths are accepted — an absolute URL here would be an open
+ * redirect.
+ */
+const resolveRedirect = (): string => {
+    if (typeof window === 'undefined') return '/account'
+    const from = new URLSearchParams(window.location.search).get('from')
+    return from && from.startsWith('/') && !from.startsWith('//') ? from : '/account'
+}
+
+/**
+ * `startAtOtp` lets the Sign-up tab hand over mid-flow: it has already emailed
+ * the code, so landing the customer on the email step again would send a
+ * second one. `initialName` is applied to the profile once verification
+ * succeeds — the account itself is created by Supabase on verify.
+ */
+const SignInForm = ({
+    initialEmail = '',
+    initialName = '',
+    startAtOtp = false,
+}: {
+    initialEmail?: string
+    initialName?: string
+    startAtOtp?: boolean
+}) => {
+    const [step, setStep] = useState<'email' | 'otp' | 'success'>(
+        startAtOtp && initialEmail ? 'otp' : 'email',
+    )
     const [email, setEmail] = useState(initialEmail)
-    const [otpToken, setOtpToken] = useState('')
     const [code, setCode] = useState<string[]>(Array(6).fill(''))
     const [error, setError] = useState('')
-    const [resendIn, setResendIn] = useState(0)
+    const [resendIn, setResendIn] = useState(startAtOtp && initialEmail ? RESEND_SECONDS : 0)
     const [isPending, startTransition] = useTransition()
-    const { signIn } = useCustomerSession()
+    const router = useRouter()
 
     useEffect(() => {
         setEmail(initialEmail)
-    }, [initialEmail])
+        if (startAtOtp && initialEmail) {
+            setStep('otp')
+            setCode(Array(6).fill(''))
+            setResendIn(RESEND_SECONDS)
+        }
+    }, [initialEmail, startAtOtp])
 
     useEffect(() => {
         if (resendIn <= 0) return
@@ -45,12 +79,12 @@ const SignInForm = ({ initialEmail = '' }: { initialEmail?: string }) => {
         e.preventDefault()
         setError('')
         startTransition(async () => {
-            const res = await sendOtp(email)
+            const res = await requestEmailOtp(email)
             if (res.status === 'error') {
                 setError(res.message)
+                toast.error(res.message)
                 return
             }
-            setOtpToken(res.otpToken)
             setCode(Array(6).fill(''))
             setStep('otp')
             setResendIn(RESEND_SECONDS)
@@ -62,12 +96,12 @@ const SignInForm = ({ initialEmail = '' }: { initialEmail?: string }) => {
         if (resendIn > 0 || isPending) return
         setError('')
         startTransition(async () => {
-            const res = await sendOtp(email)
+            const res = await requestEmailOtp(email)
             if (res.status === 'error') {
                 setError(res.message)
+                toast.error(res.message)
                 return
             }
-            setOtpToken(res.otpToken)
             setCode(Array(6).fill(''))
             setResendIn(RESEND_SECONDS)
             toast.success('New code sent.')
@@ -80,17 +114,25 @@ const SignInForm = ({ initialEmail = '' }: { initialEmail?: string }) => {
         const joined = code.join('')
         if (joined.length < 6) {
             setError('Enter all 6 digits.')
+            toast.error('Enter all 6 digits.')
             return
         }
         startTransition(async () => {
-            const res = await verifyOtp({ email, code: joined, otpToken })
+            const res = await verifyEmailOtp(email, joined)
             if (res.status === 'error') {
                 setError(res.message)
+                toast.error(res.message)
                 return
             }
+            if (initialName) await setDisplayName(initialName)
             toast.success(res.message)
-            signIn({ email })
             setStep('success')
+            // The session cookie exists now. Refresh so server components
+            // re-render as signed in, then honour the `?from=` middleware set
+            // when it bounced the customer here — the success copy promises a
+            // redirect, so actually perform one.
+            router.refresh()
+            router.replace(resolveRedirect())
         })
     }
 
@@ -101,7 +143,7 @@ const SignInForm = ({ initialEmail = '' }: { initialEmail?: string }) => {
     if (step === 'success') {
         return (
             <div className="py-6 text-center">
-                <h1 className="text-xl font-medium text-secondary-foreground lg:text-2xl">You're signed in</h1>
+                <h1 className="text-xl font-medium text-secondary-foreground lg:text-2xl">You&apos;re signed in</h1>
                 <p className="mt-2 text-sm text-gray-1-foreground">Welcome back — redirecting you to your account.</p>
                 <Button asChild className="mt-6 w-full">
                     <a href="/account">Go to My Account</a>
@@ -158,7 +200,7 @@ const SignInForm = ({ initialEmail = '' }: { initialEmail?: string }) => {
     return (
         <div>
             <h1 className="text-xl font-medium text-secondary-foreground lg:text-2xl">Sign in with email</h1>
-            <p className="mt-1.5 text-sm text-gray-1-foreground">We'll email you a one-time code — no password needed.</p>
+            <p className="mt-1.5 text-sm text-gray-1-foreground">We&apos;ll email you a one-time code — no password needed.</p>
 
             <form onSubmit={handleSendOtp} className="mt-5 flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">

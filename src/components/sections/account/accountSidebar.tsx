@@ -6,6 +6,7 @@ import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { signOut } from "@/lib/auth/otp";
 import { accountNavItems, isAccountNavItemActive } from "./accountNavItems";
 
 const NavLink = ({
@@ -53,11 +54,20 @@ const NavLink = ({
     </Link>
 );
 
-// Auth is UI-only in this project (no real session/backend yet) — logout simply clears the
-// illusion of a session and returns home. Wire this to a real sign-out call once auth exists.
-const handleLogout = (router: ReturnType<typeof useRouter>) => {
-    toast.success("Logged out successfully");
+// Ends the real Supabase session, not just the appearance of one. `refresh()`
+// after navigating re-runs the server components so anything that rendered as
+// signed-in re-renders as a guest; without it the account shell would keep
+// showing stale, cached customer data.
+const handleLogout = async (router: ReturnType<typeof useRouter>) => {
+    try {
+        await signOut();
+        toast.success("Logged out successfully");
+    } catch {
+        toast.error("Couldn't sign you out. Please try again.");
+        return;
+    }
     router.push("/");
+    router.refresh();
 };
 
 export const AccountSidebar = ({ unreadCount = 0 }: { unreadCount?: number }) => {

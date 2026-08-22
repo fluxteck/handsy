@@ -16,6 +16,7 @@ import { AddressType } from "@/types/accountType";
 import { MapPinned, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useMyAddresses } from "@/lib/account/use-account";
 
 const emptyForm: Omit<AddressType, "id"> = {
     label: "",
@@ -29,10 +30,30 @@ const emptyForm: Omit<AddressType, "id"> = {
     country: "India",
 };
 
-// No backend for addresses yet — this manages state locally so the UI is fully usable.
-// TODO: replace the handlers below with real create/update/delete API calls once available.
-const AddressesContent = ({ initialAddresses }: { initialAddresses: AddressType[] }) => {
-    const [addresses, setAddresses] = useState(initialAddresses);
+/** The form's flat shape → the SDK's address input. */
+const toInput = (f: typeof emptyForm) => {
+    const [firstName, ...rest] = (f.fullName || "").trim().split(" ");
+    return {
+        firstName: firstName ?? "",
+        lastName: rest.join(" "),
+        // The SDK has no label field; `company` is the free-text slot the
+        // mapper already reads the label back out of, so a saved label
+        // survives a round trip instead of being dropped.
+        company: f.label,
+        line1: f.line1,
+        line2: f.line2,
+        city: f.city,
+        region: f.state,
+        postalCode: f.postalCode,
+        country: f.country,
+        phone: f.phone,
+        isDefault: Boolean(f.isDefault),
+    };
+};
+
+const AddressesContent = () => {
+    // Owner-scoped CRUD through the SDK; the server enforces `requireSelf`.
+    const { data: addresses, loading, error, add, update, remove } = useMyAddresses();
     const [isOpen, setIsOpen] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);
     const [form, setForm] = useState(emptyForm);
@@ -51,23 +72,33 @@ const AddressesContent = ({ initialAddresses }: { initialAddresses: AddressType[
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
+        /* Report the outcome only once the server has answered. Toasting
+           success synchronously meant a failed save showed "Address updated"
+           and "Couldn't save that address." together. */
         if (editingId) {
-            setAddresses((prev) => prev.map((a) => (a.id === editingId ? { ...a, ...form } : a)));
-            toast.success("Address updated");
+            void update(editingId, toInput(form))
+                .then(() => toast.success("Address updated"))
+                .catch(() => toast.error("Couldn't save that address."));
         } else {
-            setAddresses((prev) => [...prev, { ...form, id: `addr_${Date.now()}` }]);
-            toast.success("Address added");
+            void add(toInput(form))
+                .then(() => toast.success("Address added"))
+                .catch(() => toast.error("Couldn't add that address."));
         }
         setIsOpen(false);
     };
 
     const handleDelete = (id: string) => {
-        setAddresses((prev) => prev.filter((a) => a.id !== id));
-        toast.success("Address removed");
+        void remove(id)
+            .then(() => toast.success("Address removed"))
+            .catch(() => toast.error("Couldn't remove that address."));
     };
 
     const handleSetDefault = (id: string) => {
-        setAddresses((prev) => prev.map((a) => ({ ...a, isDefault: a.id === id })));
+        // The server owns "default"; flipping it here would drift from the
+        // record used at checkout.
+        void update(id, { isDefault: true }).catch(() =>
+            toast.error("Couldn't set that as your default address."),
+        );
     };
 
     return (
@@ -234,8 +265,8 @@ const AddressesContent = ({ initialAddresses }: { initialAddresses: AddressType[
             ) : (
                 <EmptyState
                     icon={MapPinned}
-                    title="No saved addresses"
-                    description="Add an address to speed up checkout next time."
+                    title={loading ? "Loading your addresses…" : error ? "Couldn't load your addresses" : "No saved addresses"}
+                    description={loading ? "One moment." : error ? "Please refresh to try again." : "Add an address to speed up checkout next time."}
                 />
             )}
         </Panel>

@@ -10,33 +10,29 @@ import {
 import { Close, Search } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import { menuList } from "@/db/menuList";
-import { ProductType } from "@/types/productType";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useProductSearch } from "@/lib/sdk/use-search";
+import { productPath } from "@/lib/productPath";
 
 const categoryLabels = menuList.map(({ label }) => label);
 const PLACEHOLDER_ROTATE_MS = 2500;
 
-const SearchPopup = ({ data }: { data: ProductType[] }) => {
+const SearchPopup = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [searchProducts, setSearchProducts] = useState<ProductType[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const popupRef = useRef<HTMLDivElement>(null);
   const [isInteractingWithSelect, setIsInteractingWithSelect] = useState(false);
 
+  /* Server-side full-text search, debounced — see `useProductSearch`. The
+     previous implementation filtered one preloaded page in the browser, so it
+     could only ever find products that had already been shipped to the page. */
+  const { results: searchProducts } = useProductSearch(searchInput);
+
   useEffect(() => {
-    if (searchInput.trim() !== "") {
-      const filteredProducts = data.filter(({ title }) =>
-        title.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase())
-      );
-      setSearchProducts(filteredProducts);
-      setIsOpen(true);
-    } else {
-      setSearchProducts([]);
-      setIsOpen(false);
-    }
+    setIsOpen(searchInput.trim() !== "");
   }, [searchInput]);
 
   useEffect(() => {
@@ -55,7 +51,6 @@ const SearchPopup = ({ data }: { data: ProductType[] }) => {
     const handleScroll = () => {
       setIsOpen(false);
       setIsMobileOpen(false);
-      setSearchProducts([]);
       setSearchInput("");
     };
 
@@ -93,10 +88,10 @@ const SearchPopup = ({ data }: { data: ProductType[] }) => {
 
   const resultsDropdown = searchProducts.length > 0 && (
     <div data-lenis-prevent className="hidden md:block absolute top-full left-0 mt-2 w-full bg-background shadow-lg rounded-md border border-border max-h-[300px] overflow-y-auto z-50 animate-in fade-in slide-in-from-top-2 duration-300">
-      {searchProducts.map(({ id, title }) => (
+      {searchProducts.map(({ id, title, slug }) => (
         <div key={id} className="px-4 py-2">
           <Link
-            href={"#"}
+            href={productPath({ slug })}
             className="text-secondary-foreground capitalize hover:text-secondary-foreground transition-all duration-500"
           >
             {title}
@@ -213,10 +208,10 @@ const SearchPopup = ({ data }: { data: ProductType[] }) => {
             </div>
           </form>
           <div data-lenis-prevent className="max-h-[300px] overflow-y-auto">
-            {searchProducts.map(({ id, title }) => (
+            {searchProducts.map(({ id, title, slug }) => (
               <div key={id} className="py-2">
                 <Link
-                  href={"#"}
+                  href={productPath({ slug })}
                   className="text-secondary-foreground capitalize hover:text-secondary-foreground transition-all duration-500"
                 >
                   {title}

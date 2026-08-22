@@ -8,9 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ChevronRight, Plus } from "@/lib/icon";
 import { cn } from "@/lib/utils";
-import { useAppDispatch } from "@/lib/reduxHooks";
-import { addToCart } from "@/lib/features/AddToCartSlice";
 import type { ShopTheLookData, ShopTheLookProduct, ShopTheLookRoom } from "@/types/shopTheLookType";
+import { useCart } from "@/lib/cart/cart-context";
 
 const priceFormatter = new Intl.NumberFormat("en-IN", {
   style: "currency",
@@ -25,7 +24,7 @@ const RoomShowcase = ({
   room: ShopTheLookRoom;
   ctaLabel: string;
 }) => {
-  const dispatch = useAppDispatch();
+  const { add: addToCartLine } = useCart();
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [activeProductIndex, setActiveProductIndex] = useState<number | null>(null);
 
@@ -35,18 +34,17 @@ const RoomShowcase = ({
     [room.products]
   );
 
+  /* Shop-the-look rooms come from `src/db/shopTheLookData.ts` and have no
+     catalogue variant, so there is nothing the server's cart can key on. The
+     hook surfaces that as a clear message rather than a basket that silently
+     can't be checked out. Wire these rooms to real products and this starts
+     working with no further change. */
   const handleAddProduct = (product: ShopTheLookProduct) => {
-    dispatch(
-      addToCart({
-        id: product.id,
-        thumbnail: product.thumbnail,
-        quantity: 1,
-        price: product.price,
-        color: "",
-        size: "",
-        title: product.title,
-      })
-    );
+    void addToCartLine({
+      variantId: (product as { variantId?: string }).variantId,
+      quantity: 1,
+      title: product.title,
+    });
   };
 
   const handleAddRoom = () => {

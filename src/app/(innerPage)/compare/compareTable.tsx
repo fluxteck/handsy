@@ -8,13 +8,14 @@ import ProductQuickView, { ProductQuickViewProduct } from '@/components/sections
 import calcluteDiscount from '@/lib/calcluteDiscount'
 import currencyFormatter from 'currency-formatter';
 import { useAppDispatch, useAppSelector } from '@/lib/reduxHooks'
-import { addToCart } from '@/lib/features/AddToCartSlice'
 import { useDispatch } from 'react-redux'
 import { removeToCompare } from '@/lib/features/CompareProductsSlice'
+import { useCart } from "@/lib/cart/cart-context";
 
 const CompareTable = () => {
     const products = useAppSelector((data) => data.productCompare.products)
     const dispatch = useAppDispatch()
+    const { add: addToCartLine } = useCart()
     return (
         <div className='container lg:pt-25 lg:pb-25 pt-15 pb-15'>
             <div className='overflow-x-auto'>
@@ -23,7 +24,7 @@ const CompareTable = () => {
 
                         <div className='flex mi-w-[1250px]'>
                             {
-                                products.map(({ discountPercentage, id, price, stock, thumbnail, title, color, size }, index) => {
+                                products.map(({ discountPercentage, id, price, stock, thumbnail, title, color, size, variantId, currency }, index) => {
                                     const finalPrice = discountPercentage ? calcluteDiscount(price, discountPercentage) : price;
                                     return (
                                         <div key={index}>
@@ -44,8 +45,8 @@ const CompareTable = () => {
                                                     <p className="font-medium lg:text-xl text-lg text-secondary-foreground 2xl:w-[280px] lg:w-[200px] w-[160px]">Price</p>
                                                 }
                                                 <p className='text-secondary-foreground lg:text-xl text-lg'>
-                                                    {discountPercentage ? <del className='text-gray-3-foreground font-normal'>{currencyFormatter.format(price, { code: 'USD' })}</del> : null} {' '}
-                                                    <span>{currencyFormatter.format(finalPrice, { code: 'USD' })}</span>
+                                                    {discountPercentage ? <del className='text-gray-3-foreground font-normal'>{currencyFormatter.format(price, { code: currency || 'USD' })}</del> : null} {' '}
+                                                    <span>{currencyFormatter.format(finalPrice, { code: currency || 'USD' })}</span>
                                                 </p>
                                             </div>
                                             <div className={`${index === 0 && "flex"} border-b py-8 px-2.5`}>
@@ -64,7 +65,7 @@ const CompareTable = () => {
                                                     <p className='font-medium text-secondary-foreground lg:text-xl text-lg 2xl:w-[280px] lg:w-[200px] w-[160px]'>Add to cart</p>
                                                 }
                                                 <Button
-                                                    onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
+                                                    onClick={() => void addToCartLine({ variantId, quantity: 1, title })}
                                                     
                                                     size={'sm'}
                                                 >

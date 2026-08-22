@@ -8,6 +8,11 @@ import currencyFormatter from "currency-formatter";
 import { ChevronRight, PackageSearch } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useMyOrders } from "@/lib/account/use-account";
+import { getStoreCurrency } from "@/lib/config";
+
+/** Orders are priced in the store's currency, not a hardcoded dollar. */
+const storeCurrency = getStoreCurrency();
 
 const filters: { value: string; label: string }[] = [
     { value: "all", label: "All" },
@@ -36,13 +41,13 @@ const OrderRow = ({ order }: { order: OrderType }) => (
                 ))}
             </div>
             <div>
-                <p className="font-medium text-secondary-foreground">{order.id}</p>
+                <p className="font-medium text-secondary-foreground">{order.number ?? order.id}</p>
                 <p className="text-sm text-gray-1-foreground">
                     Placed on {new Date(order.placedOn).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                 </p>
                 <p className="text-sm text-gray-1-foreground">
                     {order.items.length} item{order.items.length > 1 ? "s" : ""} ·{" "}
-                    {currencyFormatter.format(order.total, { code: "USD" })}
+                    {currencyFormatter.format(order.total, { code: storeCurrency })}
                 </p>
             </div>
         </div>
@@ -56,7 +61,11 @@ const OrderRow = ({ order }: { order: OrderType }) => (
     </Link>
 );
 
-const OrdersContent = ({ orders }: { orders: OrderType[] }) => {
+const OrdersContent = () => {
+  // Fetched here rather than on the server: these are owner-scoped reads that
+  // need the customer's JWT, which only exists in the browser.
+  const { data: orders, loading, error } = useMyOrders();
+
     return (
         <Panel>
             <PanelHeading title="My Orders" description="Track, manage and review your orders." />
@@ -84,7 +93,15 @@ const OrdersContent = ({ orders }: { orders: OrderType[] }) => {
                                     ))}
                                 </div>
                             ) : (
-                                <EmptyState icon={PackageSearch} title="No orders here" description="Orders matching this status will show up here." />
+                                /* "No orders" is only true once the fetch has
+                                   actually finished and succeeded — saying it
+                                   while loading, or after a failure, tells the
+                                   customer something false about their account. */
+                                <EmptyState
+                                    icon={PackageSearch}
+                                    title={loading ? "Loading your orders…" : error ? "Couldn't load your orders" : "No orders here"}
+                                    description={loading ? "One moment." : error ? "Please refresh to try again." : "Orders matching this status will show up here."}
+                                />
                             )}
                         </TabsContent>
                     );

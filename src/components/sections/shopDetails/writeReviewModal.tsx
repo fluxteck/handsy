@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useCustomerSession } from "@/lib/useCustomerSession";
-import { submitProductReview } from "@/lib/actions/reviewActions";
+import { submitReview } from "@/lib/sdk/reviews";
 
 const MAX_IMAGES = 5;
 const DURABILITY_LABELS = ["Poor", "Fair", "Good", "Great", "Exceptional"];
@@ -32,7 +32,7 @@ const WriteReviewModal = ({
   productName?: string;
   className?: string;
 }) => {
-  const { session, isLoggedIn, signIn } = useCustomerSession();
+  const { session, isAuthenticated } = useCustomerSession();
 
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState<Step>("rating");
@@ -98,25 +98,36 @@ const WriteReviewModal = ({
     });
   };
 
-  const performSubmit = (name: string, email: string) => {
-    const formData = new FormData();
-    formData.set("productId", String(productId));
-    formData.set("name", name);
-    formData.set("email", email);
-    formData.set("rating", String(rating));
-    formData.set("comment", description);
-    formData.set("durabilityRating", String(durability[0]));
-    images.forEach((image) => formData.append("images", image.file));
-
+  /*
+   * The server owns the parts that matter: it reads the author name from the
+   * customer record (so it can't be spoofed), decides "verified purchase" from
+   * a delivered order, and files the review as `pending` for moderation.
+   *
+   * Two things this form collects have nowhere to go yet — photos and the
+   * durability score. Neither exists in the review contract or the `reviews`
+   * table, so they are deliberately not sent rather than silently pretended
+   * to be saved. Supporting them needs a server change first.
+   */
+  const performSubmit = () => {
     startTransition(async () => {
-      const res = await submitProductReview({ success: false, message: "" }, formData);
-      if (res.success) {
-        if (!isLoggedIn) signIn({ name, email });
+      const res = await submitReview({
+        productId: String(productId),
+        rating,
+        body: description,
+      });
+
+      if (res.status === "success") {
         goTo("success");
-      } else {
-        setError(res.message);
-        toast.error(res.message);
+        return;
       }
+      if (res.status === "unauthenticated") {
+        const message = "Please sign in to post a review — we email you a code.";
+        setError(message);
+        toast.error(message);
+        return;
+      }
+      setError(res.message);
+      toast.error(res.message);
     });
   };
 
@@ -125,8 +136,11 @@ const WriteReviewModal = ({
       setError("Please write at least 10 characters.");
       return;
     }
-    if (isLoggedIn && session) {
-      performSubmit(session.name || session.email, session.email);
+    /* Reviews require a real session — the server rejects anonymous posts.
+       `isAuthenticated` is the verified Supabase session, not the local guest
+       record, which grants nothing. */
+    if (isAuthenticated) {
+      performSubmit();
     } else {
       goTo("guest");
     }
@@ -138,7 +152,13 @@ const WriteReviewModal = ({
       setError("Please enter your name and email.");
       return;
     }
-    performSubmit(guestName.trim(), guestEmail.trim());
+    /* A review has to be attributable, so the server requires a real session.
+       Rather than accept details we can't post under, send them to sign-in —
+       the same emailed-code flow used everywhere else — and keep what they've
+       written by leaving the modal open. */
+    const message = "Please sign in to post your review — we'll email you a code.";
+    setError(message);
+    toast.error(message);
   };
 
   const currentStepIndex = STEP_ORDER.indexOf(step as (typeof STEP_ORDER)[number]);
@@ -370,7 +390,7 @@ const WriteReviewModal = ({
                     disabled={isSubmitting}
                     onClick={handleDescriptionContinue}
                   >
-                    {isSubmitting ? "Submitting..." : isLoggedIn ? "Submit Review" : "Continue"}
+                    {isSubmitting ? "Submitting..." : isAuthenticated ? "Submit Review" : "Continue"}
                   </Button>
                 </div>
               )}
@@ -441,8 +461,12 @@ const WriteReviewModal = ({
                   </motion.div>
                   <p className="text-secondary-foreground text-xl lg:text-2xl font-semibold mt-5">Thank you!</p>
                   <p className="text-gray-1-foreground text-sm mt-2 max-w-[320px]">
-                    Your review has been submitted{productName ? ` for ${productName}` : ""}.
-                    {images.length > 0 && " Keep an eye on your inbox for your 5% off code."}
+                    {/* Reviews are filed as `pending` and only appear once
+                        moderated, so don't imply it's live. The old copy also
+                        promised a 5% off code for photos — nothing issues one,
+                        and photos aren't stored at all. */}
+                    Your review has been submitted{productName ? ` for ${productName}` : ""}. It&apos;ll
+                    appear on the product page once it&apos;s been checked.
                   </p>
                   <Button type="button" className="mt-7.5 min-w-[160px]" onClick={() => setOpen(false)}>
                     Done

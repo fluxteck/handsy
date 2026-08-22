@@ -72,17 +72,17 @@ const BlogArtical = () => {
               </b>{" "}
               Stay informed about the latest updates from Luxura Pro. From new
               product launches to special promotions, be the first to know
-              what's happening.
+              what&apos;s happening.
             </li>
           </ul>
           <blockquote className="px-5 py-2 border-l-[3px] border-l-muted bg-home-bg-1 font-medium lg:text-xl text-lg text-gray-1-foreground">
             Join our community of design enthusiasts and stay inspired with
-            fresh content regularly. Whether you're planning a complete home
+            fresh content regularly. Whether you&apos;re planning a complete home
             makeover or looking for small updates to refresh your space.
           </blockquote>
           <p className="mt-7.5 text-gray-1-foreground">
             Join our community of design enthusiasts and stay inspired with
-            fresh content regularly. Whether you're planning a complete home
+            fresh content regularly. Whether you&apos;re planning a complete home
             makeover or looking for small updates to refresh your space, the
             Luxura Pro Blog is here to guide and inspire you every step of the
             way.
@@ -116,7 +116,7 @@ const BlogArtical = () => {
           </div>
           <p className="mt-7.5 text-gray-1-foreground">
             Join our community of design enthusiasts and stay inspired with
-            fresh content regularly. Whether you're planning a complete home
+            fresh content regularly. Whether you&apos;re planning a complete home
             makeover or looking for small updates to refresh your space, the
             Luxura Pro Blog is here to guide and inspire you every step of the
             way.

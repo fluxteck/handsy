@@ -1,4 +1,4 @@
-import { getCustomerData, getNotificationsData, getOrdersData } from "@/lib/data";
+import { getNotificationsData } from "@/lib/data";
 import { Metadata } from "next";
 import OverviewContent from "./overviewContent";
 
@@ -8,12 +8,10 @@ export const metadata: Metadata = {
 };
 
 const AccountOverview = async () => {
-    const customer = await getCustomerData();
-    const orders = await getOrdersData();
     const notifications = await getNotificationsData();
     const unreadCount = notifications.filter((n) => !n.read).length;
 
-    return <OverviewContent customer={customer} orders={orders} unreadCount={unreadCount} />;
+    return <OverviewContent unreadCount={unreadCount} />;
 };
 
 export default AccountOverview;

@@ -6,10 +6,10 @@ import { Minus, Plus, Heart } from "@/lib/icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import calcluteDiscount from "@/lib/calcluteDiscount";
-import { addToCart } from "@/lib/features/AddToCartSlice";
-import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
-import { useAppDispatch } from "@/lib/reduxHooks";
+import { useCart } from "@/lib/cart/cart-context";
 import UspMarquee from "@/components/sections/shopDetails/uspMarquee";
+import { useWishlist } from "@/lib/wishlist/wishlist-context";
+import { getStoreCurrency } from "@/lib/config";
 
 export type ProductColorType = {
   code: string;
@@ -37,12 +37,22 @@ export interface ProductInfoDetailsPropsType {
   stock: number;
   colors: ProductColorType[];
   offers: ProductOfferType[];
+  /**
+   * Variant to buy when there is no colour/variant picker to choose from —
+   * Quick View renders catalogue cards, whose list mapping carries a default
+   * variant but no swatch list. The picker still wins when present.
+   */
+  variantId?: string;
   /** Short product description shown under the price. Omit to match the original PDP layout, which surfaces the full description via the accordion instead. */
   description?: string;
   /** Trims the panel to just what's needed for a fast purchase decision — hides the trust-badge marquee and delivery pincode checker. Used by Quick View; the PDP omits it so its full layout is unchanged. */
   compact?: boolean;
   /** Makes the title a link to the product's PDP. Omit on the PDP itself, where the title is already the page you're on. */
   titleHref?: string;
+  /** Product slug, carried so a wishlist entry saved from here still links
+   *  back to the product. Server-hydrated entries get it from the catalogue;
+   *  this covers the guest path. */
+  slug?: string;
 }
 
 const ProductInfoDetails = ({
@@ -54,16 +64,22 @@ const ProductInfoDetails = ({
   stock,
   colors,
   offers,
+  variantId,
   description,
   compact = false,
   titleHref,
+  slug,
 }: ProductInfoDetailsPropsType) => {
-  const dispatch = useAppDispatch();
+  const { add: addToCartLine } = useCart();
+  const { add: addToWishlistEntry, has } = useWishlist();
   const [selectedColor, setSelectedColor] = useState<ProductColorType>(
     colors[0] ?? { code: "", label: "", image: thumbnail }
   );
   const [productQuantity, setProductQuantity] = useState(1);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  /* Derived from the real wishlist, not local state: initialising to `false`
+     showed an unfilled heart for products already saved, and filled it on
+     click even when the save failed. */
+  const isWishlisted = has(id);
   const [pincode, setPincode] = useState("");
   const [deliveryEstimate, setDeliveryEstimate] = useState<string | null>(null);
 
@@ -77,34 +93,47 @@ const ProductInfoDetails = ({
     }
   };
 
+  /*
+   * `selectedColor.code` carries the VARIANT ID on catalogue-backed products —
+   * `toProductDetail` maps each variant into this list, using the variant id as
+   * `code` (the picker only ever uses it as an identity, never as a colour).
+   * That makes the chosen swatch the chosen variant, which is exactly what the
+   * server's cart keys a line on.
+   */
   const handleAddToCart = () => {
-    dispatch(
-      addToCart({
-        id,
-        thumbnail,
-        quantity: productQuantity,
-        price: finalPrice,
-        color: selectedColor.code,
-        size: "",
-        title,
-      })
-    );
+    void addToCartLine({
+      variantId: selectedColor.code || variantId,
+      quantity: productQuantity,
+      title,
+      thumbnail,
+      price: finalPrice,
+      currency: getStoreCurrency(),
+    });
   };
 
   const handleWishlist = () => {
-    setIsWishlisted(true);
-    dispatch(
-      addToWishlist({
-        id,
-        date: new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
-        price,
-        thumbnail,
-        title,
-        color: selectedColor.code,
-        size: "",
-        stock,
-      })
-    );
+    /* The wishlist stores the PRODUCT; the server keys it by product id, and
+       re-reads title/price/image live so a saved item never shows stale
+       details. The chosen colour rides along for display only. */
+    void addToWishlistEntry({
+      id,
+      ...(slug ? { slug } : {}),
+      title,
+      description: "",
+      price,
+      currency: getStoreCurrency(),
+      discountPercentage,
+      rating: 0,
+      totalRating: "0",
+      stock,
+      brand: "",
+      label: "",
+      category: "",
+      thumbnail,
+      colors: [],
+      filter: "",
+      images: [],
+    });
   };
 
   const handleCheckDelivery = () => {

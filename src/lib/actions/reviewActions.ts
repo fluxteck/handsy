@@ -43,10 +43,15 @@ export async function submitProductReview(
     console.log('Review submitted successfully:', validatedData, `${images.length} image(s) attached`);
 
     return { success: true, message: 'Thanks! Your review has been submitted (demo only — not persisted).' };
-  } catch (error: any) {
-    return {
-      success: false,
-      message: error.errors ? error.errors.map((err: any) => err.message).join(', ') : 'Failed to submit review.',
-    };
+  } catch (error) {
+    // Narrowed rather than typed `any`: only a ZodError carries field issues,
+    // and anything else is a genuine failure with no per-field detail.
+    if (error instanceof z.ZodError) {
+      return {
+        success: false,
+        message: error.issues.map((issue) => issue.message).join(', '),
+      };
+    }
+    return { success: false, message: 'Failed to submit review.' };
   }
 }

@@ -2,9 +2,12 @@ import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLab
 import { getProductsData } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { ProductType } from '@/types/productType';
+import { productPath } from '@/lib/productPath'
 
-const RelatedProducts = async ({ className }: { className?: string }) => {
-    const { featuredProducts }: { featuredProducts: ProductType[] } = await getProductsData();
+/** `products` comes from the catalog on SDK-backed pages; without it the
+ *  component falls back to the static data the other pages still use. */
+const RelatedProducts = async ({ className, products }: { className?: string; products?: ProductType[] }) => {
+    const featuredProducts: ProductType[] = products ?? (await getProductsData()).featuredProducts;
     return (
         <section className={cn('lg:pt-25 lg:pb-25 pt-15 pb-15', className)}>
             <div className='container'>
@@ -15,13 +18,13 @@ const RelatedProducts = async ({ className }: { className?: string }) => {
                             return (
                                 <Card key={prd.id}>
                                     <CardHeader>
-                                        <CardImg src={prd.thumbnail} height={400} width={340} path="/product-details" />
+                                        <CardImg src={prd.thumbnail} height={400} width={340} path={productPath(prd)} />
                                         <CardLabel isLabel={prd.label ? prd.label : false}>{prd.label}</CardLabel>
                                         <CardDiscount isDiscountTrue={prd.discountPercentage ? prd.discountPercentage : false}>-{prd.discountPercentage}%</CardDiscount>
                                         <CardIcons product={prd} />
                                     </CardHeader>
                                     <CardFooter>
-                                        <CardTitle path="/product-details">{prd.title}</CardTitle>
+                                        <CardTitle path={productPath(prd)}>{prd.title}</CardTitle>
                                         <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
                                     </CardFooter>
                                 </Card>

@@ -1,25 +1,31 @@
+"use client";
 import { Button } from "@/components/ui/button";
-import { Panel } from "@/components/sections/account/panel";
+import { EmptyState, Panel } from "@/components/sections/account/panel";
 import { StatusBadge } from "@/components/sections/account/statusBadge";
-import { getOrdersData } from "@/lib/data";
 import currencyFormatter from "currency-formatter";
-import { Check, ChevronLeft, MapPin, RotateCcw, Wallet } from "lucide-react";
-import { Metadata } from "next";
+import { Check, ChevronLeft, MapPin, PackageSearch, RotateCcw, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { use } from "react";
+import { useMyOrder } from "@/lib/account/use-account";
+import { getStoreCurrency } from "@/lib/config";
 
-export const metadata: Metadata = {
-    title: "Order Details",
-    description: "Track your order and view order details.",
-};
+/** Orders are priced in the store's currency, not a hardcoded dollar. */
+const storeCurrency = getStoreCurrency();
 
-const OrderDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) => {
-    const { id } = await params;
-    const orders = await getOrdersData();
-    const order = orders.find((o) => o.id === id);
 
-    if (!order) notFound();
+/**
+ * Order detail. Client-side because the read is owner-scoped: the server
+ * refuses another customer's order, and the JWT proving who we are only exists
+ * in the browser.
+ */
+const OrderDetailsPage = ({ params }: { params: Promise<{ id: string }> }) => {
+    const { id } = use(params);
+    const { data: order, loading, error } = useMyOrder(id);
+
+    if (loading) return <Panel><EmptyState icon={PackageSearch} title="Loading your order…" description="One moment." /></Panel>;
+    if (error || !order) return <Panel><EmptyState icon={PackageSearch} title="Order not found" description="We couldn't load that order. It may belong to a different account." /></Panel>;
+
 
     return (
         <div className="flex flex-col gap-6">
@@ -44,7 +50,7 @@ const OrderDetailsPage = async ({ params }: { params: Promise<{ id: string }> })
             <Panel>
                 <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
                     <div>
-                        <h1 className="text-xl font-medium text-secondary-foreground lg:text-2xl">{order.id}</h1>
+                        <h1 className="text-xl font-medium text-secondary-foreground lg:text-2xl">{order.number ?? order.id}</h1>
                         <p className="mt-1 text-sm text-gray-1-foreground">
                             Placed on{" "}
                             {new Date(order.placedOn).toLocaleDateString("en-US", {
@@ -139,7 +145,7 @@ const OrderDetailsPage = async ({ params }: { params: Promise<{ id: string }> })
                                 <p className="text-sm text-gray-1-foreground">Qty: {item.quantity}</p>
                             </div>
                             <p className="font-medium text-secondary-foreground">
-                                {currencyFormatter.format(item.price, { code: "USD" })}
+                                {currencyFormatter.format(item.price, { code: storeCurrency })}
                             </p>
                         </div>
                     ))}
@@ -147,7 +153,7 @@ const OrderDetailsPage = async ({ params }: { params: Promise<{ id: string }> })
                 <div className="mt-4 flex justify-between border-t border-border pt-4">
                     <p className="font-medium text-secondary-foreground">Order Total</p>
                     <p className="font-medium text-secondary-foreground">
-                        {currencyFormatter.format(order.total, { code: "USD" })}
+                        {currencyFormatter.format(order.total, { code: storeCurrency })}
                     </p>
                 </div>
             </Panel>

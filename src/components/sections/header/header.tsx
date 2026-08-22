@@ -1,6 +1,6 @@
-import { getMenuData, getProductsData } from "@/lib/data";
+import { getMenuData } from "@/lib/data";
+import { getTopRatedProducts } from "@/lib/sdk";
 import { User } from "@/lib/icon";
-import { ProductType } from "@/types/productType";
 import Image from "next/image";
 import Link from "next/link";
 import HeaderExtraInfo from "./headerExtraInfo";
@@ -14,8 +14,10 @@ import WishlistButton from "./wishlistButton";
 
 const Header = async () => {
   const menuList = await getMenuData();
-  const { featuredProducts }: { featuredProducts: ProductType[] } =
-    await getProductsData();
+  /* Mega-menu and mobile-menu product rails come from the catalogue. The menu
+     STRUCTURE stays local (`src/db/menuList.ts`) — its slugs are editorial and
+     don't correspond to server categories yet; see BUILD-ORDER.md. */
+  const featuredProducts = await getTopRatedProducts(3);
   return (
     <StickyHeader topHeaderContent={<TopHeader />}>
       <div className="lg:h-20 h-14 bg-home-bg-1 [.header-pinned_&]:shadow-md">
@@ -37,7 +39,7 @@ const Header = async () => {
             </Link>
           </div>
           <div className="flex-1 max-w-xl mx-auto">
-            <SearchPopup data={featuredProducts} />
+            <SearchPopup />
           </div>
           <div className="flex items-center justify-end gap-5 shrink-0">
             <div className="lg:block hidden">

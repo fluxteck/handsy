@@ -11,7 +11,7 @@ import SocialLoginButtons from "./socialLoginButtons";
 const RegisterForm = () => {
   const [open, setOpen] = useState<boolean>(false);
 
-  let isLogin = false;
+  const isLogin = false;
   const handleSingup = () => {
     if (isLogin) {
       setOpen(false);

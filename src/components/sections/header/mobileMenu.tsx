@@ -32,7 +32,8 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
     const [dropDownActive, setDropDownActive] = useState<boolean | string | number>(false)
     const [open, setOpen] = useState(false)
 
-    const handleDropDown = (id: number | string, dropdownList: any, megaMenu: any) => {
+    // Only their length is read, so the element type is irrelevant here.
+    const handleDropDown = (id: number | string, dropdownList?: unknown[], megaMenu?: unknown[]) => {
         if (dropdownList?.length || megaMenu?.length) {
             setDropDownActive(dropDownActive === id ? false : id)
         }

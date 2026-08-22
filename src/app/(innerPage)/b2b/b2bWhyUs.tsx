@@ -45,8 +45,8 @@ const B2bWhyUs = () => {
           </p>
           <h5 className="mt-3">Why businesses buy from us</h5>
           <p className="mt-4 text-gray-1-foreground leading-[170%]">
-            We've spent years building relationships with skilled woodworking artisans so our
-            partners don't have to. That means fewer sourcing risks, predictable lead times, and
+            We&apos;ve spent years building relationships with skilled woodworking artisans so our
+            partners don&apos;t have to. That means fewer sourcing risks, predictable lead times, and
             products your customers will trust.
           </p>
 

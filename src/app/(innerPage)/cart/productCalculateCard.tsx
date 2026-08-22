@@ -2,18 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useAppSelector } from "@/lib/reduxHooks";
+import { useCart } from "@/lib/cart/cart-context";
 import Link from "next/link";
 import { useState } from "react";
+import currencyFormatter from "currency-formatter";
 
 const ProductCalculateCard = () => {
   const [shippingPrice, setShippingPrice] = useState("0");
-  const { products } = useAppSelector((state) => state.addToCart);
-  const subTotal = products.reduce(
-    (total, product) => total + product?.price * product?.quantity,
-    0
-  );
+  /* The subtotal is the SERVER's, never re-derived here: discounts, rounding
+     and any per-line adjustments are its business, and a client-side sum would
+     drift from what checkout actually charges. */
+  const { products, subTotal, currency } = useCart();
   const totalPrice = Number(subTotal) + Number(shippingPrice);
+  const money = (amount: number) =>
+    currencyFormatter.format(amount, { code: currency || "INR" });
 
   // useEffect(() => {
   //     if (isCheckout) {
@@ -34,7 +36,7 @@ const ProductCalculateCard = () => {
                 Subtotal
               </p>
               <p className="font-medium text-secondary-foreground">
-                ${subTotal}
+                {money(subTotal)}
               </p>
             </div>
           </div>
@@ -90,7 +92,7 @@ const ProductCalculateCard = () => {
             <p className="lg:text-2xl text-xl font-medium text-secondary-foreground">
               Total
             </p>
-            <p className="font-bold text-secondary-foreground">${totalPrice}</p>
+            <p className="font-bold text-secondary-foreground">{money(totalPrice)}</p>
           </div>
           <Button asChild className="mt-7.5 w-full">
             <Link href={"/checkout"}>Proceed to checkout</Link>

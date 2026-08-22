@@ -5,9 +5,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AppleIcon, GoogleIcon } from '@/lib/icon'
 import { Gift, Heart, Truck } from 'lucide-react'
-import { useActionState, useEffect } from 'react'
+import { useState, useTransition } from 'react'
 import toast from 'react-hot-toast'
-import { signUpUser } from './actions'
+import { requestEmailOtp } from '@/lib/auth/otp'
 import { SOCIAL_LOGIN_ENABLED } from './config'
 import TrustBadges from './trustBadges'
 
@@ -17,15 +17,35 @@ const signUpBenefits = [
     { icon: Gift, label: 'Member Offers' },
 ]
 
-const SignUpForm = ({ onSignedUp }: { onSignedUp: (email: string) => void }) => {
-    const [state, formAction, isPending] = useActionState(signUpUser, null)
+/**
+ * Sign-up is the same one-time-code flow as sign-in — there is no password to
+ * choose and no account to "create" up front. Submitting emails a code; the
+ * account is created by Supabase when that code is verified on the Sign-in
+ * tab, which is where the handoff below lands the customer.
+ */
+const SignUpForm = ({
+    onSignedUp,
+}: {
+    onSignedUp: (email: string, name: string) => void
+}) => {
+    const [error, setError] = useState('')
+    const [isPending, startTransition] = useTransition()
 
-    useEffect(() => {
-        if (state?.status === 'success' && state.email) {
-            toast.success(state.message)
-            onSignedUp(state.email)
-        }
-    }, [state, onSignedUp])
+    const formAction = (formData: FormData) => {
+        const name = String(formData.get('name') ?? '').trim()
+        const email = String(formData.get('email') ?? '').trim()
+        setError('')
+        startTransition(async () => {
+            const res = await requestEmailOtp(email, { createIfNew: true })
+            if (res.status === 'error') {
+                setError(res.message)
+                toast.error(res.message)
+                return
+            }
+            toast.success(res.message)
+            onSignedUp(email, name)
+        })
+    }
 
     const handleSocialClick = (provider: string) => {
         toast.error(`${provider} sign-in isn't connected yet.`)
@@ -59,8 +79,8 @@ const SignUpForm = ({ onSignedUp }: { onSignedUp: (email: string) => void }) => 
                     />
                 </div>
 
-                {state?.status === 'error' && (
-                    <p className="text-sm text-red-500">{state.message}</p>
+                {error && (
+                    <p className="text-sm text-red-500">{error}</p>
                 )}
 
                 <Button type="submit" disabled={isPending} className="mt-1 w-full">

@@ -1,9 +1,8 @@
 "use client";
-import { addToCart } from "@/lib/features/AddToCartSlice";
-import { addToWishlist } from "@/lib/features/AddToWishlistSlice";
 import { addToCompare } from "@/lib/features/CompareProductsSlice";
 import { Eye, Heart, ShopCart, Shuffle } from "@/lib/icon";
 import { useAppDispatch } from "@/lib/reduxHooks";
+import { useCart } from "@/lib/cart/cart-context";
 import { cn } from "@/lib/utils";
 import { ProductType } from "@/types/productType";
 import currencyFormatter from "currency-formatter";
@@ -21,6 +20,7 @@ import ProductQuickView, {
   ProductQuickViewProduct,
 } from "../sections/shopDetails/productQuickView";
 import Tooltip from "./tooltip";
+import { useWishlist } from "@/lib/wishlist/wishlist-context";
 
 interface CardPropsType {
   children?: ReactNode;
@@ -115,7 +115,10 @@ interface CardIconsProps extends CardPropsType {
 }
 
 export function CardIcons({ children, className, product }: CardIconsProps) {
+  // Wishlist and compare are still Redux-backed; only the cart is server-side.
   const dispatch = useAppDispatch();
+  const { add: addToCartLine } = useCart();
+  const { add: addToWishlistEntry } = useWishlist();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] =
     useState<ProductQuickViewProduct>({
@@ -130,19 +133,7 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
   const defaultActions = product && {
     handleWishlist: () => {
       if (product) {
-        dispatch(
-          addToWishlist({
-            id: product.id,
-            date: new Date().toLocaleDateString(),
-            price: product.price,
-            discountPercentage: product.discountPercentage,
-            thumbnail: product.thumbnail,
-            title: product.title,
-            color: product.colors?.[0]?.code,
-            size: "xl",
-            stock: product.stock,
-          })
-        );
+        void addToWishlistEntry(product);
       }
     },
     handleQuickView: () => {
@@ -152,21 +143,18 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
       }
     },
     handleAddToCart: () => {
+      // Price and totals are the server's to decide — we send the variant and
+      // quantity only, and render whatever cart comes back.
       if (product) {
-        const finalPrice = product.discountPercentage
-          ? product.price - (product.price * product.discountPercentage) / 100
-          : product.price;
-        dispatch(
-          addToCart({
-            id: product.id,
-            price: finalPrice,
-            quantity: 1,
-            thumbnail: product.thumbnail,
-            title: product.title,
-            color: product.colors?.[0]?.code,
-            size: "xl",
-          })
-        );
+        void addToCartLine({
+          variantId: product.variantId,
+          quantity: 1,
+          title: product.title,
+          // Rendered instantly while the server call is in flight.
+          thumbnail: product.thumbnail,
+          price: product.price,
+          currency: product.currency,
+        });
       }
     },
     handleCompare: () => {
@@ -174,6 +162,8 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
         dispatch(
           addToCompare({
             id: product.id,
+            variantId: product.variantId,
+            currency: product.currency,
             price: product.price,
             discountPercentage: product.discountPercentage,
             thumbnail: product.thumbnail,
@@ -441,25 +431,36 @@ interface CardPriceEnhancedProps {
   price: number;
   discountPercentage?: number;
   className?: string;
+  /**
+   * ISO 4217 code the price is denominated in — drives the symbol only, never
+   * a conversion. Catalog products carry their own currency (the server prices
+   * in INR), so callers rendering server data should pass `prd.currency`.
+   * Defaults to USD so existing call sites on static data render unchanged.
+   */
+  currency?: string;
 }
 
 export function CardPriceEnhanced({
   price,
   discountPercentage,
   className,
+  currency = "USD",
 }: CardPriceEnhancedProps) {
   const finalPrice = discountPercentage
     ? price - (price * discountPercentage) / 100
     : price;
+  // An empty/unknown code makes currency-formatter drop the symbol entirely
+  // and render a bare number, which reads as a bug. Fall back to USD instead.
+  const code = currency || "USD";
 
   return (
     <p className={cn("font-normal mt-px text-gray-1-foreground", className)}>
       {discountPercentage ? (
         <del className="text-gray-3-foreground font-normal">
-          {currencyFormatter.format(price, { code: "USD" })}
+          {currencyFormatter.format(price, { code })}
         </del>
       ) : null}{" "}
-      <span>{currencyFormatter.format(finalPrice, { code: "USD" })}</span>{" "}
+      <span>{currencyFormatter.format(finalPrice, { code })}</span>{" "}
     </p>
   );
 }

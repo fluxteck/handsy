@@ -6,16 +6,15 @@ import currencyFormatter from 'currency-formatter';
 import { Button } from '@/components/ui/button'
 import ShopEmptyState from '@/components/ui/shopEmptyState'
 import { Close, Heart } from '@/lib/icon'
-import { useAppSelector } from '@/lib/reduxHooks'
 import calcluteDiscount from '@/lib/calcluteDiscount'
-import { addToCart } from '@/lib/features/AddToCartSlice';
-import { useDispatch } from 'react-redux';
-import { removeToWishlist } from '@/lib/features/AddToWishlistSlice';
 import Link from 'next/link';
+import { useCart } from "@/lib/cart/cart-context";
+import { useWishlist } from "@/lib/wishlist/wishlist-context";
+import { productPath } from '@/lib/productPath';
 
 const WishlistProductsTable = () => {
-    const products = useAppSelector((product) => product.addToWishlist.products)
-    const dispatch = useDispatch()
+    const { add: addToCartLine } = useCart();
+    const { products, remove, isLoading } = useWishlist()
 
     return (
         <div className='container lg:pt-25 lg:pb-25 pt-15 pb-15' >
@@ -34,7 +33,7 @@ const WishlistProductsTable = () => {
                         </TableHeader>
                         <TableBody className='border-b-[1.5px] border-b-[#E5E2E1]'>
                             {
-                                products.map(({ color, id, price, size, stock, thumbnail, title, discountPercentage }) => {
+                                products.map(({ color, id, price, size, stock, thumbnail, title, discountPercentage, variantId, slug, currency }) => {
                                     const finalPrice = discountPercentage ? calcluteDiscount(price, discountPercentage) : price;
 
                                     return (
@@ -44,13 +43,13 @@ const WishlistProductsTable = () => {
                                                     <div className='bg-home-bg-1'>
                                                         <Image width={70} height={70} src={thumbnail} alt='img' className='max-h-[70px] w-fit object-contain' />
                                                     </div>
-                                                    <Link href={"/product-details"} className='lg:text-xl text-lg text-secondary-foreground font-medium capitalize line-clamp-1'>{title}</Link>
+                                                    <Link href={productPath({ slug })} className='lg:text-xl text-lg text-secondary-foreground font-medium capitalize line-clamp-1'>{title}</Link>
                                                 </div>
                                             </TableCell>
                                             <TableCell className='px-0 py-5 min-[1400px]:w-[300px] lg:w-[220px] w-[150px]'>
                                                 <p className='text-lg text-secondary-foreground font-medium '>
-                                                    {discountPercentage ? <del className='text-gray-3-foreground font-normal'>{currencyFormatter.format(price, { code: 'USD' })}</del> : null} {' '}
-                                                    <span>{currencyFormatter.format(finalPrice, { code: 'USD' })}</span>
+                                                    {discountPercentage ? <del className='text-gray-3-foreground font-normal'>{currencyFormatter.format(price, { code: currency || 'USD' })}</del> : null} {' '}
+                                                    <span>{currencyFormatter.format(finalPrice, { code: currency || 'USD' })}</span>
                                                 </p>
                                             </TableCell>
                                             <TableCell className="px-0 py-5 min-[1400px]:w-[300px] lg:w-[220px] w-[150px]">
@@ -65,12 +64,12 @@ const WishlistProductsTable = () => {
                                                 <div className='flex items-center gap-15'>
                                                     <Button
                                                         size={"sm"}
-                                                        onClick={() => dispatch(addToCart({ id, price: finalPrice, quantity: 1, thumbnail, title, color, size }))}
+                                                        onClick={() => void addToCartLine({ variantId, quantity: 1, title })}
                                                     >
                                                         Add To cart
                                                     </Button>
                                                     <p
-                                                        onClick={() => dispatch(removeToWishlist(id))}
+                                                        onClick={() => void remove(id)}
                                                         className='cursor-pointer text-gray-1-foreground flex justify-end hover:text-secondary-foreground transition-all duration-500'
                                                     >
                                                         <Close className='size-10' strokeWidth='1.5' />
@@ -84,10 +83,13 @@ const WishlistProductsTable = () => {
                         </TableBody>
                     </Table>
                     :
+                    /* "Empty" is only true once the fetch has finished. A
+                       signed-in customer with saved items would otherwise be
+                       told their wishlist is empty while it is still loading. */
                     <ShopEmptyState
                         icon={Heart}
-                        title="Your Wishlist is Empty"
-                        description="Save the pieces you love and shop them whenever you're ready"
+                        title={isLoading ? "Loading your wishlist…" : "Your Wishlist is Empty"}
+                        description={isLoading ? "One moment." : "Save the pieces you love and shop them whenever you're ready"}
                         ctaLabel="Explore Products"
                         ctaHref="/shop"
                     />

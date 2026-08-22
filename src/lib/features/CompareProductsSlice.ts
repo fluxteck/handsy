@@ -4,6 +4,12 @@ import toast from "react-hot-toast";
 
 type CompareType = {
     id: string | number,
+    /** Purchasable variant, so "add to cart" from the compare table can reach
+     *  the server's cart — which keys lines by variant, not product. Optional
+     *  because the static sample data has no variants. */
+    variantId?: string,
+    /** Currency of `price`, so the compare table doesn't assume dollars. */
+    currency?: string,
     price: number,
     discountPercentage: number,
     thumbnail: string,
