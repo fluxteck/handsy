@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # npm, not pnpm: package-lock.json is the tracked lockfile and deploys
+      # install with npm. .gitignore excludes a pnpm lockfile so the package
+      # manager stays unambiguous.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # `NEXT_PUBLIC_*` values are validated at build time and inlined into the
+      # bundle, so the build fails outright without them. CI only needs values
+      # that satisfy the schema — the real ones come from Vercel at deploy time,
+      # and a CI artefact is never shipped. Secrets are used when present so a
+      # build can be exercised against real settings if you set them.
+      - name: Build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SERVER_URL: ${{ secrets.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3001/api' }}
+          NEXT_PUBLIC_CURRENCY: ${{ secrets.NEXT_PUBLIC_CURRENCY || 'INR' }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co' }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'ci-placeholder-anon-key-not-a-real-credential' }}
