@@ -3,19 +3,26 @@ import path from "node:path";
 import bundleAnalyzer from '@next/bundle-analyzer';
 
 /**
- * The `@commercekitsdk/*` packages are linked from the sibling `ecommerce-sdk`
- * checkout (`file:` deps → symlinks in node_modules) so we can debug against
- * SDK source during development. `outputFileTracingRoot` is widened to the
- * directory holding both checkouts so the build traces files through those
- * symlinks. Switch back to published npm versions and this can go away.
+ * `outputFileTracingRoot` is only needed when the `@commercekitsdk/*` packages
+ * are symlinked from a sibling `ecommerce-sdk` checkout for local debugging:
+ * without a wider root the bundler will not follow a symlink that escapes the
+ * project directory.
  *
- * (A `turbopack.root` was here too; Next 15.3.6 rejects it as an unrecognized
- * key and warns on every boot, and resolution works without it.)
+ * It must NOT be set on Vercel. There the project is checked out at
+ * `/vercel/path0`, so `../..` resolves to `/`, and the build then computes
+ * `.next`'s location relative to that root and re-joins it onto the project
+ * directory — producing `/vercel/path0/vercel/path0/.next` and failing the
+ * deploy with a missing `routes-manifest-deterministic.json`, *after* a
+ * successful build.
+ *
+ * The packages now come from npm, so this is dormant; the guard keeps local
+ * symlink debugging available without breaking deploys.
  */
 const workspaceRoot = path.resolve(__dirname, "../..");
+const tracingRoot = process.env.VERCEL ? {} : { outputFileTracingRoot: workspaceRoot };
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: workspaceRoot,
+  ...tracingRoot,
   images: {
     remotePatterns: [
       {
