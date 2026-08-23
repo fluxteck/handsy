@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import currencyFormatter from "currency-formatter";
+import { getStoreCurrency } from "@/lib/config";
 
 export type CartRewardMilestone = {
   amount: number;
@@ -12,8 +13,10 @@ const defaultMilestones: CartRewardMilestone[] = [
   { amount: 4999, label: "Free Gift" },
 ];
 
+/* The store's configured currency, not a hardcoded one. This component takes no
+   cart context by design, so it reads the store default rather than a cart. */
 const formatAmount = (amount: number) =>
-  currencyFormatter.format(amount, { code: "USD" });
+  currencyFormatter.format(amount, { code: getStoreCurrency() });
 
 /**
  * Cart-drawer progress bar toward spend-based reward milestones. Purely presentational —

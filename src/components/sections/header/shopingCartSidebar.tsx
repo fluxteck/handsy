@@ -35,7 +35,10 @@ const ShopingCartSidebar = ({
   const [open, setOpen] = useState(false);
   /* Cart lines come from the server through the SDK. The Redux store no longer
      backs the cart — a Redux-only cart never reaches checkout. */
-  const { products, increment, decrement, remove } = useCart();
+  const { products, increment, decrement, remove, currency } = useCart();
+  /* The cart's own currency, not a hardcoded one: this store sells in INR and
+     the sidebar was rendering every total with a dollar sign. */
+  const money = (amount: number) => currencyFormatter.format(amount, { code: currency || "INR" });
 
   const totalPrice = products.reduce(
     (total, product) => total + product.price * product.quantity,
@@ -180,15 +183,11 @@ const ShopingCartSidebar = ({
                               <p className="text-secondary-foreground text-base font-medium">
                                 {originalPrice && originalPrice > price ? (
                                   <del className="text-gray-3-foreground font-normal mr-1.5">
-                                    {currencyFormatter.format(originalPrice, {
-                                      code: "USD",
-                                    })}
+                                    {money(originalPrice)}
                                   </del>
                                 ) : null}
                                 <span>
-                                  {currencyFormatter.format(price, {
-                                    code: "USD",
-                                  })}
+                                  {money(price)}
                                 </span>
                               </p>
                             </div>
@@ -277,12 +276,12 @@ const ShopingCartSidebar = ({
                       Estimated total
                     </p>
                     <p className="text-secondary-foreground font-semibold text-lg">
-                      {currencyFormatter.format(totalPrice, { code: "USD" })}
+                      {money(totalPrice)}
                     </p>
                   </div>
                   {totalSavings > 0 ? (
                     <p className="text-xs text-primary font-medium mt-1 text-right">
-                      You saved {currencyFormatter.format(totalSavings, { code: "USD" })}!
+                      You saved {money(totalSavings)}!
                     </p>
                   ) : null}
 

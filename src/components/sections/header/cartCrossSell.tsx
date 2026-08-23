@@ -14,7 +14,7 @@ import currencyFormatter from "currency-formatter";
  * drawer-specific presentation of the same ProductType data.
  */
 const CartCrossSell = ({ products }: { products: ProductType[] }) => {
-  const { add } = useCart();
+  const { add, currency } = useCart();
 
   if (!products.length) return null;
 
@@ -51,7 +51,7 @@ const CartCrossSell = ({ products }: { products: ProductType[] }) => {
                   {product.title}
                 </p>
                 <p className="text-sm font-medium text-secondary-foreground mt-0.5">
-                  {currencyFormatter.format(finalPrice, { code: "USD" })}
+                  {currencyFormatter.format(finalPrice, { code: currency || "INR" })}
                 </p>
               </div>
               <button

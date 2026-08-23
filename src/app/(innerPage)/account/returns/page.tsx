@@ -2,6 +2,7 @@ import { EmptyState, Panel, PanelHeading } from "@/components/sections/account/p
 import { StatusBadge } from "@/components/sections/account/statusBadge";
 import { getReturnsData } from "@/lib/data";
 import currencyFormatter from "currency-formatter";
+import { getStoreCurrency } from "@/lib/config";
 import { RotateCcw } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
@@ -43,7 +44,7 @@ const ReturnsPage = async () => {
                             <div className="flex flex-col items-end gap-2">
                                 <StatusBadge status={request.status} />
                                 <p className="text-sm font-medium text-secondary-foreground">
-                                    {currencyFormatter.format(request.refundAmount, { code: "USD" })}
+                                    {currencyFormatter.format(request.refundAmount, { code: getStoreCurrency() })}
                                 </p>
                             </div>
                         </div>
