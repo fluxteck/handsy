@@ -15,7 +15,7 @@ const Compare = () => {
       <PageHeader
         currentPage="Compare"
         pageTitle="Compare"
-        breadcrumbLink="/shop-2"
+        breadcrumbLink="/shop"
         breadcrumbLabel="Shop"
       />
       <CompareTable />

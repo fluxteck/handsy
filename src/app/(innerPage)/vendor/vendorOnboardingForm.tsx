@@ -12,7 +12,7 @@ const trustPoints = [
   { icon: Boxes, label: "Full control over your shop" },
 ];
 
-const VendorOnboardingForm = () => {
+const VendorOnboardingForm = ({ categories = [] }: { categories?: string[] }) => {
   return (
     <section id="apply" className="container lg:py-25 py-15" aria-label="Apply to become a vendor">
       <motion.div
@@ -42,7 +42,7 @@ const VendorOnboardingForm = () => {
           </p>
 
           <div className="mt-7.5 flex justify-center">
-            <VendorEnquiryModal className="lg:px-10" />
+            <VendorEnquiryModal categories={categories} className="lg:px-10" />
           </div>
 
           <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">

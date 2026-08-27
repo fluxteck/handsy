@@ -15,6 +15,7 @@ import Card, {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VendorProductType, VendorType } from "@/types/vendorType";
+import { productPath } from "@/lib/productPath";
 
 type SortValue = "latest" | "low-to-high" | "high-to-low" | "top-rated";
 
@@ -112,7 +113,7 @@ const VendorProducts = ({ vendor, products }: { vendor: VendorType; products: Ve
             {visibleProducts.map((product) => (
               <Card key={product.id}>
                 <CardHeader>
-                  <CardImg src={product.thumbnail} height={400} width={340} path="/product-details" />
+                  <CardImg src={product.thumbnail} height={400} width={340} path={productPath(product)} />
                   <CardLabel isLabel={product.label ? product.label : false}>{product.label}</CardLabel>
                   <CardDiscount
                     isDiscountTrue={product.discountPercentage ? product.discountPercentage : false}
@@ -122,7 +123,7 @@ const VendorProducts = ({ vendor, products }: { vendor: VendorType; products: Ve
                   <CardIcons product={product} />
                 </CardHeader>
                 <CardFooter>
-                  <CardTitle path="/product-details">{product.title}</CardTitle>
+                  <CardTitle path={productPath(product)}>{product.title}</CardTitle>
                   <CardPriceEnhanced price={product.price} discountPercentage={product.discountPercentage} />
                 </CardFooter>
               </Card>

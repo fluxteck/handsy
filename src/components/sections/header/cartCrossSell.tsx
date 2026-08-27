@@ -6,6 +6,7 @@ import calcluteDiscount from "@/lib/calcluteDiscount";
 import { useCart } from "@/lib/cart/cart-context";
 import { ProductType } from "@/types/productType";
 import currencyFormatter from "currency-formatter";
+import { productPath } from "@/lib/productPath";
 
 /**
  * Compact cart-drawer cross-sell cards. Deliberately not reusing components/ui/card.tsx
@@ -33,7 +34,7 @@ const CartCrossSell = ({ products }: { products: ProductType[] }) => {
               className="flex flex-col gap-2.5 shrink-0 w-[120px]"
             >
               <Link
-                href="/product-details"
+                href={productPath(product)}
                 aria-label={`View ${product.title}`}
                 className="bg-home-bg-1 rounded-xl overflow-hidden block"
               >

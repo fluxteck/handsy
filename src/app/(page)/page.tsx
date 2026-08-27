@@ -1,7 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
 import AboutTeaser from '@/components/sections/aboutTeaser'
-import BlogSlider from '@/components/sections/blogs/blogSlider'
 import BrandCarousel from '@/components/sections/brandCarousel'
 import FeaturedProducts from '@/components/sections/featuredProducts'
 import InstagramGallery from '@/components/sections/instagramGallery'
@@ -11,7 +10,7 @@ import TestimonialSlider from '@/components/sections/testimonialSlider'
 import TopCollections from '@/components/sections/topCollections'
 import HeroSection from '@/components/sections/heroSection'
 import ShopTheLook from '@/components/sections/shopTheLook'
-import { getBlogData, getBrandsData, getHeroData, getPromoCardsData, getShopTheLookData, getTestimonialsData } from '@/lib/data'
+import { getBrandsData, getHeroData, getPromoCardsData, getShopTheLookData, getTestimonialsData } from '@/lib/data'
 import { getFeaturedProducts, getHomeCategories, getTopCollections } from '@/lib/sdk'
 
 export const metadata: Metadata = {
@@ -22,7 +21,7 @@ export const metadata: Metadata = {
 /**
  * Catalogue sections (categories, top collections, featured products) come
  * from handsymarket-server through the SDK. The editorial sections — hero,
- * promo cards, brands, blog, testimonials, shop-the-look — have no server
+ * promo cards, brands, testimonials, shop-the-look — have no server
  * counterpart and keep reading local content from `src/db`.
  *
  * Revalidated hourly; the catalogue changes far less often than a request
@@ -31,15 +30,29 @@ export const metadata: Metadata = {
 export const revalidate = 3600;
 
 const Home = async () => {
-  const categoriesData = await getHomeCategories();
-  const blogData = await getBlogData();
-  const testimonialData = await getTestimonialsData();
-  const topCollections = await getTopCollections();
-  const featuredProducts = await getFeaturedProducts();
-  const heroData = await getHeroData()
-  const promoCardsData = await getPromoCardsData()
-  const brandsData = await getBrandsData()
-  const shopTheLookData = await getShopTheLookData()
+  // Fetched together rather than in sequence: these are independent, and three
+  // of them (categories, top collections, featured products) are network reads
+  // against the catalogue API. Awaiting them one at a time made the page's
+  // time-to-first-byte the *sum* of every round trip instead of the slowest.
+  const [
+    categoriesData,
+    testimonialData,
+    topCollections,
+    featuredProducts,
+    heroData,
+    promoCardsData,
+    brandsData,
+    shopTheLookData,
+  ] = await Promise.all([
+    getHomeCategories(),
+    getTestimonialsData(),
+    getTopCollections(),
+    getFeaturedProducts(),
+    getHeroData(),
+    getPromoCardsData(),
+    getBrandsData(),
+    getShopTheLookData(),
+  ]);
 
   return (
     <>
@@ -50,7 +63,6 @@ const Home = async () => {
       <AboutTeaser />
       <ShopTheLook data={shopTheLookData} />
       <BrandCarousel brands={brandsData} />
-      <BlogSlider blogs={blogData} />
       <TestimonialSlider testimonials={testimonialData} />
       <Newsletter />
       <InstagramGallery />

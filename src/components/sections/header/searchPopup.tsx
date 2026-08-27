@@ -9,16 +9,19 @@ import {
 } from "@/components/ui/select";
 import { Close, Search } from "@/lib/icon";
 import { cn } from "@/lib/utils";
-import { menuList } from "@/db/menuList";
+import type { CategoryLink } from "@/lib/categoryLinks";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useProductSearch } from "@/lib/sdk/use-search";
 import { productPath } from "@/lib/productPath";
 
-const categoryLabels = menuList.map(({ label }) => label);
 const PLACEHOLDER_ROTATE_MS = 2500;
 
-const SearchPopup = () => {
+const SearchPopup = ({ categories = [] }: { categories?: CategoryLink[] }) => {
+  // Rotating placeholder ("Search for Pendants...") built from the real
+  // catalogue; it used to name the template's categories, advertising a range
+  // this store does not carry.
+  const categoryLabels = categories.map(({ label }) => label);
   const [searchInput, setSearchInput] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -82,7 +85,7 @@ const SearchPopup = () => {
       aria-hidden
       className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 truncate max-w-[calc(100%-24px)] text-gray-1-foreground/70 text-base animate-in fade-in slide-in-from-bottom-1 duration-500 fill-mode-both"
     >
-      Search for {categoryLabels[placeholderIndex]}...
+      {categoryLabels.length ? `Search for ${categoryLabels[placeholderIndex]}...` : "Search products..."}
     </span>
   );
 

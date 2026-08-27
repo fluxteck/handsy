@@ -11,8 +11,9 @@ import Link from 'next/link';
 import { useCart } from "@/lib/cart/cart-context";
 import { useWishlist } from "@/lib/wishlist/wishlist-context";
 import { productPath } from '@/lib/productPath';
+import type { CategoryLink } from "@/lib/categoryLinks";
 
-const WishlistProductsTable = () => {
+const WishlistProductsTable = ({ categories = [] }: { categories?: CategoryLink[] }) => {
     const { add: addToCartLine } = useCart();
     const { products, remove, isLoading } = useWishlist()
 
@@ -86,7 +87,7 @@ const WishlistProductsTable = () => {
                     /* "Empty" is only true once the fetch has finished. A
                        signed-in customer with saved items would otherwise be
                        told their wishlist is empty while it is still loading. */
-                    <ShopEmptyState
+                    <ShopEmptyState categories={categories}
                         icon={Heart}
                         title={isLoading ? "Loading your wishlist…" : "Your Wishlist is Empty"}
                         description={isLoading ? "One moment." : "Save the pieces you love and shop them whenever you're ready"}

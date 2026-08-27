@@ -8,6 +8,7 @@ import { WishlistProvider } from "@/lib/wishlist/wishlist-context";
 import { Toaster } from "react-hot-toast";
 import SmoothScroll from "@/components/smoothScroll";
 import WelcomePopup from "@/components/sections/welcomePopup";
+import { getSiteUrl } from "@/lib/config";
 
 const satoshi = localFont({
   src: [
@@ -46,10 +47,7 @@ const displaySerif = Instrument_Serif({
 })
 
 
-// TODO: replace with the real production domain (or set NEXT_PUBLIC_SITE_URL) —
-// nothing in the codebase states it yet, so this placeholder keeps metadataBase/JSON-LD
-// valid without presenting a guessed domain as fact.
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://your-domain.com";
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

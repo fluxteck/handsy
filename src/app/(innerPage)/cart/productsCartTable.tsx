@@ -15,8 +15,9 @@ import ShopEmptyState from "@/components/ui/shopEmptyState";
 import Image from "next/image";
 import Link from "next/link";
 import currencyFormatter from "currency-formatter";
+import type { CategoryLink } from "@/lib/categoryLinks";
 
-const ProductsCartTable = () => {
+const ProductsCartTable = ({ categories = [] }: { categories?: CategoryLink[] }) => {
   const { products, increment, decrement, remove, currency } = useCart();
   return (
     <>
@@ -105,18 +106,18 @@ const ProductsCartTable = () => {
               <Button>Apply coupon</Button>
             </div>
             <Button variant={"outline"} asChild>
-              <Link href={"/shop-2"}>Continue Shopping</Link>
+              <Link href={"/shop"}>Continue Shopping</Link>
             </Button>
           </div>
         </div>
       ) : (
-        <ShopEmptyState
+        <ShopEmptyState categories={categories}
           className="lg:col-span-2"
           icon={ShopCart}
           title="Your Cart is Empty"
           description="Let's fill it with something you'll love"
           ctaLabel="Continue Shopping"
-          ctaHref="/shop-2"
+          ctaHref="/shop"
         />
       )}
     </>

@@ -1,5 +1,6 @@
 import { getMenuData } from "@/lib/data";
 import { getTopRatedProducts } from "@/lib/sdk";
+import { getCategoryLinks } from "@/lib/categoryLinks";
 import { User } from "@/lib/icon";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,6 +19,10 @@ const Header = async () => {
      STRUCTURE stays local (`src/db/menuList.ts`) — its slugs are editorial and
      don't correspond to server categories yet; see BUILD-ORDER.md. */
   const featuredProducts = await getTopRatedProducts(3);
+  /* Real catalogue categories for the surfaces that suggest somewhere to go:
+     the search placeholder rotation and the empty-cart state. The mega-menu and
+     mobile menu still render the local structure above. */
+  const categoryLinks = await getCategoryLinks();
   return (
     <StickyHeader topHeaderContent={<TopHeader />}>
       <div className="lg:h-20 h-14 bg-home-bg-1 [.header-pinned_&]:shadow-md">
@@ -39,7 +44,7 @@ const Header = async () => {
             </Link>
           </div>
           <div className="flex-1 max-w-xl mx-auto">
-            <SearchPopup />
+            <SearchPopup categories={categoryLinks} />
           </div>
           <div className="flex items-center justify-end gap-5 shrink-0">
             <div className="lg:block hidden">
@@ -53,7 +58,7 @@ const Header = async () => {
             >
               <User />
             </Link>
-            <ShopingCartSidebar featuredProducts={featuredProducts} />
+            <ShopingCartSidebar featuredProducts={featuredProducts} categories={categoryLinks} />
           </div>
         </div>
       </div>

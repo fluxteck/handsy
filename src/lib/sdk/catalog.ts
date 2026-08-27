@@ -22,11 +22,9 @@ import { getStorefrontClient } from "./client";
 /**
  * Server-backed catalog reads for the homepage.
  *
- * Deliberately separate from `src/lib/data.ts`: that module's
- * `getProductsData()` still feeds the header, mega-menu, search popup and the
- * inner pages, all of which are out of scope for this phase. Adding new
- * functions here rather than rewriting that one keeps the change confined to
- * the homepage.
+ * Deliberately separate from `src/lib/data.ts`, which now holds only editorial
+ * content (marketing copy, legal text, the FAQ). Every product read in the
+ * storefront goes through this module.
  *
  * Every function fails soft. A section rendering empty is a far better outcome
  * than a 500 on the whole page when the server is down or mid-deploy, so the
@@ -333,17 +331,9 @@ export const getVendorBySlug = cache(async (slug: string): Promise<Brand | null>
   }
 });
 
-export const getVendorSlugs = cache(async (): Promise<string[]> => {
-  const brands = getStorefrontClient().adapter.brands;
-  if (!brands) return [];
-  try {
-    // Only used to pre-render pages at build time, so one page is plenty.
-    const page = await brands.list({ limit: 100 }, ctx());
-    return page.items.map((brand) => brand.slug);
-  } catch {
-    return [];
-  }
-});
+export const getVendorSlugs = cache(async (): Promise<string[]> =>
+  (await getBrandEntries()).map((brand) => brand.slug),
+);
 
 /**
  * A maker's products, plus the category labels to build the filter pills.
@@ -371,3 +361,103 @@ export const getVendorProducts = cache(
     }
   },
 );
+
+// ── Sitemap ──────────────────────────────────────────────────────────────
+
+/**
+ * A routable catalogue record, reduced to what a sitemap entry needs.
+ *
+ * `updatedAt` is the record's real modification time, not the time the sitemap
+ * was generated. Stamping `new Date()` on every URL — as the previous static
+ * sitemap did — tells crawlers the entire site changed on every fetch, which
+ * devalues the signal for the pages that genuinely did change.
+ */
+export interface SitemapEntry {
+  slug: string;
+  updatedAt?: string;
+}
+
+/**
+ * Walk every page of a cursor-paginated list.
+ *
+ * `maxPages` is a runaway guard, not a content limit: a backend that returned a
+ * fixed `nextCursor` would otherwise spin forever during a build. At 100 rows a
+ * page this admits 5,000 records, well beyond the current catalogue; the cap is
+ * logged when hit so a genuinely larger catalogue is noticed rather than
+ * silently truncated.
+ */
+async function collectPages<T>(
+  label: string,
+  fetchPage: (cursor?: string) => Promise<{ items: T[]; nextCursor: string | null }>,
+  maxPages = 50,
+): Promise<T[]> {
+  const out: T[] = [];
+  let cursor: string | undefined;
+
+  for (let page = 0; page < maxPages; page++) {
+    const { items, nextCursor } = await fetchPage(cursor);
+    out.push(...items);
+    if (!nextCursor) return out;
+    cursor = nextCursor;
+  }
+
+  console.warn(`[handsy:sitemap] ${label} hit the ${maxPages}-page cap; results may be truncated`);
+  return out;
+}
+
+/**
+ * Every published product, for the sitemap.
+ *
+ * `status: "active"` is explicit rather than inherited: a sitemap is a positive
+ * assertion that a URL is worth indexing, so drafts must never reach it even if
+ * the storefront's list endpoint would otherwise return them.
+ */
+export const getProductEntries = cache(async (): Promise<SitemapEntry[]> => {
+  try {
+    const products = await collectPages("products", (cursor) =>
+      getStorefrontClient().products.list({
+        status: "active",
+        limit: 100,
+        ...(cursor ? { cursor } : {}),
+      }),
+    );
+    return products
+      .filter((product) => Boolean(product.slug))
+      .map((product) => ({ slug: product.slug, updatedAt: product.updatedAt }));
+  } catch (err) {
+    console.error("[handsy:sitemap] products failed to load", err);
+    return [];
+  }
+});
+
+/** Every category, for the sitemap. `categories.list` returns the full tree. */
+export const getCategoryEntries = cache(async (): Promise<SitemapEntry[]> => {
+  const categories = getStorefrontClient().adapter.categories;
+  if (!categories) return [];
+  try {
+    const all = await categories.list(ctx());
+    return all
+      .filter((category) => Boolean(category.slug))
+      .map((category) => ({ slug: category.slug, updatedAt: category.updatedAt }));
+  } catch (err) {
+    console.error("[handsy:sitemap] categories failed to load", err);
+    return [];
+  }
+});
+
+/** Every active maker, for the sitemap and for pre-rendering their pages. */
+export const getBrandEntries = cache(async (): Promise<SitemapEntry[]> => {
+  const brands = getStorefrontClient().adapter.brands;
+  if (!brands) return [];
+  try {
+    const all = await collectPages("brands", (cursor) =>
+      brands.list({ limit: 100, ...(cursor ? { cursor } : {}) }, ctx()),
+    );
+    return all
+      .filter((brand) => Boolean(brand.slug))
+      .map((brand) => ({ slug: brand.slug, updatedAt: brand.updatedAt }));
+  } catch (err) {
+    console.error("[handsy:sitemap] brands failed to load", err);
+    return [];
+  }
+});

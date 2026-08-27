@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { menuList } from "@/db/menuList";
+import type { CategoryLink } from "@/lib/categoryLinks";
 import { Close } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -12,6 +12,8 @@ type ShopEmptyStateProps = {
   ctaLabel: string;
   ctaHref?: string;
   className?: string;
+  /** Catalogue categories to suggest; resolved by a server ancestor. */
+  categories?: CategoryLink[];
 };
 
 const ShopEmptyState = ({
@@ -19,7 +21,8 @@ const ShopEmptyState = ({
   title,
   description,
   ctaLabel,
-  ctaHref = "/shop-2",
+  ctaHref = "/shop",
+  categories = [],
   className,
 }: ShopEmptyStateProps) => {
   return (
@@ -45,15 +48,16 @@ const ShopEmptyState = ({
         </span>
       </div>
 
+      {categories.length > 0 && (
       <div className="animate-in fade-in slide-in-from-bottom-1 duration-700 delay-300 fill-mode-both">
         <p className="font-medium text-secondary-foreground">
           What would you like to buy? Pick from our best-selling categories
         </p>
         <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
-          {menuList.map(({ id, label, path }) => (
-            <li key={id}>
+          {categories.map(({ label, href }) => (
+            <li key={href}>
               <Link
-                href={path}
+                href={href}
                 className="multiline-hover text-gray-1-foreground hover:text-secondary-foreground capitalize transition-colors duration-300"
               >
                 {label}
@@ -62,6 +66,7 @@ const ShopEmptyState = ({
           ))}
         </ul>
       </div>
+      )}
 
       <Button
         asChild

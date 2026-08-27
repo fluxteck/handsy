@@ -7,6 +7,7 @@ import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import RecentlyViewed from "@/components/sections/recentlyViewed";
 import { Metadata } from "next";
 import { getTopRatedProducts } from "@/lib/sdk";
+import { getCategoryLinks } from "@/lib/categoryLinks";
 
 export const metadata: Metadata = {
   title: "Cart",
@@ -14,6 +15,9 @@ export const metadata: Metadata = {
 };
 
 const VIewCart = async () => {
+  // Suggested categories for the empty state, from the catalogue.
+  const categoryLinks = await getCategoryLinks();
+
   /* Suggestions come from the catalogue — the mock fallback would put sample
      products next to a real cart. */
   const suggestions = await getTopRatedProducts(4);
@@ -22,12 +26,12 @@ const VIewCart = async () => {
       <PageHeader
         currentPage="View Cart"
         pageTitle="View Cart"
-        breadcrumbLink="/shop-2"
+        breadcrumbLink="/shop"
         breadcrumbLabel="Shop"
       />
       <div className="container lg:pt-25 lg:pb-25 pt-15 pb-15">
         <div className="grid xl:grid-cols-[auto_23.944%] lg:grid-cols-[auto_30%] grid-cols-1 gap-7.5 items-start">
-          <ProductsCartTable />
+          <ProductsCartTable categories={categoryLinks} />
           <ProductCalculateCard />
         </div>
       </div>

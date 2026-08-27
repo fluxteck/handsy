@@ -43,7 +43,7 @@ const AboutTeaser = ({ className }: { className?: string }) => {
               </p>
               <div className="mt-7.5 flex flex-wrap items-center gap-4">
                 <Button asChild className="group/cta">
-                  <Link href="/shop-2">
+                  <Link href="/shop">
                     Shop All
                     <ArrowRight className="size-4 transition-transform duration-300 group-hover/cta:translate-x-1" />
                   </Link>

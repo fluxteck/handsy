@@ -6,6 +6,7 @@ import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import { Metadata } from "next";
 import WishlistProductsTable from "./wishlistProductsTable";
 import { getTopRatedProducts } from "@/lib/sdk";
+import { getCategoryLinks } from "@/lib/categoryLinks";
 
 export const metadata: Metadata = {
   title: "Wishlist",
@@ -13,6 +14,9 @@ export const metadata: Metadata = {
 };
 
 const Wishlist = async () => {
+  // Suggested categories for the empty state, from the catalogue.
+  const categoryLinks = await getCategoryLinks();
+
   /* Suggestions come from the catalogue — the mock fallback would put sample
      products next to a real cart. */
   const suggestions = await getTopRatedProducts(4);
@@ -21,10 +25,10 @@ const Wishlist = async () => {
       <PageHeader
         currentPage="Wishlist"
         pageTitle="Wishlist"
-        breadcrumbLink="/shop-2"
+        breadcrumbLink="/shop"
         breadcrumbLabel="Shop"
       />
-      <WishlistProductsTable />
+      <WishlistProductsTable categories={categoryLinks} />
       <RecentlyViewed />
       <RelatedProducts products={suggestions} />
       <Newsletter />

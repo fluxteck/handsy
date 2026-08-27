@@ -40,6 +40,16 @@ const PublicEnvSchema = z.object({
    * alongside each intent, which is the preferred source.
    */
   NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().optional(),
+  /**
+   * Canonical public origin, e.g. `https://www.handsymarket.com`. Used for
+   * `metadataBase`, canonical links and the sitemap's absolute URLs.
+   * Optional: `getSiteUrl()` falls back to Vercel's production domain, then to
+   * localhost, so a preview deploy or a dev server still emits usable URLs.
+   */
+  NEXT_PUBLIC_SITE_URL: z
+    .string()
+    .url("NEXT_PUBLIC_SITE_URL must be a full origin, e.g. https://www.handsymarket.com")
+    .optional(),
 });
 
 type PublicEnv = z.infer<typeof PublicEnvSchema>;
@@ -55,6 +65,7 @@ export function getEnv(): PublicEnv {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
   });
 
   if (!result.success) {
@@ -80,6 +91,26 @@ export function getEnv(): PublicEnv {
 /** ISO 4217 code the catalogue is priced in. */
 export function getStoreCurrency(): string {
   return getEnv().NEXT_PUBLIC_CURRENCY;
+}
+
+/**
+ * Canonical origin for absolute URLs, with no trailing slash.
+ *
+ * Resolution order, most to least specific:
+ *  1. `NEXT_PUBLIC_SITE_URL` — the deliberate answer; set this in production.
+ *  2. `VERCEL_PROJECT_PRODUCTION_URL` — Vercel's own production domain, so a
+ *     deploy that forgot step 1 still emits real URLs rather than a placeholder.
+ *  3. `http://localhost:3000` — dev, where absolute URLs only need to parse.
+ *
+ * Never guesses a domain: an unset value in an unknown environment yields
+ * localhost, which is obviously wrong at a glance, rather than a plausible-
+ * looking host that would silently poison canonicals and the sitemap.
+ */
+export function getSiteUrl(): string {
+  const explicit = getEnv().NEXT_PUBLIC_SITE_URL;
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  const url = explicit ?? (vercel ? `https://${vercel}` : "http://localhost:3000");
+  return url.replace(/\/+$/, "");
 }
 
 /**

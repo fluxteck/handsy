@@ -1,13 +1,19 @@
 import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from '@/components/ui/card';
-import { getProductsData } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { ProductType } from '@/types/productType';
 import { productPath } from '@/lib/productPath'
 
-/** `products` comes from the catalog on SDK-backed pages; without it the
- *  component falls back to the static data the other pages still use. */
-const RelatedProducts = async ({ className, products }: { className?: string; products?: ProductType[] }) => {
-    const featuredProducts: ProductType[] = products ?? (await getProductsData()).featuredProducts;
+/**
+ * `products` is supplied by the caller, always from the catalogue.
+ *
+ * It used to be optional, falling back to a 650-line static sample catalogue
+ * for pages that had not been migrated yet. Every call site now passes real
+ * products, so the fallback was unreachable and the sample data has been
+ * deleted; making the prop required means a future caller cannot silently
+ * reintroduce placeholder products.
+ */
+const RelatedProducts = ({ className, products }: { className?: string; products: ProductType[] }) => {
+    const featuredProducts: ProductType[] = products;
     return (
         <section className={cn('lg:pt-25 lg:pb-25 pt-15 pb-15', className)}>
             <div className='container'>

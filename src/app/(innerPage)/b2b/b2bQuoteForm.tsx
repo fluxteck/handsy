@@ -12,7 +12,7 @@ const trustPoints = [
   { icon: Boxes, label: "MOQs from 50 units" },
 ];
 
-const B2bQuoteForm = () => {
+const B2bQuoteForm = ({ categories = [] }: { categories?: string[] }) => {
   return (
     <section id="quote" className="container lg:py-25 py-15" aria-label="Request a wholesale quote">
       <motion.div
@@ -42,7 +42,7 @@ const B2bQuoteForm = () => {
           </p>
 
           <div className="mt-7.5 flex justify-center">
-            <B2bEnquiryModal className="lg:px-10" />
+            <B2bEnquiryModal categories={categories} className="lg:px-10" />
           </div>
 
           <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-8 gap-y-3">

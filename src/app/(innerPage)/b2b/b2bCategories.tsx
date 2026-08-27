@@ -1,16 +1,42 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getHomeCategories } from "@/lib/sdk";
 
-const categories = [
-  { label: "Furniture", path: "/category/furniture", image: "/images/home-1/top-collections/img-1.webp" },
-  { label: "Home Decor", path: "/category/home-decor", image: "/images/home-1/top-collections/img-2.webp" },
-  { label: "Lamps & Lighting", path: "/category/lamps-lighting", image: "/images/home-1/top-collections/img-3.webp" },
-  { label: "Kitchen & Dining", path: "/category/kitchen-dining", image: "/images/home-1/top-collections/img-4.webp" },
-  { label: "Luxury", path: "/category/luxury", image: "/images/home-1/top-collections/img-5.webp" },
-  { label: "Modular", path: "/category/modular", image: "/images/home-1/top-collections/img-6.webp" },
+/** Six tiles fill the grid without leaving a ragged final row. */
+const B2B_CATEGORY_LIMIT = 6;
+
+/**
+ * Artwork for the tiles, cycled by index.
+ *
+ * The categories themselves come from the catalogue, but the catalogue's own
+ * `imageUrl` is often unset and these tiles are large — so rather than render
+ * holes, the template's photography is reused deterministically, the same
+ * approach `lib/mappers/category.ts` takes for the homepage tiles.
+ */
+const TILE_IMAGES = [
+  "/images/home-1/top-collections/img-1.webp",
+  "/images/home-1/top-collections/img-2.webp",
+  "/images/home-1/top-collections/img-3.webp",
+  "/images/home-1/top-collections/img-4.webp",
+  "/images/home-1/top-collections/img-5.webp",
+  "/images/home-1/top-collections/img-6.webp",
 ];
 
-const B2bCategories = () => {
+const B2bCategories = async () => {
+  // Previously a hardcoded list of the template's categories — Furniture,
+  // Luxury, Modular and so on — none of which exist in this catalogue, so every
+  // tile linked to a page that matched nothing.
+  const categories = (await getHomeCategories())
+    .filter((category) => Boolean(category.value))
+    .slice(0, B2B_CATEGORY_LIMIT)
+    .map((category, index) => ({
+      label: category.categoryName,
+      path: `/category/${category.value}`,
+      image: category.categoryImg || TILE_IMAGES[index % TILE_IMAGES.length]!,
+    }));
+
+  if (!categories.length) return null;
+
   return (
     <section id="categories" className="bg-home-bg-1 lg:py-25 py-15" aria-label="Featured B2B product categories">
       <div className="container">
@@ -22,7 +48,7 @@ const B2bCategories = () => {
             <h5 className="mt-3">Featured categories for business orders</h5>
           </div>
           <Link
-            href="/shop-2"
+            href="/shop"
             className="text-secondary-foreground font-medium multiline-hover"
           >
             View full catalog

@@ -9,13 +9,18 @@ import B2bWhyUs from "./b2bWhyUs";
 import B2bQuoteForm from "./b2bQuoteForm";
 import B2bFaq from "./b2bFaq";
 import B2bCta from "./b2bCta";
+import { getHomeCategories } from "@/lib/sdk";
 
 export const metadata: Metadata = {
   title: "B2B & Wholesale",
   description: "Wholesale wooden furniture and home decor for retailers, designers, hospitality, and corporate buyers worldwide.",
 };
 
-const B2b = () => {
+const B2b = async () => {
+  // Real category names for the B2B enquiry dropdown, read here because
+  // the modal that renders them is a client component.
+  const categoryNames = (await getHomeCategories()).map((category) => category.categoryName);
+
   return (
     <main>
       <PageHeader pageTitle="B2B & Wholesale" currentPage="B2B" renderHeading={false} />
@@ -25,7 +30,7 @@ const B2b = () => {
       <B2bProcess />
       <B2bCategories />
       <B2bWhyUs />
-      <B2bQuoteForm />
+      <B2bQuoteForm categories={categoryNames} />
       <B2bFaq />
       <B2bCta />
     </main>

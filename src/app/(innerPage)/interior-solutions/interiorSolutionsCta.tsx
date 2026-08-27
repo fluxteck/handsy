@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Call, Email, Location } from "@/lib/icon";
 import B2bEnquiryModal from "../b2b/b2bEnquiryModal";
 
-const InteriorSolutionsCta = () => {
+const InteriorSolutionsCta = ({ categories = [] }: { categories?: string[] }) => {
   return (
     <section id="quote" className="pb-10 md:pb-11.25 lg:pb-12.5 scroll-mt-24" aria-label="Start your interior solutions partnership">
       <div className="container">
@@ -16,7 +16,7 @@ const InteriorSolutionsCta = () => {
             team will respond with tailored capabilities and competitive pricing.
           </p>
           <div className="mt-7.5 flex flex-wrap items-center justify-center gap-4">
-            <B2bEnquiryModal className="bg-white text-primary border-white hover:bg-transparent hover:text-white" />
+            <B2bEnquiryModal categories={categories} className="bg-white text-primary border-white hover:bg-transparent hover:text-white" />
             <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-primary">
               <Link href="/contact-us">Talk to Our Team</Link>
             </Button>

@@ -15,6 +15,7 @@ import { StatusBadge } from "@/components/sections/account/statusBadge";
 import { useMyOrders, useMyProfile } from "@/lib/account/use-account";
 import { getStoreCurrency } from "@/lib/config";
 import { useWishlist } from "@/lib/wishlist/wishlist-context";
+import { productPath } from "@/lib/productPath";
 
 /** Orders are priced in the store's currency, not a hardcoded dollar. */
 const storeCurrency = getStoreCurrency();
@@ -226,7 +227,7 @@ const OverviewContent = ({ unreadCount }: { unreadCount: number }) => {
                         {wishlistProducts.slice(0, 6).map((product) => (
                             <Link
                                 key={product.id}
-                                href="/product-details"
+                                href={productPath(product)}
                                 className={cn(
                                     "flex w-24 shrink-0 flex-col items-center gap-2 text-center transition-all duration-300 hover:opacity-70"
                                 )}

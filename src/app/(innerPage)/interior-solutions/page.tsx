@@ -8,6 +8,7 @@ import InteriorSolutionsCapabilities from "./interiorSolutionsCapabilities";
 import InteriorSolutionsProcess from "./interiorSolutionsProcess";
 import InteriorSolutionsFaq from "./interiorSolutionsFaq";
 import InteriorSolutionsCta from "./interiorSolutionsCta";
+import { getHomeCategories } from "@/lib/sdk";
 
 export const metadata: Metadata = {
   title: "B2B Interior & Home Decor Solutions",
@@ -32,6 +33,10 @@ const serviceJsonLd = {
 };
 
 const InteriorSolutions = async () => {
+  // Real category names for the B2B enquiry dropdown, read here because
+  // the modal that renders them is a client component.
+  const categoryNames = (await getHomeCategories()).map((category) => category.categoryName);
+
   const partners = await getPartnerData();
 
   return (
@@ -45,13 +50,13 @@ const InteriorSolutions = async () => {
         currentPage="Interior Solutions"
         renderHeading={false}
       />
-      <InteriorSolutionsHero />
+      <InteriorSolutionsHero categories={categoryNames} />
       <InteriorSolutionsPositioning partners={partners} />
       <InteriorSolutionsSegments />
       <InteriorSolutionsCapabilities />
       <InteriorSolutionsProcess />
       <InteriorSolutionsFaq />
-      <InteriorSolutionsCta />
+      <InteriorSolutionsCta categories={categoryNames} />
     </main>
   );
 };

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "@/lib/icon";
 import B2bEnquiryModal from "../b2b/b2bEnquiryModal";
 
-const InteriorSolutionsHero = () => {
+const InteriorSolutionsHero = ({ categories = [] }: { categories?: string[] }) => {
   return (
     <section className="pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5" aria-label="B2B interior and home decor solutions">
       <div className="container">
@@ -43,7 +43,7 @@ const InteriorSolutionsHero = () => {
                 competitive B2B pricing.
               </p>
               <div className="mt-7.5 flex flex-wrap items-center gap-4">
-                <B2bEnquiryModal />
+                <B2bEnquiryModal categories={categories} />
                 <Button asChild variant="outline">
                   <Link href="#segments">Explore Collaboration Segments</Link>
                 </Button>

@@ -2,17 +2,24 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Facebook, Instagram, Linkedin, Twitter } from "@/lib/icon";
+import { getHomeCategories } from "@/lib/sdk";
 
-const footerLinks = [
-  {
-    title: "Shop",
-    links: [
-      { label: "Furniture", href: "/category/furniture" },
-      { label: "Home Decor", href: "/category/home-decor" },
-      { label: "Kitchen & Dining", href: "/category/kitchen-dining" },
-      { label: "Lamps & Lighting", href: "/category/lamps-lighting" },
-    ],
-  },
+/**
+ * How many catalogue categories the Shop column lists before deferring to
+ * "View all". Four keeps the column the same height as its neighbours.
+ */
+const FOOTER_CATEGORY_LIMIT = 4;
+
+/**
+ * The non-catalogue columns, which are genuinely static routes.
+ *
+ * The Shop column is built at render time from the live catalogue instead: it
+ * used to hardcode the purchased template's categories (Furniture, Home Decor,
+ * Kitchen & Dining, Lamps & Lighting), none of which exist in this store, so
+ * every link in the site-wide footer led to a category page that matched
+ * nothing.
+ */
+const staticFooterLinks = [
   {
     title: "Company",
     links: [
@@ -46,7 +53,29 @@ const socialLinks = [
   { Icon: Linkedin, href: "#", label: "LinkedIn" },
 ];
 
-const Footer = () => {
+const Footer = async () => {
+  // Server component, so this is a direct catalogue read — no client fetch and
+  // no extra round trip. `getHomeCategories` fails soft to an empty list, in
+  // which case the Shop column collapses to its "View all" link rather than
+  // rendering dead entries.
+  const categories = await getHomeCategories();
+  const footerLinks = [
+    {
+      title: "Shop",
+      links: [
+        ...categories
+          .filter((category) => Boolean(category.value))
+          .slice(0, FOOTER_CATEGORY_LIMIT)
+          .map((category) => ({
+            label: category.categoryName,
+            href: `/category/${category.value}`,
+          })),
+        { label: "View all categories", href: "/category" },
+      ],
+    },
+    ...staticFooterLinks,
+  ];
+
   return (
     <footer className="relative bg-primary text-white mx-4 md:mx-6 lg:mx-8 mb-4 md:mb-6 lg:mb-8 rounded-3xl shadow-3xl">
       <div className="container relative pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5">

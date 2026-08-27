@@ -11,6 +11,7 @@ import { ProductType } from "@/types/productType";
 import Link from "next/link";
 import ProductGalleryVertical from "./productGalleryVertical";
 import ProductInfoDetails, { ProductColorType } from "./productInfoDetails";
+import { productPath } from "@/lib/productPath";
 
 /** Everything Quick View needs to match the PDP. The 6 core fields are required (every
  * call site already has these); the richer PDP fields are optional so trigger sites with
@@ -20,7 +21,9 @@ export type ProductQuickViewProduct = Pick<
   ProductType,
   "id" | "thumbnail" | "title" | "price" | "discountPercentage" | "stock" | "variantId"
 > &
-  Partial<Pick<ProductType, "images" | "colors" | "description" | "category">>;
+  // `slug` rides along so the quick view can link to the real detail page;
+  // optional because callers seed this state with an empty placeholder product.
+  Partial<Pick<ProductType, "images" | "colors" | "description" | "category" | "slug">>;
 
 export type ProductQuickViewType = {
   isDialogOpen: boolean;
@@ -59,7 +62,7 @@ const ProductQuickView = ({
           <div className="md:max-w-[320px] w-full shrink-0">
             <ProductGalleryVertical images={images} showThumbnails={false} enableZoom={false} />
             <Button asChild className="w-full mt-4">
-              <Link href="/product-details">View Full Details</Link>
+              <Link href={productPath(product)}>View Full Details</Link>
             </Button>
           </div>
           <div className="min-w-0 w-full">
@@ -75,7 +78,7 @@ const ProductQuickView = ({
               variantId={product.variantId}
               description={product.description}
               compact
-              titleHref="/product-details"
+              titleHref={productPath(product)}
             />
           </div>
         </div>

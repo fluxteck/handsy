@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/select";
 import { ArrowRight } from "@/lib/icon";
 import { cn } from "@/lib/utils";
-import { categorySlugLabels } from "@/db/menuList";
 import { useEnquiry } from "@commercekitsdk/react";
 
 const countries = [
@@ -41,7 +40,20 @@ const selectTriggerClass = "h-12.5 py-2.5 border-[1.5px] border-[#999796] text-b
 const SUCCESS_MESSAGE =
   "Thanks for applying — our vendor team reviews every application and will reach out within 2–3 business days.";
 
-const VendorEnquiryModal = ({ className }: { className?: string }) => {
+/**
+ * Category options for the seller-onboarding enquiry.
+ *
+ * Passed in rather than read here: this is a client component and the
+ * catalogue read is server-side. It previously listed the purchased template's
+ * categories, so a prospective seller could only describe their range in terms
+ * of products this store does not carry.
+ */
+export interface VendorEnquiryModalProps {
+  className?: string;
+  categories?: string[];
+}
+
+const VendorEnquiryModal = ({ className, categories = [] }: VendorEnquiryModalProps) => {
   const [open, setOpen] = useState(false);
   /* A vendor application is an enquiry of its own type, so it queues
      separately from contact and wholesale. The craft-specific answers travel
@@ -164,8 +176,8 @@ const VendorEnquiryModal = ({ className }: { className?: string }) => {
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent className="py-[14px] bg-background">
-                      {Object.entries(categorySlugLabels).map(([slug, label]) => (
-                        <SelectItem key={slug} value={label} className="cursor-pointer">
+                      {categories.map((label) => (
+                        <SelectItem key={label} value={label} className="cursor-pointer">
                           {label}
                         </SelectItem>
                       ))}

@@ -9,6 +9,7 @@ import { productPath } from "@/lib/productPath";
 import VendorAbout from "./vendorAbout";
 import VendorHero from "./vendorHero";
 import VendorProducts from "./vendorProducts";
+import { getSiteUrl } from "@/lib/config";
 
 type PageProps = {
   params: Promise<{ vendorName: string }>;
@@ -72,16 +73,16 @@ const VendorStorefrontPage = async ({ params }: PageProps) => {
   // string, which loses precision once it reads "1.2k".
   const reviewCount = brand.reviewCount || undefined;
 
-  // TODO: once a canonical NEXT_PUBLIC_SITE_URL is available, prefix these with the absolute
-  // origin instead of a site-relative path, and swap the product `url`s for real per-product
-  // detail routes once products have slugs.
+  // schema.org requires absolute URLs; a site-relative path is silently ignored
+  // by consumers, which previously made this block's `url` fields inert.
+  const siteUrl = getSiteUrl();
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Store",
     name: vendor.name,
     description: vendor.description,
     image: vendor.coverImage,
-    url: `/vendor/${vendor.slug}`,
+    url: `${siteUrl}/vendor/${vendor.slug}`,
     address: {
       "@type": "PostalAddress",
       addressLocality: vendor.location,
@@ -100,7 +101,7 @@ const VendorStorefrontPage = async ({ params }: PageProps) => {
       name: product.title,
       price: product.price,
       priceCurrency: product.currency,
-      url: productPath(product),
+      url: `${siteUrl}${productPath(product)}`,
     })),
   };
 

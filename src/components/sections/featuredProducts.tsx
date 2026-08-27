@@ -45,7 +45,7 @@ const FeaturedProducts = ({ featuredProducts }: { featuredProducts: ProductType[
                                 ))}
                             </TabsList>
                             <Link
-                                href={"/shop-2"}
+                                href={"/shop"}
                                 className="text-gray-1-foreground lg:text-xl text-lg border-b border-b-primary mt-2.5 md:mt-0 inline-block hover:border-b-primary hover:text-secondary-foreground duration-500"
                             >
                                 View All
