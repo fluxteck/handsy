@@ -12,6 +12,7 @@ import ShopingCartSidebar from "./shopingCartSidebar";
 import StickyHeader from "./stickyHeader";
 import TopHeader from "./topHeader";
 import WishlistButton from "./wishlistButton";
+import CompareButton from "./compareButton";
 
 const Header = async () => {
   const menuList = await getMenuData();
@@ -50,6 +51,7 @@ const Header = async () => {
             <div className="lg:block hidden">
               <HeaderExtraInfo />
             </div>
+            <CompareButton />
             <WishlistButton />
             <Link
               aria-label="account"

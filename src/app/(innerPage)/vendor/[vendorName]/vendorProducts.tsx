@@ -124,7 +124,7 @@ const VendorProducts = ({ vendor, products }: { vendor: VendorType; products: Ve
                 </CardHeader>
                 <CardFooter>
                   <CardTitle path={productPath(product)}>{product.title}</CardTitle>
-                  <CardPriceEnhanced price={product.price} discountPercentage={product.discountPercentage} />
+                  <CardPriceEnhanced price={product.price} discountPercentage={product.discountPercentage} finalPrice={product.sellingPrice} />
                 </CardFooter>
               </Card>
             ))}

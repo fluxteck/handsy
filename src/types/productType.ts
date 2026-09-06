@@ -16,6 +16,15 @@ export type ProductType = {
     "price": number,
     "currency": string,
     "discountPercentage": number,
+    /**
+     * What the customer is actually charged, when it is known.
+     *
+     * `discountPercentage` is rounded to a whole number for the badge, so a
+     * component deriving the price from it lands elsewhere whenever the
+     * discount is not a clean percentage. Absent on the static sample data,
+     * where the derivation is the only figure there is.
+     */
+    "sellingPrice"?: number,
     "rating": number,
     "totalRating": string,
     "stock": number,

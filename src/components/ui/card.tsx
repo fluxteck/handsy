@@ -1,5 +1,6 @@
 "use client";
 import { addToCompare } from "@/lib/features/CompareProductsSlice";
+import { toCompareItem } from "@/lib/compareItem";
 import { Eye, Heart, ShopCart, Shuffle } from "@/lib/icon";
 import { useAppDispatch } from "@/lib/reduxHooks";
 import { useCart } from "@/lib/cart/cart-context";
@@ -160,18 +161,8 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
     handleCompare: () => {
       if (product) {
         dispatch(
-          addToCompare({
-            id: product.id,
-            variantId: product.variantId,
-            currency: product.currency,
-            price: product.price,
-            discountPercentage: product.discountPercentage,
-            thumbnail: product.thumbnail,
-            title: product.title,
-            stock: product.stock,
-            color: product.colors?.[0]?.code,
-            size: "xl",
-          })
+          // One shared builder, so both entry points store the same shape.
+          addToCompare(toCompareItem(product))
         );
       }
     },
@@ -430,6 +421,20 @@ export function CardPrice({ children, className }: CardPropsType) {
 interface CardPriceEnhancedProps {
   price: number;
   discountPercentage?: number;
+  /**
+   * What the customer is actually charged, when it is known exactly.
+   *
+   * Without it this component re-derives the figure as
+   * `price - price * discountPercentage / 100`, and `discountPercentage` is a
+   * WHOLE number — so any discount that is not a clean percentage of the
+   * original displays a price the customer is never charged. A flat ₹300 off
+   * ₹1999 is 15.0075%, rounds to 15%, and renders ₹1699.15 against a real
+   * price of ₹1699.
+   *
+   * Optional so static/demo call sites, which have no such figure, keep
+   * deriving exactly as before.
+   */
+  finalPrice?: number;
   className?: string;
   /**
    * ISO 4217 code the price is denominated in — drives the symbol only, never
@@ -443,12 +448,14 @@ interface CardPriceEnhancedProps {
 export function CardPriceEnhanced({
   price,
   discountPercentage,
+  finalPrice: exactPrice,
   className,
   currency = "USD",
 }: CardPriceEnhancedProps) {
-  const finalPrice = discountPercentage
-    ? price - (price * discountPercentage) / 100
-    : price;
+  // The real figure wins; the derivation is the fallback for callers that
+  // cannot supply one.
+  const finalPrice =
+    exactPrice ?? (discountPercentage ? price - (price * discountPercentage) / 100 : price);
   // An empty/unknown code makes currency-formatter drop the symbol entirely
   // and render a bare number, which reads as a bug. Fall back to USD instead.
   const code = currency || "USD";

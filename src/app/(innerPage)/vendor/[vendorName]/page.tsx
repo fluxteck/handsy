@@ -10,6 +10,7 @@ import VendorAbout from "./vendorAbout";
 import VendorHero from "./vendorHero";
 import VendorProducts from "./vendorProducts";
 import { getSiteUrl } from "@/lib/config";
+import { richTextToPlain } from "@/lib/richText";
 
 type PageProps = {
   params: Promise<{ vendorName: string }>;
@@ -33,8 +34,11 @@ export const generateMetadata = async ({ params }: PageProps): Promise<Metadata>
   if (!brand) return {};
   const vendor = toVendorType(brand);
 
-  const description =
-    vendor.description.length > 155 ? `${vendor.description.slice(0, 152)}...` : vendor.description;
+  // Vendor blurbs are written in the admin's editor too, so the stored value is
+  // markup. Flattened before it becomes meta text, and trimmed after — slicing
+  // the markup first could cut a tag in half.
+  const plain = richTextToPlain(vendor.description);
+  const description = plain.length > 155 ? `${plain.slice(0, 152)}...` : plain;
 
   return {
     title: `${vendor.name} — ${vendor.tagline} | Handsy Market`,

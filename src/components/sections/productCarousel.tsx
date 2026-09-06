@@ -69,7 +69,7 @@ const ProductCarousel = ({ data, slidesOffset }: { data: ProductType[]; slidesOf
                                 </CardHeader>
                                 <CardFooter>
                                     <CardTitle path={productPath(prd)}>{prd.title}</CardTitle>
-                                    <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} currency={prd.currency} />
+                                    <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} finalPrice={prd.sellingPrice} currency={prd.currency} />
                                 </CardFooter>
                             </Card>
                         </SwiperSlide>
