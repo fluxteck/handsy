@@ -54,7 +54,7 @@ const RecentlyViewed = ({
                                     </CardHeader>
                                     <CardFooter>
                                         <CardTitle path={productPath(prd)}>{prd.title}</CardTitle>
-                                        <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} />
+                                        <CardPriceEnhanced price={prd.price} discountPercentage={prd.discountPercentage} finalPrice={prd.sellingPrice} />
                                     </CardFooter>
                                 </Card>
                             )

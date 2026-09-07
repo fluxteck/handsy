@@ -2,6 +2,7 @@ import { CircleCheck, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Facebook, Instagram, MapPin, Twitter } from "@/lib/icon";
+import RichText from "@/components/ui/richText";
 import Title from "@/components/ui/title";
 import { VendorType } from "@/types/vendorType";
 
@@ -21,7 +22,7 @@ const VendorAbout = ({ vendor }: { vendor: VendorType }) => {
       <div className="container grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div>
           <Title className="mb-4 font-medium">About {vendor.name}</Title>
-          <p className="leading-[165%] text-gray-1-foreground">{vendor.description}</p>
+          <RichText html={vendor.description} className="leading-[165%]" />
 
           <ul className="mt-5 flex flex-col gap-2 text-sm text-gray-1-foreground">
             <li className="flex items-center gap-2">

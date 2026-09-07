@@ -3,6 +3,8 @@ import {
   isCommerceError,
   type AdapterContext,
   type Brand,
+  type Collection,
+  type CollectionSortOrder,
   type ProductFilters,
 } from "@commercekitsdk/core";
 import type { CategoryType } from "@/db/categoriesData";
@@ -16,7 +18,7 @@ import {
   type ProductDetailView,
 } from "../mappers/product";
 import { toReviewTypes } from "../mappers/review";
-import { toProductFilters, type CatalogQuery } from "../catalog/filters";
+import { PAGE_SIZE, toProductFilters, type CatalogQuery, type SortKey } from "../catalog/filters";
 import { getStorefrontClient } from "./client";
 
 /**
@@ -298,6 +300,52 @@ const getCatalogFacets = cache(
 );
 
 /** Category name for the breadcrumb. Null when unknown — the caller omits the crumb. */
+/** One rung of a breadcrumb: what to show and where it goes. */
+export interface CategoryCrumb {
+  label: string;
+  href: string;
+}
+
+/**
+ * The ancestor trail for a category, root first.
+ *
+ * A product sitting in "Cluster Chandeliers" belongs under Ceiling Fixtures ›
+ * Chandeliers › Cluster Chandeliers, and a breadcrumb that shows only the leaf
+ * throws away the two links a visitor is most likely to want — the broader
+ * pages they can browse next.
+ *
+ * Built from the full category list rather than one request per ancestor: the
+ * list is already fetched and cached for the header, and a product page should
+ * not issue a request per level of nesting.
+ *
+ * Walks with a `seen` guard. Category parents are operator-editable and a
+ * mis-set parent can point back into its own subtree; without the guard this
+ * loops until the request dies, taking the product page with it.
+ */
+export const getCategoryTrail = cache(
+  async (categoryId: string | undefined): Promise<CategoryCrumb[]> => {
+    if (!categoryId) return [];
+    try {
+      const all = await getStorefrontClient().adapter.categories!.list(ctx());
+      const byId = new Map(all.map((c) => [c.id, c]));
+      const trail: CategoryCrumb[] = [];
+      const seen = new Set<string>();
+      let cursor = byId.get(categoryId);
+      while (cursor && !seen.has(cursor.id)) {
+        seen.add(cursor.id);
+        trail.unshift({ label: cursor.name, href: `/category/${cursor.slug}` });
+        cursor = cursor.parentId ? byId.get(cursor.parentId) : undefined;
+      }
+      return trail;
+    } catch (err) {
+      // A breadcrumb is navigation, not content: losing it should never cost
+      // the page. Callers fall back to Home › product.
+      console.error("[handsy:pdp] category trail failed to load", err);
+      return [];
+    }
+  },
+);
+
 export const getCategoryName = cache(
   async (categoryId: string | undefined): Promise<CategoryType | null> => {
     if (!categoryId) return null;
@@ -460,4 +508,151 @@ export const getBrandEntries = cache(async (): Promise<SitemapEntry[]> => {
     console.error("[handsy:sitemap] brands failed to load", err);
     return [];
   }
+});
+
+// ── Collections ──────────────────────────────────────────────────────────
+
+/**
+ * How many products the facet read samples.
+ *
+ * The server caps a page at 100. Facets from a sample are wrong for a
+ * collection larger than that — a tag on product 150 would be missing from the
+ * sidebar — so this is a known limit, not a silent one: see the plan's
+ * out-of-scope note on facet counts.
+ */
+const FACET_SAMPLE = 100;
+
+/** Storefront sort keys mapped to the collection vocabulary the server takes. */
+const COLLECTION_SORT_FOR_KEY: Partial<Record<SortKey, CollectionSortOrder>> = {
+  // `default` is deliberately absent: no `sort` parameter means "use the
+  // collection's own order", which is the whole point of a stored sort.
+  latest: "created_desc",
+  "low-to-high": "price_asc",
+  "high-to-low": "price_desc",
+  // `popularity` and `average` sort by rating, which a collection sort cannot
+  // express; they fall back to the collection's order rather than silently
+  // meaning something else.
+};
+
+/** A collection plus the page of products it currently resolves to. */
+export interface CollectionPage extends CatalogPage {
+  name: string;
+  description?: string;
+  /** The merchant's stored order, so a control can label it. */
+  sortOrder?: CollectionSortOrder;
+}
+
+/**
+ * Active collections, for the index page and the sitemap.
+ *
+ * The server hides unpublished ones, so nothing here has to filter.
+ */
+export const getCollections = cache(async (): Promise<Collection[]> => {
+  const collections = getStorefrontClient().adapter.collections;
+  if (!collections) return [];
+  try {
+    return await collections.list(ctx());
+  } catch (err) {
+    console.error("[handsy:collections] list failed to load", err);
+    return [];
+  }
+});
+
+/**
+ * One collection and the products it resolves to.
+ *
+ * A sibling of `getCatalogPage` rather than a parameter on it: a collection's
+ * membership may come from rules the generic product endpoint knows nothing
+ * about, its order belongs to the collection rather than the request, and the
+ * two fail differently — a missing collection is a 404, while a failed product
+ * read still renders a page with its header.
+ *
+ * Returns `null` when the collection does not exist or is unpublished; the
+ * caller turns that into `notFound()`.
+ */
+export const getCollectionPage = cache(
+  async (slug: string, query: CatalogQuery): Promise<CollectionPage | null> => {
+    const collections = getStorefrontClient().adapter.collections;
+    if (!collections?.products) return null;
+
+    let collection: Collection;
+    try {
+      collection = await collections.get(slug, ctx());
+    } catch {
+      return null;
+    }
+
+    const filters = {
+      limit: PAGE_SIZE,
+      cursor: String((query.page - 1) * PAGE_SIZE),
+      ...(query.tags.length ? { tags: query.tags } : {}),
+      ...(query.minPrice !== undefined ? { minPrice: Math.round(query.minPrice * 100) } : {}),
+      ...(query.maxPrice !== undefined ? { maxPrice: Math.round(query.maxPrice * 100) } : {}),
+      ...(COLLECTION_SORT_FOR_KEY[query.sort] ? { sort: COLLECTION_SORT_FOR_KEY[query.sort] } : {}),
+    };
+
+    const read = async (params: Parameters<NonNullable<typeof collections.products>>[1]) => {
+      try {
+        const result = await collections.products!(slug, params, ctx());
+        return { items: result.items, total: result.total ?? result.items.length, failed: false };
+      } catch (err) {
+        console.error("[handsy:collections] products failed to load", err);
+        return { items: [], total: 0, failed: true };
+      }
+    };
+
+    /*
+     * The facet read is deliberately unfiltered.
+     *
+     * A sidebar built from the filtered set removes the option you just
+     * deselected, so there is no way back. It is scoped to the collection
+     * rather than the catalogue for the same reason in reverse: offering
+     * "Chandeliers" inside a collection holding none is the same trap.
+     */
+    const [page, unfiltered] = await Promise.all([
+      read(filters),
+      read({ limit: FACET_SAMPLE }),
+    ]);
+
+    const items = toProductTypes(page.items);
+    return {
+      name: collection.name,
+      ...(collection.description ? { description: collection.description } : {}),
+      ...(collection.sortOrder ? { sortOrder: collection.sortOrder } : {}),
+      items,
+      failed: page.failed,
+      total: page.total,
+      page: query.page,
+      pageSize: PAGE_SIZE,
+      totalPages: Math.max(1, Math.ceil(page.total / PAGE_SIZE)),
+      // The sidebar hides the category facet on this page, so it stays empty
+      // rather than offering a catalogue-wide drill-down out of the collection.
+      categories: [],
+      tags: [...new Set(unfiltered.items.flatMap((p) => p.tags ?? []))].sort(),
+      priceBounds: priceBoundsOf(unfiltered.items),
+    };
+  },
+);
+
+/** Widest price range across a set, in major units, for the slider. */
+function priceBoundsOf(items: { priceFrom?: { amount: number } }[]): {
+  min: number;
+  max: number;
+} {
+  const amounts = items
+    .map((p) => p.priceFrom?.amount)
+    .filter((a): a is number => typeof a === "number");
+  if (!amounts.length) return { min: 0, max: 0 };
+  return {
+    min: Math.floor(Math.min(...amounts) / 100),
+    max: Math.ceil(Math.max(...amounts) / 100),
+  };
+}
+
+/** Active collections as sitemap entries. */
+export const getCollectionEntries = cache(async (): Promise<SitemapEntry[]> => {
+  const collections = await getCollections();
+  return collections
+    .filter((collection) => Boolean(collection.slug))
+    .map((collection) => ({ slug: collection.slug, updatedAt: collection.updatedAt }));
 });

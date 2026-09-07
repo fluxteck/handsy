@@ -380,3 +380,105 @@ html.lenis.lenis-stopped {
     transform: translateX(-50%);
   }
 }
+
+/* Description markup written in the admin's editor.
+   These tags arrive as a string at runtime, so Tailwind never sees them to
+   generate utilities for — the spacing has to be declared here instead. Kept
+   to what the editor can produce, and to the storefront's own type scale so an
+   edited description reads like the rest of the page rather than like a
+   browser default. */
+.rich-text > *:first-child {
+  margin-top: 0;
+}
+.rich-text > *:last-child {
+  margin-bottom: 0;
+}
+.rich-text p,
+.rich-text ul,
+.rich-text ol,
+.rich-text blockquote,
+.rich-text pre,
+.rich-text table {
+  margin-block: 0.75em;
+}
+.rich-text h1,
+.rich-text h2,
+.rich-text h3,
+.rich-text h4,
+.rich-text h5,
+.rich-text h6 {
+  margin-block: 1.25em 0.5em;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-secondary-foreground);
+}
+.rich-text h1 { font-size: 1.5em; }
+.rich-text h2 { font-size: 1.3em; }
+.rich-text h3 { font-size: 1.15em; }
+.rich-text h4,
+.rich-text h5,
+.rich-text h6 { font-size: 1em; }
+.rich-text ul,
+.rich-text ol {
+  padding-inline-start: 1.5em;
+}
+.rich-text ul { list-style: disc; }
+.rich-text ol { list-style: decimal; }
+.rich-text li { margin-block: 0.25em; }
+.rich-text li::marker { color: var(--color-gray-3-foreground); }
+.rich-text a {
+  color: var(--color-secondary-foreground);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.rich-text strong,
+.rich-text b { font-weight: 600; color: var(--color-secondary-foreground); }
+.rich-text em,
+.rich-text i { font-style: italic; }
+.rich-text u { text-decoration: underline; }
+.rich-text s,
+.rich-text del { text-decoration: line-through; }
+.rich-text blockquote {
+  padding-inline-start: 1em;
+  border-inline-start: 2px solid var(--color-gray-2);
+  color: var(--color-gray-3-foreground);
+}
+.rich-text code {
+  font-size: 0.9em;
+  padding: 0.15em 0.35em;
+  border-radius: 0.25rem;
+  background: var(--color-gray-2);
+}
+.rich-text pre {
+  padding: 0.75em 1em;
+  border-radius: 0.5rem;
+  background: var(--color-gray-2);
+  overflow-x: auto;
+}
+.rich-text pre code {
+  padding: 0;
+  background: none;
+}
+.rich-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+.rich-text hr {
+  margin-block: 1.25em;
+  border-color: var(--color-gray-2);
+}
+/* A description can carry a pasted table, and the page must not scroll with it. */
+.rich-text table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+.rich-text th,
+.rich-text td {
+  padding: 0.4em 0.75em;
+  border: 1px solid var(--color-gray-2);
+  text-align: start;
+}
+.rich-text th { font-weight: 600; }

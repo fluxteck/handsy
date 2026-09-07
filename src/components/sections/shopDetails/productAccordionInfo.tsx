@@ -1,4 +1,5 @@
 import { FileText, Hammer, HeartHandshake, Ruler, Truck, type LucideIcon } from "lucide-react";
+import RichText from "@/components/ui/richText";
 import {
   Accordion,
   AccordionContent,
@@ -34,9 +35,21 @@ const ProductAccordionInfo = ({
   const specificationInfo = additionalInfo.filter((item) => !MANUFACTURING_LABELS.has(item.label));
   const manufacturingInfo = additionalInfo.filter((item) => MANUFACTURING_LABELS.has(item.label));
 
+  /* Not every product carries specs — a piece whose attributes were never
+     filled in has none at all. Rendering the section anyway opens onto an
+     empty list, which reads as "we lost the data" rather than "there is none",
+     so the section is left out and the panel that opens by default falls to
+     whichever one actually has something in it. */
+  const defaultSection = specificationInfo.length
+    ? "specification"
+    : manufacturingInfo.length
+      ? "manufacturing"
+      : "description";
+
   return (
     <div className="mt-7.5 rounded-2xl border border-gray-2 bg-background p-5 transition-shadow duration-300 hover:shadow-sm lg:p-6">
-      <Accordion type="single" collapsible defaultValue="specification">
+      <Accordion type="single" collapsible defaultValue={defaultSection}>
+        {specificationInfo.length > 0 && (
         <AccordionItem value="specification" className="border-gray-2">
           <AccordionTrigger className="group text-secondary-foreground font-medium lg:text-lg">
             <AccordionTriggerLabel icon={Ruler} label="Specification" />
@@ -52,16 +65,18 @@ const ProductAccordionInfo = ({
             </ul>
           </AccordionContent>
         </AccordionItem>
+        )}
 
         <AccordionItem value="description" className="border-gray-2">
           <AccordionTrigger className="group text-secondary-foreground font-medium lg:text-lg">
             <AccordionTriggerLabel icon={FileText} label="Description" />
           </AccordionTrigger>
           <AccordionContent>
-            <p className="text-gray-1-foreground leading-relaxed">{description}</p>
+            <RichText html={description} />
           </AccordionContent>
         </AccordionItem>
 
+        {manufacturingInfo.length > 0 && (
         <AccordionItem value="manufacturing" className="border-gray-2">
           <AccordionTrigger className="group text-secondary-foreground font-medium lg:text-lg">
             <AccordionTriggerLabel icon={Hammer} label="Manufacturing Details" />
@@ -77,6 +92,7 @@ const ProductAccordionInfo = ({
             </ul>
           </AccordionContent>
         </AccordionItem>
+        )}
 
         <AccordionItem value="shipping-replacement" className="border-gray-2">
           <AccordionTrigger className="group text-secondary-foreground font-medium lg:text-lg">
@@ -87,9 +103,9 @@ const ProductAccordionInfo = ({
           </AccordionContent>
         </AccordionItem>
 
-        <AccordionItem value="care-instructions" className="border-b-0">
+        <AccordionItem value="returns" className="border-b-0">
           <AccordionTrigger className="group text-secondary-foreground font-medium lg:text-lg">
-            <AccordionTriggerLabel icon={HeartHandshake} label="Care & Instructions" />
+            <AccordionTriggerLabel icon={HeartHandshake} label="Returns & Exchanges" />
           </AccordionTrigger>
           <AccordionContent>
             <p className="text-gray-1-foreground leading-relaxed">{returnsPolicy}</p>

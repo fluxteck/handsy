@@ -3,6 +3,7 @@ import { getSiteUrl } from "@/lib/config";
 import {
   getBrandEntries,
   getCategoryEntries,
+  getCollectionEntries,
   getProductEntries,
   type SitemapEntry,
 } from "@/lib/sdk/catalog";
@@ -32,6 +33,7 @@ const STATIC_ROUTES = [
   "/b2b",
   "/interior-solutions",
   "/vendor",
+  "/collections",
   "/contact-us",
   "/faq",
   "/privacy-policy",
@@ -106,10 +108,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // an empty list, so one unreachable namespace costs its own URLs rather than
   // the whole sitemap. A sitemap that is missing a section still helps; one
   // that 500s helps nobody.
-  const [products, categories, brands] = await Promise.all([
+  const [products, categories, brands, collections] = await Promise.all([
     getProductEntries(),
     getCategoryEntries(),
     getBrandEntries(),
+    getCollectionEntries(),
   ]);
 
   return [
@@ -117,5 +120,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...catalogEntries("/product-details", products, PRIORITY.product, "weekly", generatedAt),
     ...catalogEntries("/category", categories, PRIORITY.category, "weekly", generatedAt),
     ...catalogEntries("/vendor", brands, PRIORITY.maker, "monthly", generatedAt),
+    // Only bare collection URLs: the filtered and sorted variants carry
+    // `noindex`, and listing them here would contradict that.
+    ...catalogEntries("/collections", collections, PRIORITY.category, "weekly", generatedAt),
   ];
 }

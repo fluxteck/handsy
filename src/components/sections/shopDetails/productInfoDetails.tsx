@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Heart } from "@/lib/icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import calcluteDiscount from "@/lib/calcluteDiscount";
+import { richTextToPlain } from "@/lib/richText";
 import { useCart } from "@/lib/cart/cart-context";
 import UspMarquee from "@/components/sections/shopDetails/uspMarquee";
 import { useWishlist } from "@/lib/wishlist/wishlist-context";
@@ -70,6 +71,10 @@ const ProductInfoDetails = ({
   titleHref,
   slug,
 }: ProductInfoDetailsPropsType) => {
+  // The teaser is clamped to three lines, so it takes the description flattened
+  // to text: the full markup gets its own block further down the page.
+  const descriptionText = useMemo(() => richTextToPlain(description), [description]);
+
   const { add: addToCartLine } = useCart();
   const { add: addToWishlistEntry, has } = useWishlist();
   const [selectedColor, setSelectedColor] = useState<ProductColorType>(
@@ -173,9 +178,9 @@ const ProductInfoDetails = ({
       </p>
       <p className="text-gray-3-foreground text-sm mt-1">Tax included</p>
 
-      {description && (
+      {descriptionText && (
         <p className="text-gray-1-foreground leading-[170%] mt-4 line-clamp-3">
-          {description}
+          {descriptionText}
         </p>
       )}
 

@@ -9,13 +9,14 @@ import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import ProductReviews from "@/components/sections/shopDetails/productReviews";
 import Breadcrumb from "@/components/ui/breadcrumb";
 import {
-  getCategoryName,
+  getCategoryTrail,
   getProductBySlug,
   getProductReviews,
   getRelatedProducts,
 } from "@/lib/sdk";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { richTextToPlain } from "@/lib/richText";
 
 /**
  * Product detail page, served from handsymarket-server through the SDK.
@@ -45,11 +46,10 @@ export async function generateMetadata({
   const product = await getProductBySlug(slug);
   if (!product) return { title: "Product Details" };
 
-  // Strip any markup the description carries before using it as meta text.
-  const description = product.description
-    .replace(/<[^>]*>/g, "")
-    .slice(0, 160)
-    .trim();
+  // Meta text is plain by definition, and the description is markup whenever it
+  // was written in the admin's editor. Flattened through the same helper the
+  // page body uses, so an entity in the copy reads as its character here too.
+  const description = richTextToPlain(product.description).slice(0, 160).trim();
 
   return {
     title: product.title,
@@ -71,8 +71,11 @@ const ProductDetails = async ({ params }: { params: Promise<RouteParams> }) => {
   if (!product) notFound();
 
   const primaryCategoryId = product.categoryIds[0];
-  const [category, related, reviews] = await Promise.all([
-    getCategoryName(primaryCategoryId),
+  // `getCategoryTrail` supersedes the single-category lookup: it returns the
+  // leaf as its last entry, so fetching the name separately was a second
+  // request for something already in hand.
+  const [trail, related, reviews] = await Promise.all([
+    getCategoryTrail(primaryCategoryId),
     getRelatedProducts(product.id, primaryCategoryId),
     getProductReviews(product.id),
   ]);
@@ -82,9 +85,14 @@ const ProductDetails = async ({ params }: { params: Promise<RouteParams> }) => {
       <div className="container">
         <Breadcrumb
           className="lg:mt-25 mt-15 mb-7.5"
+          /* The product's real place in the catalogue: every ancestor, each
+             linking to its own page. The previous trail showed one category
+             and sent it to /shop, so the one link it offered went somewhere
+             broader than the label promised. Falls back to Home › product when
+             the product has no category. */
           items={[
             { label: "Home", href: "/" },
-            ...(category ? [{ label: category.categoryName, href: "/shop" }] : []),
+            ...trail,
             { label: product.title },
           ]}
         />
