@@ -9,73 +9,116 @@ import { cn } from '@/lib/utils'
 import { ProductType } from '@/types/productType'
 import { productPath } from '@/lib/productPath';
 
-const MegaMenu = ({ data, featuredProducts, forceClosed, onNavigate }: { data: MegamenuType[], featuredProducts: ProductType[], forceClosed?: boolean, onNavigate?: () => void }) => {
+/** Small-caps section label — the same treatment the mobile drawer already
+ *  uses for "Shop" / "Quick Links", reused here for column and rail headings
+ *  so the two surfaces read as one design language. */
+const sectionLabelClass = 'mb-2.5 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'
+
+const MegaMenu = ({ data, featuredProducts, forceClosed, onNavigate, align = 'left' }: { data: MegamenuType[], featuredProducts: ProductType[], forceClosed?: boolean, onNavigate?: () => void, align?: 'left' | 'right' }) => {
 
     return (
-        <div className={cn('static lg:absolute lg:z-50 lg:left-0 bg-home-bg-1 flex lg:flex-row flex-col justify-between w-full transition-all duration-500 lg:h-0 h-auto overflow-hidden lg:group-hover:h-[400px] shadow-lg rounded-b-lg', forceClosed && 'lg:h-0!')}>
-            {
-                data.map(({ menus, id }) => {
-                    return (
-                        <div key={id}>
+        <div
+            className={cn(
+                // Anchored to the nav item's own `<li>` (which is `relative`) and
+                // sized with `w-max`, so the box hugs its own content width — a
+                // two-item menu like Luxury opens narrow, a fuller one like
+                // Furniture opens wider. (`w-max` matters: a shrink-to-fit box
+                // wrapping a `flex-wrap` row otherwise collapses to the width of
+                // its single widest item, stacking every column into one.) Capped
+                // so an unusually long menu wraps instead of running off-screen.
+                // `align` flips the anchor edge for nav items on the right side of
+                // the bar, so their (wider-than-the-trigger) panel opens toward the
+                // middle of the header instead of running off the viewport edge.
+                'static lg:absolute lg:z-50 lg:top-full lg:w-max lg:max-w-[calc(100vw-2rem)] bg-home-bg-1 shadow-xl rounded-b-xl overflow-hidden',
+                align === 'right' ? 'lg:right-0' : 'lg:left-0',
+                // `grid-template-rows: 0fr -> 1fr` (desktop only) sizes the panel's
+                // height to its own content too — a short menu opens compact, a
+                // taller one opens taller, with no fixed box and no leftover space.
+                'lg:grid lg:grid-rows-[0fr] lg:group-hover:grid-rows-[1fr] transition-[grid-template-rows] duration-300 ease-out',
+                forceClosed && 'lg:grid-rows-[0fr]!'
+            )}
+        >
+            <div className='overflow-hidden lg:min-h-0'>
+                <div className='flex flex-col gap-y-5 px-6 py-5 lg:flex-row lg:flex-wrap lg:items-start lg:justify-start lg:gap-x-10 lg:gap-y-6 lg:px-8 lg:py-6'>
+                    {
+                        data.map(({ menus, id }) => {
+                            return (
+                                <div key={id} className='flex flex-col gap-y-4 lg:flex-row lg:flex-wrap lg:gap-x-10 lg:gap-y-6'>
+                                    {
+                                        menus.map(({ id, items, title }) => {
+                                            return (
+                                                <div key={id}>
+                                                    {/* Rendered even when a column has no heading, so every column's
+                                                        link list starts on the same baseline instead of the headed
+                                                        columns sitting visibly lower than the headless ones. */}
+                                                    <p className={sectionLabelClass} aria-hidden={!title}>{title || ' '}</p>
+                                                    <ul>
+                                                        {
+                                                            items.map(({ id, path, label }) => {
+                                                                return (
+                                                                    <li key={id}>
+                                                                        <Link
+                                                                            aria-label='nav'
+                                                                            href={path}
+                                                                            onClick={onNavigate}
+                                                                            className='inline-flex items-center py-1 text-sm text-gray-1-foreground capitalize transition-all duration-200 hover:translate-x-0.5 hover:text-secondary-foreground'
+                                                                        >
+                                                                            {label}
+                                                                        </Link>
+                                                                    </li>
+                                                                )
+                                                            })
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            )
+                        })}
+                    {featuredProducts.length > 0 && (
+                    <div className='lg:w-[190px] lg:shrink-0'>
+                        <p className={sectionLabelClass}>Best Sellers</p>
+                        <div className='flex flex-col gap-3'>
                             {
-                                menus.map(({ id, items, title }) => {
-                                    return (
-                                        <div key={id} className='px-6 lg:py-7.5 py-3'>
-                                            <b className='text-secondary-foreground font-medium block mb-3 capitalize'>{title}</b>
-                                            <div className='w-full'>
-                                                {
-                                                    items.map(({ id, path, label }) => {
-                                                        return (
-                                                            <div key={id}>
-                                                                <Link aria-label='nav' href={path} onClick={onNavigate} className={cn('dropdown-item text-base text-gray-1-foreground py-1.5 inline-block capitalize hover:text-secondary-foreground transition-all duration-500')}>
-                                                                    {label}
-                                                                </Link>
+                                featuredProducts.slice(0, 3).map(({ id, title, thumbnail, price, discountPercentage, currency, slug }) => {
+                                    const finalPrice = discountPercentage ? calcluteDiscount(price, discountPercentage) : price;
 
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
+                                    return (
+                                        <div key={id} className='flex items-center gap-3'>
+                                            <Link href={productPath({ slug })} onClick={onNavigate} className='inline-block shrink-0 overflow-hidden rounded-md bg-slate-100 group/img'>
+                                                <Image width={52} height={52} sizes='100vw' src={thumbnail} alt='img' className='group-hover/img:scale-110 transition-all duration-500' />
+                                            </Link>
+                                            <div className='min-w-0'>
+                                                <Link href={productPath({ slug })} onClick={onNavigate} className='block truncate text-sm text-gray-1-foreground hover:text-secondary-foreground transition-all duration-300 capitalize'>
+                                                    {title}
+                                                </Link>
+                                                <p className='text-gray-1-foreground text-xs'>
+                                                    {discountPercentage ? <del className='text-gray-2-foreground font-normal'>{currencyFormatter.format(price, { code: currency || 'USD' })}</del> : null} {' '}
+                                                    <span>{currencyFormatter.format(finalPrice, { code: currency || 'USD' })}</span>
+                                                </p>
                                             </div>
                                         </div>
                                     )
                                 })
                             }
-
                         </div>
-                    )
-                })}
-            <div className='lg:py-7.5 py-3 flex flex-col gap-3 '>
-                {
-                    featuredProducts.slice(0, 3).map(({ id, title, thumbnail, price, discountPercentage, currency, slug }) => {
-                        const finalPrice = discountPercentage ? calcluteDiscount(price, discountPercentage) : price;
-
-                        return (
-                            <div key={id} className='flex items-center gap-3'>
-                                <Link href={productPath({ slug })} onClick={onNavigate} className='inline-block overflow-hidden bg-slate-100 max-h-[900px] group/img'>
-                                    <Image width={80} height={80} sizes='100vw' src={thumbnail} alt='img' className='group-hover/img:scale-110 transition-all duration-500 rounded-[4px]' />
-                                </Link>
-                                <div className='max-w-[200px]'>
-                                    <Link href={productPath({ slug })} onClick={onNavigate} className='text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500 capitalize line-clamp-2'>
-                                        {title}
-                                    </Link>
-                                    <p className='text-gray-1-foreground text-sm'>
-                                        {discountPercentage ? <del className='text-gray-2-foreground font-normal'>{currencyFormatter.format(price, { code: currency || 'USD' })}</del> : null} {' '}
-                                        <span>{currencyFormatter.format(finalPrice, { code: currency || 'USD' })}</span> {currency || 'USD'}
-                                    </p>
-                                </div>
+                    </div>
+                    )}
+                    <div className='lg:shrink-0'>
+                        <div className='relative h-[150px] w-full overflow-hidden rounded-lg bg-[url("/images/header-megamenu.webp")] bg-cover bg-center lg:h-[172px] lg:w-[180px]'>
+                            <div className='absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent' />
+                            <div className='relative flex h-full flex-col justify-end p-4'>
+                                <p className='text-[11px] text-white/80'>Special Offer</p>
+                                <p className='text-base font-semibold leading-tight text-white'>
+                                    Up to <span className='text-orange-400'>30% off</span>
+                                </p>
+                                <Button asChild size='sm' className='mt-3 w-fit text-xs uppercase'>
+                                    <Link href={"/shop"} onClick={onNavigate}>Shop Now</Link>
+                                </Button>
                             </div>
-                        )
-                    })
-                }
-            </div>
-            <div className='pr-6 lg:py-7.5 py-3'>
-                <div className='bg-[url("/images/header-megamenu.webp")] rounded-sm object-cover bg-no-repeat max-w-[350px] h-full lg:px-7.5 lg:py-12.5 px-5 py-7'>
-                    <div>
-                        <p className='text-primary-foreground'>Handsy Market&apos;s Special Offer</p>
-                        <p className='lg:text-4xl text-3xl font-semibold text-primary-foreground'>Sale <span className='text-orange-500'>up to 30%</span> Only today!</p>
-                        <Button asChild className='lg:text-[15px] mt-7.5 hover:bg-primary hover:text-white hover:opacity-85 uppercase'>
-                            <Link href={"/shop"} onClick={onNavigate}>Shop Now</Link>
-                        </Button>
+                        </div>
                     </div>
                 </div>
             </div>

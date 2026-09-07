@@ -21,23 +21,28 @@ const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts
     return (
         <nav className="lg:block hidden">
             <ul className="flex justify-center gap-10">
-                {data.map((item) => {
+                {data.map((item, index) => {
                     const forceClosed = closedId === item.id
+                    // The panel hugs its own (possibly wider-than-the-trigger)
+                    // content width, so items past the midpoint of the bar open
+                    // it right-anchored — toward the middle of the header —
+                    // instead of left-anchored off the right edge of the viewport.
+                    const align = index >= Math.ceil(data.length / 2) ? 'right' : 'left'
                     return (
                         <li
                             key={item.id}
-                            className="group"
+                            className="group relative"
                             onMouseLeave={() => setClosedId((current) => (current === item.id ? null : current))}
                         >
                             <Link
                                 href={item.path}
                                 onClick={() => setClosedId(item.id)}
-                                className="py-3.5 text-gray-1-foreground flex items-center gap-1 capitalize group-hover:text-secondary-foreground transition-all duration-500"
+                                className="py-2.5 text-gray-1-foreground flex items-center gap-1 capitalize group-hover:text-secondary-foreground transition-all duration-500"
                             >
                                 {item.label}
                                 {(item.dropdownList || item.megaMenu) && (
                                     <span>
-                                        <ChevronDown size={16} />
+                                        <ChevronDown size={16} className="transition-transform duration-300 group-hover:rotate-180" />
                                     </span>
                                 )}
                             </Link>
@@ -64,7 +69,7 @@ const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts
                                     })}
                                 </ul>
                             )}
-                            {item.megaMenu && <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} forceClosed={forceClosed} onNavigate={() => setClosedId(item.id)} />}
+                            {item.megaMenu && <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} forceClosed={forceClosed} onNavigate={() => setClosedId(item.id)} align={align} />}
                         </li>
                     );
                 })}

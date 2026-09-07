@@ -11,11 +11,31 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Close } from "@/lib/icon";
 
+const WELCOME_POPUP_STORAGE_KEY = "welcomePopupShown";
+
 const WelcomePopup = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setOpen(true);
+    let hasBeenShown = false;
+    try {
+      hasBeenShown = localStorage.getItem(WELCOME_POPUP_STORAGE_KEY) === "true";
+    } catch {
+      hasBeenShown = false;
+    }
+
+    if (hasBeenShown) return;
+
+    const timer = setTimeout(() => {
+      setOpen(true);
+      try {
+        localStorage.setItem(WELCOME_POPUP_STORAGE_KEY, "true");
+      } catch {
+        // ignore write failures (e.g. private browsing)
+      }
+    }, 30000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (

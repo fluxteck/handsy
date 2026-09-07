@@ -25,7 +25,7 @@ type PageProps = {
  *
  *  - a **real category slug** from the server (`lighting`, `chandeliers`, …),
  *    which filters the results; or
- *  - a **nav slug** from `menuList` (`furniture`, `lamps-lighting`, …), which
+ *  - a **nav slug** from `menuList` (`furniture`, `lighting`, …), which
  *    the header links to but the catalogue has no category for. Those render
  *    the full catalogue under the nav's label rather than an empty page.
  *

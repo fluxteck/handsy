@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger, } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { menuType } from '@/db/menuList'
-import { ChevronDown, ChevronRight, LayoutGrid, Sofa, BedDouble, Frame, Lamp, UtensilsCrossed, Gem, Building2, Tag } from 'lucide-react'
+import { ChevronDown, ChevronRight, Sofa, Lamp, Frame, UtensilsCrossed, Gem, Building2, Tag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Close } from '@/lib/icon'
 import { usePathname } from 'next/navigation'
@@ -18,12 +18,10 @@ import { topHeaderLinks } from './topHeader'
 // stays data-only, so unmapped labels fall back to a generic tag icon.
 const categoryIcons: Record<string, React.ElementType> = {
     'Furniture': Sofa,
-    'Mattresses': BedDouble,
-    'Home Decor': Frame,
-    'Lamps & Lighting': Lamp,
+    'Lighting': Lamp,
+    'Decor': Frame,
     'Kitchen & Dining': UtensilsCrossed,
     'Luxury': Gem,
-    'Modular': LayoutGrid,
     'B2B': Building2,
 }
 

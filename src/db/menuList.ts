@@ -25,20 +25,24 @@ export type menuType = {
     "megaMenu"?: MegamenuType[]
 }
 
-const buildCategoryMegaMenu = (categoryPath: string, subCategories: string[]): MegamenuType[] => [
+/** One mega-menu column: an optional bold heading over a list of links. */
+type MegaMenuColumn = {
+    title?: string;
+    items: string[];
+}
+
+const buildMegaMenu = (categoryPath: string, columns: MegaMenuColumn[]): MegamenuType[] => [
     {
         "id": 1,
-        "menus": [
-            {
-                "id": 0,
-                "title": "Shop by Category",
-                "items": subCategories.map((label, index) => ({
-                    "id": index + 1,
-                    "label": label,
-                    "path": categoryPath,
-                }))
-            }
-        ]
+        "menus": columns.map((column, columnIndex) => ({
+            "id": columnIndex,
+            ...(column.title ? { "title": column.title } : {}),
+            "items": column.items.map((label, index) => ({
+                "id": index + 1,
+                "label": label,
+                "path": categoryPath,
+            })),
+        }))
     }
 ]
 
@@ -47,89 +51,69 @@ export const menuList: menuType[] = [
         "id": 1,
         "label": "Furniture",
         "path": "/category/furniture",
-        "megaMenu": buildCategoryMegaMenu("/category/furniture", [
-            "Sofas & Couches",
-            "Chairs & Recliners",
-            "Tables",
-            "Beds & Bed Frames",
-            "Wardrobes & Storage",
-            "Outdoor Furniture",
+        "megaMenu": buildMegaMenu("/category/furniture", [
+            {
+                items: ["Sofa", "Chair", "Stools", "Console", "Beds", "Outdoor Furniture", "Shelves", "Cabinet"],
+            },
+            {
+                title: "Tables",
+                items: ["Coffee Tables / Center Table", "Side Table", "Study Table"],
+            },
         ])
     },
     {
         "id": 2,
-        "label": "Mattresses",
-        "path": "/category/mattresses",
-        "megaMenu": buildCategoryMegaMenu("/category/mattresses", [
-            "Memory Foam Mattresses",
-            "Spring Mattresses",
-            "Hybrid Mattresses",
-            "Mattress Toppers",
-            "Kids Mattresses",
+        "label": "Lighting",
+        "path": "/category/lighting",
+        "megaMenu": buildMegaMenu("/category/lighting", [
+            {
+                title: "Lamps",
+                items: ["Table Lamp", "Floor Lamp", "Desk Lamp", "Reading Lamp", "Wall Lamp"],
+            },
+            {
+                title: "Hanging Lights",
+                items: ["Chandelier", "Ceiling Lights", "Pendant"],
+            },
+            {
+                items: ["Outdoor Lights"],
+            },
         ])
     },
     {
         "id": 3,
-        "label": "Home Decor",
-        "path": "/category/home-decor",
-        "megaMenu": buildCategoryMegaMenu("/category/home-decor", [
-            "Wall Art & Paintings",
-            "Mirrors",
-            "Vases & Bowls",
-            "Rugs & Carpets",
-            "Curtains & Blinds",
+        "label": "Decor",
+        "path": "/category/decor",
+        "megaMenu": buildMegaMenu("/category/decor", [
+            {
+                items: ["Arts", "Vases", "Mirrors", "Tabletop Decor", "Wall Hanging", "Objects & Sculptures"],
+            },
+            {
+                items: ["Candles", "Clocks", "Rugs & Carpets", "Cushions", "Decor Accessories"],
+            },
         ])
     },
     {
         "id": 4,
-        "label": "Lamps & Lighting",
-        "path": "/category/lamps-lighting",
-        "megaMenu": buildCategoryMegaMenu("/category/lamps-lighting", [
-            "Table Lamps",
-            "Floor Lamps",
-            "Ceiling Lights",
-            "Wall Lights",
-            "Chandeliers",
+        "label": "Kitchen & Dining",
+        "path": "/category/kitchen-dining",
+        "megaMenu": buildMegaMenu("/category/kitchen-dining", [
+            {
+                items: ["Cutlery", "Dinnerware", "Serveware", "Jugs & Glasses", "Bowls", "Drinkware"],
+            },
         ])
     },
     {
         "id": 5,
-        "label": "Kitchen & Dining",
-        "path": "/category/kitchen-dining",
-        "megaMenu": buildCategoryMegaMenu("/category/kitchen-dining", [
-            "Dining Tables & Chairs",
-            "Kitchen Storage",
-            "Crockery & Cutlery",
-            "Bar Furniture",
-            "Kitchen Islands",
+        "label": "Luxury",
+        "path": "/category/luxury",
+        "megaMenu": buildMegaMenu("/category/luxury", [
+            {
+                items: ["Lights", "Furniture"],
+            },
         ])
     },
     {
         "id": 6,
-        "label": "Luxury",
-        "path": "/category/luxury",
-        "megaMenu": buildCategoryMegaMenu("/category/luxury", [
-            "Luxury Sofas",
-            "Designer Chairs",
-            "Premium Bedroom Sets",
-            "Statement Lighting",
-            "Curated Decor",
-        ])
-    },
-    {
-        "id": 7,
-        "label": "Modular",
-        "path": "/category/modular",
-        "megaMenu": buildCategoryMegaMenu("/category/modular", [
-            "Modular Sofas",
-            "Modular Kitchens",
-            "Modular Wardrobes",
-            "Modular Shelving",
-            "Modular Bedroom Sets",
-        ])
-    },
-    {
-        "id": 8,
         "label": "B2B",
         "path": "/b2b",
     },
