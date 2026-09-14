@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger, } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { menuType } from '@/db/menuList'
-import { ChevronDown, ChevronRight, Sofa, Lamp, Frame, UtensilsCrossed, Gem, Building2, Tag } from 'lucide-react'
+import { ChevronDown, ChevronRight, Tag } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Close } from '@/lib/icon'
 import { usePathname } from 'next/navigation'
@@ -13,17 +13,7 @@ import MegaMenu from './megaMenu'
 import { ProductType } from '@/types/productType'
 import HeaderExtraInfo from './headerExtraInfo'
 import { topHeaderLinks } from './topHeader'
-
-// Purely presentational per-category icons for the mobile drawer — menuList
-// stays data-only, so unmapped labels fall back to a generic tag icon.
-const categoryIcons: Record<string, React.ElementType> = {
-    'Furniture': Sofa,
-    'Lighting': Lamp,
-    'Decor': Frame,
-    'Kitchen & Dining': UtensilsCrossed,
-    'Luxury': Gem,
-    'B2B': Building2,
-}
+import { categoryIcons } from './categoryIcons'
 
 const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
     const pathName = usePathname()

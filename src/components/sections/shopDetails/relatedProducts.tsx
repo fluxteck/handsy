@@ -18,7 +18,7 @@ const RelatedProducts = ({ className, products }: { className?: string; products
         <section className={cn('lg:pt-25 lg:pb-25 pt-15 pb-15', className)}>
             <div className='container'>
                 <b className='text-heading text-secondary-foreground font-semibold block lg:mb-7.5 mb-5'>Related Products</b>
-                <div className='grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-x-5 lg:gap-y-15 gap-y-10'>
+                <div className='grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-x-5 lg:gap-y-15 gap-y-10'>
                     {
                         featuredProducts.slice(0, 4).map((prd) => {
                             return (

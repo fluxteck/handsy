@@ -2,11 +2,12 @@
 import React from 'react'
 import { Metadata } from 'next'
 import PageHeader from '@/components/sections/pageHeader'
+import HomeCategory from '@/components/sections/homeCategory'
 import ProductsView from '@/components/sections/shopDetails/productView'
 import Newsletter from '@/components/sections/newsletter'
 import InstagramGallery from '@/components/sections/instagramGallery'
 import { parseCatalogQuery, type RawSearchParams } from '@/lib/catalog/filters'
-import { getCatalogPage, getTopRatedProducts } from '@/lib/sdk'
+import { getCatalogPage, getHomeCategories, getTopRatedProducts } from '@/lib/sdk'
 import { getStoreCurrency } from '@/lib/config'
 
 export const metadata: Metadata = {
@@ -30,18 +31,20 @@ export const dynamic = 'force-dynamic'
 
 const ShopOne = async ({ searchParams }: { searchParams: Promise<RawSearchParams> }) => {
     const query = parseCatalogQuery(await searchParams)
-    const [page, bestSellers] = await Promise.all([
+    const [page, bestSellers, categories] = await Promise.all([
         getCatalogPage(query),
         getTopRatedProducts(3),
+        getHomeCategories(),
     ])
     return (
         <main>
             <PageHeader pageTitle='Shop' currentPage='Shop' />
+            <HomeCategory categories={categories} showHeading={false} compact />
             <ProductsView
                 isCategoryShow={false}
                 isSortingProductTop={true}
                 isGridDefaultView={true}
-                isSidebarCategoryHide={false}
+                isSidebarCategoryHide={true}
                 data={page.items}
                 catalog={{
                     basePath: '/shop',

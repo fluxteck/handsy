@@ -10,7 +10,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 
 const INPUT_CLASS =
-  "border-[1.5px] border-[#999796] text-base text-gray-1-foreground font-medium py-3 mt-2.5";
+  "h-9 border-[1.5px] border-[#999796] text-xs text-gray-1-foreground font-medium mt-1.5 px-3";
 
 /**
  * Checkout email field with ownership verification.
@@ -91,7 +91,7 @@ const GuestEmailField = () => {
   };
 
   return (
-    <label htmlFor="email" className="text-gray-1-foreground w-full text-base">
+    <label htmlFor="email" className="text-gray-1-foreground w-full text-xs">
       Email address<span className="text-red-400">*</span>
       <Input
         className={INPUT_CLASS}
@@ -121,20 +121,26 @@ const GuestEmailField = () => {
           size="sm"
           onClick={sendCode}
           disabled={isPending || !email}
-          className="mt-2.5"
+          className="mt-1.5 h-8 px-3 text-xs"
         >
           {isPending ? "Sending…" : "Verify email"}
         </Button>
       )}
 
       {step === "code" && (
-        <div className="mt-2.5">
-          <OtpInput value={code} onChange={setCode} disabled={isPending} />
-          <div className="mt-2.5 flex gap-2.5">
-            <Button type="button" size="sm" onClick={confirmCode} disabled={isPending}>
+        <div className="mt-1.5">
+          <OtpInput
+            value={code}
+            onChange={setCode}
+            disabled={isPending}
+            className="max-w-[220px] gap-1.5"
+            inputClassName="h-8 text-xs border-[1.5px] border-[#999796] rounded-lg"
+          />
+          <div className="mt-1.5 flex gap-2">
+            <Button type="button" size="sm" className="h-8 px-3 text-xs" onClick={confirmCode} disabled={isPending}>
               {isPending ? "Verifying…" : "Confirm"}
             </Button>
-            <Button type="button" size="sm" onClick={sendCode} disabled={isPending}>
+            <Button type="button" size="sm" className="h-8 px-3 text-xs" onClick={sendCode} disabled={isPending}>
               Resend
             </Button>
           </div>

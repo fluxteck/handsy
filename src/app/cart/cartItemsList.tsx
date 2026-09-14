@@ -1,127 +1,92 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Close, Minus, Plus, ShopCart } from "@/lib/icon";
+import { Trash2 } from "lucide-react";
+import { Minus, Plus, ShopCart } from "@/lib/icon";
 import { useCart } from "@/lib/cart/cart-context";
 import ShopEmptyState from "@/components/ui/shopEmptyState";
 import Image from "next/image";
-import Link from "next/link";
 import currencyFormatter from "currency-formatter";
 import type { CategoryLink } from "@/lib/categoryLinks";
 
-const ProductsCartTable = ({ categories = [] }: { categories?: CategoryLink[] }) => {
+const CartItemsList = ({ categories = [] }: { categories?: CategoryLink[] }) => {
   const { products, increment, decrement, remove, currency } = useCart();
+  const money = (amount: number) =>
+    currencyFormatter.format(amount, { code: currency || "INR" });
+
+  if (!products.length) {
+    return (
+      <ShopEmptyState
+        categories={categories}
+        icon={ShopCart}
+        title="Your Cart is Empty"
+        description="Let's fill it with something you'll love"
+        ctaLabel="Continue Shopping"
+        ctaHref="/shop"
+      />
+    );
+  }
+
   return (
-    <>
-      {products.length ? (
-        <div className="overflow-x-auto border rounded-lg">
-          <Table className="min-w-[700px] xl:min-w-full">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="px-7.5 py-4 lg:text-xl text-lg font-semibold text-secondary-foreground">
-                  Products
-                </TableHead>
-                <TableHead className="px-7.5 py-4 lg:text-xl text-lg font-semibold text-secondary-foreground w-[165px]">
-                  Price
-                </TableHead>
-                <TableHead className="px-7.5 py-4 lg:text-xl text-lg font-semibold text-secondary-foreground w-[190px]">
-                  Quantity
-                </TableHead>
-                <TableHead className="px-7.5 py-4 lg:text-xl text-lg font-semibold text-secondary-foreground w-[171px]">
-                  Subtotal
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.map(({ id, price, thumbnail, title, quantity }) => {
-                const totalPrice = currencyFormatter.format(price * quantity, { code: currency || "INR" });
-                return (
-                  <TableRow key={id}>
-                    <TableCell className="flex items-center gap-5 py-5 px-7.5 w-[370px]">
-                      <div className="bg-home-bg-1 p-[5px] w-20 h-20">
-                        <Image
-                          src={thumbnail}
-                          width={80}
-                          height={80}
-                          alt="product"
-                        />
-                      </div>
-                      <b className="lg:text-xl text-lg font-medium text-secondary-foreground capitalize max-w-[200px] line-clamp-1">
-                        {title}
-                      </b>
-                    </TableCell>
-                    <TableCell className="text-lg font-medium text-secondary-foreground py-5 px-7.5 w-[165px]">
-                      {currencyFormatter.format(price, { code: currency || "INR" })}
-                    </TableCell>
-                    <TableCell className="py-5 px-7.5 w-[190px]">
-                      <div className="max-w-25 border border-gray-1 flex items-center gap-4 px-[14px] py-[11px] text-sm font-medium text-gray-1-foreground">
-                        <span
-                          onClick={() =>
-                            decrement(id)
-                          }
-                          className="cursor-pointer h-5 flex items-center"
-                        >
-                          <Minus />
-                        </span>
-                        {quantity}
-                        <span
-                          onClick={() =>
-                            increment(id)
-                          }
-                          className="cursor-pointer h-5 flex items-center"
-                        >
-                          <Plus />
-                        </span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-lg font-medium text-gray-1-foreground py-5 px-7.5 w-[171px]">
-                      ${Number(totalPrice).toFixed(2)}
-                    </TableCell>
-                    <TableCell
-                      className="text-gray-1-foreground cursor-pointer py-5 px-7.5"
-                      onClick={() => remove(id)}
-                    >
-                      <Close className="size-7.5" />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-          <div className="flex flex-wrap lg:flex-nowrap justify-between items-center gap-5 border-t-[1.5px] border-t-[#E5E2E1] px-7.5 py-7.5">
-            <div className="max-w-[522px] flex items-center gap-2.5">
-              <Input
-                type={"text"}
-                placeholder={"Coupon code"}
-                className={"border-gray px-5 py-[14px]"}
-              />
-              <Button>Apply coupon</Button>
+    <div className="flex flex-col">
+      {products.map((line) => (
+        <div
+          key={line.id}
+          className="flex items-start justify-between gap-3 py-4 border-b border-b-[#c9c2b8] last:border-b-0"
+        >
+          <div className="flex items-start gap-3 min-w-0">
+            <Image
+              width={64}
+              height={64}
+              src={line.thumbnail}
+              alt={line.title}
+              className="bg-white size-16 object-contain rounded-md shrink-0"
+            />
+            <div className="min-w-0">
+              <p className="text-secondary-foreground text-sm font-medium truncate">
+                {line.title}
+              </p>
+              {line.variantTitle ? (
+                <p className="text-xs text-gray-1-foreground mt-0.5">
+                  {line.variantTitle}
+                </p>
+              ) : null}
+              <div className="flex items-center gap-3 mt-2">
+                <div className="rounded-full border border-gray-2 text-secondary-foreground flex items-center gap-2 px-2 py-1">
+                  <span
+                    onClick={() => void decrement(line.id)}
+                    className="cursor-pointer h-4 w-4 inline-flex items-center justify-center"
+                  >
+                    <Minus />
+                  </span>
+                  <input
+                    value={line.quantity}
+                    readOnly
+                    className="outline-none w-4 text-center text-xs"
+                  />
+                  <span
+                    onClick={() => void increment(line.id)}
+                    className="cursor-pointer h-4 w-4 inline-flex items-center justify-center"
+                  >
+                    <Plus />
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  aria-label={`Remove ${line.title} from cart`}
+                  onClick={() => void remove(line.id)}
+                  className="flex items-center justify-center size-6 rounded-full text-destructive hover:bg-destructive hover:text-white transition-colors duration-200"
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              </div>
             </div>
-            <Button variant={"outline"} asChild>
-              <Link href={"/shop"}>Continue Shopping</Link>
-            </Button>
           </div>
+          <p className="text-secondary-foreground text-sm font-semibold whitespace-nowrap">
+            {money(line.price * line.quantity)}
+          </p>
         </div>
-      ) : (
-        <ShopEmptyState categories={categories}
-          className="lg:col-span-2"
-          icon={ShopCart}
-          title="Your Cart is Empty"
-          description="Let's fill it with something you'll love"
-          ctaLabel="Continue Shopping"
-          ctaHref="/shop"
-        />
-      )}
-    </>
+      ))}
+    </div>
   );
 };
 
-export default ProductsCartTable;
+export default CartItemsList;

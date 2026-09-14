@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
@@ -18,20 +18,10 @@ const RegisterForm = () => {
     }
   };
   return (
-    <Dialog open={open} onOpenChange={() => setOpen(!open)}>
-      <div className="flex items-center gap-2.5 mt-4">
-        <Checkbox
-          checked={open}
-          onCheckedChange={(value: boolean) =>
-            setOpen(typeof value === "boolean" ? value : false)
-          }
-          id="extra"
-          className="rounded-[4px] border-primary data-[state=checked]:bg-primary data-[state=checked]:text-white"
-        />
-        <Label htmlFor="extra" className="text-sm text-secondary-foreground">
-          Create an account?
-        </Label>
-      </div>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger className="text-secondary-foreground font-medium multiline-hover">
+        create an account
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[550px] justify-center max-h-[calc(100vh_-50px)] overflow-y-auto">
         <DialogTitle className="hidden"></DialogTitle>
         <div className="border border-black bg-background p-7.5 max-w-[500px] rounded-lg">

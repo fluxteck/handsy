@@ -14,23 +14,17 @@ import { productPath } from '@/lib/productPath';
  *  so the two surfaces read as one design language. */
 const sectionLabelClass = 'mb-2.5 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'
 
-const MegaMenu = ({ data, featuredProducts, forceClosed, onNavigate, align = 'left' }: { data: MegamenuType[], featuredProducts: ProductType[], forceClosed?: boolean, onNavigate?: () => void, align?: 'left' | 'right' }) => {
+const MegaMenu = ({ data, featuredProducts, forceClosed, onNavigate }: { data: MegamenuType[], featuredProducts: ProductType[], forceClosed?: boolean, onNavigate?: () => void }) => {
 
     return (
         <div
             className={cn(
-                // Anchored to the nav item's own `<li>` (which is `relative`) and
-                // sized with `w-max`, so the box hugs its own content width — a
-                // two-item menu like Luxury opens narrow, a fuller one like
-                // Furniture opens wider. (`w-max` matters: a shrink-to-fit box
-                // wrapping a `flex-wrap` row otherwise collapses to the width of
-                // its single widest item, stacking every column into one.) Capped
-                // so an unusually long menu wraps instead of running off-screen.
-                // `align` flips the anchor edge for nav items on the right side of
-                // the bar, so their (wider-than-the-trigger) panel opens toward the
-                // middle of the header instead of running off the viewport edge.
-                'static lg:absolute lg:z-50 lg:top-full lg:w-max lg:max-w-[calc(100vw-2rem)] bg-home-bg-1 shadow-xl rounded-b-xl overflow-hidden',
-                align === 'right' ? 'lg:right-0' : 'lg:left-0',
+                // The triggering `<li>` goes `static` at `lg:` (see navbar.tsx), so
+                // this `absolute` box bubbles up to the nav row's own `relative`
+                // wrapper — the same `container` the nav bar itself spans — and
+                // `inset-x-0`/`w-full` stretch it to that exact width, aligned with
+                // the full bar regardless of which item triggered it.
+                'static lg:absolute lg:z-50 lg:top-full lg:inset-x-0 lg:w-full bg-home-bg-1 shadow-xl rounded-b-xl overflow-hidden',
                 // `grid-template-rows: 0fr -> 1fr` (desktop only) sizes the panel's
                 // height to its own content too — a short menu opens compact, a
                 // taller one opens taller, with no fixed box and no leftover space.
@@ -39,7 +33,7 @@ const MegaMenu = ({ data, featuredProducts, forceClosed, onNavigate, align = 'le
             )}
         >
             <div className='overflow-hidden lg:min-h-0'>
-                <div className='flex flex-col gap-y-5 px-6 py-5 lg:flex-row lg:flex-wrap lg:items-start lg:justify-start lg:gap-x-10 lg:gap-y-6 lg:px-8 lg:py-6'>
+                <div className='flex flex-col gap-y-5 px-6 py-5 lg:flex-row lg:flex-wrap lg:items-start lg:justify-between lg:gap-x-10 lg:gap-y-6 lg:px-8 lg:py-6'>
                     {
                         data.map(({ menus, id }) => {
                             return (

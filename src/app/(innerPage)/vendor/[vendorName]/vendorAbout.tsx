@@ -1,21 +1,14 @@
 import { CircleCheck, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Facebook, Instagram, MapPin, Twitter } from "@/lib/icon";
+import { ArrowRight, MapPin } from "@/lib/icon";
 import RichText from "@/components/ui/richText";
 import Title from "@/components/ui/title";
 import { VendorType } from "@/types/vendorType";
-
-const socialIconMap = {
-  instagram: Instagram,
-  facebook: Facebook,
-  twitter: Twitter,
-} as const;
+import VendorSocialLinks, { getVendorSocialEntries } from "./vendorSocialLinks";
 
 const VendorAbout = ({ vendor }: { vendor: VendorType }) => {
-  const socialEntries = (Object.entries(vendor.social) as [keyof typeof socialIconMap, string | undefined][]).filter(
-    ([, href]) => !!href
-  );
+  const socialEntries = getVendorSocialEntries(vendor);
 
   return (
     <section aria-label={`About ${vendor.name}`} className="py-10 lg:py-12.5">
@@ -38,21 +31,7 @@ const VendorAbout = ({ vendor }: { vendor: VendorType }) => {
               <p className="mb-3 text-sm font-medium text-secondary-foreground">
                 Follow {vendor.name}
               </p>
-              <div className="flex items-center gap-3">
-                {socialEntries.map(([platform, href]) => {
-                  const Icon = socialIconMap[platform];
-                  return (
-                    <Link
-                      key={platform}
-                      href={href as string}
-                      aria-label={`${vendor.name} on ${platform}`}
-                      className="flex size-9 items-center justify-center rounded-full border border-gray-2 text-gray-1-foreground transition-all duration-300 hover:border-primary hover:bg-primary hover:text-white"
-                    >
-                      <Icon className="size-4" />
-                    </Link>
-                  );
-                })}
-              </div>
+              <VendorSocialLinks vendor={vendor} />
             </div>
           )}
         </div>

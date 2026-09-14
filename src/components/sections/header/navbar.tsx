@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Tag } from "lucide-react";
 import MegaMenu from "./megaMenu";
 import { menuType } from "@/db/menuList";
 import { ProductType } from "@/types/productType";
 import { cn } from "@/lib/utils";
+import { categoryIcons } from "./categoryIcons";
 
 const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
     const pathName = usePathname()
@@ -19,26 +20,35 @@ const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts
     }, [pathName])
 
     return (
-        <nav className="lg:block hidden">
-            <ul className="flex justify-center gap-10">
-                {data.map((item, index) => {
+        <nav className="lg:block hidden w-full">
+            <ul className="flex w-full">
+                {data.map((item) => {
                     const forceClosed = closedId === item.id
-                    // The panel hugs its own (possibly wider-than-the-trigger)
-                    // content width, so items past the midpoint of the bar open
-                    // it right-anchored — toward the middle of the header —
-                    // instead of left-anchored off the right edge of the viewport.
-                    const align = index >= Math.ceil(data.length / 2) ? 'right' : 'left'
+                    // Same per-category icon set as the mobile drawer, so the two
+                    // surfaces agree on what represents each menu item.
+                    const ItemIcon = categoryIcons[item.label] ?? Tag
                     return (
                         <li
                             key={item.id}
-                            className="group relative"
+                            // `relative` anchors the plain dropdown to this item, as before.
+                            // A mega-menu item instead goes `static` at `lg:` (the only
+                            // width this nav renders at) so its panel's `absolute`
+                            // positioning bubbles up to the nav row's own `relative`
+                            // wrapper — letting it span the full bar width instead of
+                            // just this one flex segment.
+                            className={cn("group relative flex-1 text-center", item.megaMenu && "lg:static")}
                             onMouseLeave={() => setClosedId((current) => (current === item.id ? null : current))}
                         >
                             <Link
                                 href={item.path}
                                 onClick={() => setClosedId(item.id)}
-                                className="py-2.5 text-gray-1-foreground flex items-center gap-1 capitalize group-hover:text-secondary-foreground transition-all duration-500"
+                                className="py-2.5 text-gray-1-foreground flex w-full items-center justify-center gap-1.5 capitalize group-hover:text-secondary-foreground transition-all duration-500"
                             >
+                                <ItemIcon
+                                    aria-hidden
+                                    className="size-4 transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-translate-y-0.5"
+                                    strokeWidth={1.75}
+                                />
                                 {item.label}
                                 {(item.dropdownList || item.megaMenu) && (
                                     <span>
@@ -69,7 +79,7 @@ const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts
                                     })}
                                 </ul>
                             )}
-                            {item.megaMenu && <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} forceClosed={forceClosed} onNavigate={() => setClosedId(item.id)} align={align} />}
+                            {item.megaMenu && <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} forceClosed={forceClosed} onNavigate={() => setClosedId(item.id)} />}
                         </li>
                     );
                 })}

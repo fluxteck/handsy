@@ -275,38 +275,38 @@ const ShopingCartSidebar = ({
             {/* 7. Sticky footer */}
             <SheetFooter className="flex-col sm:flex-col sm:space-x-0 bg-background w-full border-t border-border shrink-0">
               {products.length ? (
-                <div className="px-7.5 pt-5 pb-7.5">
+                <div className="px-5 pt-3 pb-3.5">
                   <div className="flex justify-between items-center">
-                    <p className="text-secondary-foreground font-medium leading-[155%]">
+                    <p className="text-secondary-foreground text-sm font-medium leading-[155%]">
                       Estimated total
                     </p>
-                    <p className="text-secondary-foreground font-semibold text-lg">
+                    <p className="text-secondary-foreground font-semibold text-base">
                       {money(totalPrice)}
                     </p>
                   </div>
                   {totalSavings > 0 ? (
-                    <p className="text-xs text-primary font-medium mt-1 text-right">
+                    <p className="text-xs text-primary font-medium mt-0.5 text-right">
                       You saved {money(totalSavings)}!
                     </p>
                   ) : null}
 
-                  <div className="mt-5">
-                    <Button variant={"outline"} size={"sm"} asChild className="w-full">
+                  <div className="mt-2.5 flex flex-row gap-2">
+                    <Button variant={"outline"} size={"sm"} asChild className="flex-1 h-9 px-3 text-sm">
                       <Link href={"/cart"}>View Cart</Link>
                     </Button>
-                    <Button size={"sm"} asChild className="w-full mt-3">
+                    <Button size={"sm"} asChild className="flex-1 h-9 px-3 text-sm">
                       <Link href={"/checkout"}>Check Out</Link>
                     </Button>
                   </div>
 
-                  <div className="flex items-center justify-center gap-2 mt-4">
+                  <div className="flex items-center justify-center gap-2 mt-2.5">
                     <p className="text-xs text-gray-1-foreground">Secure checkout with</p>
                     <div className="rounded-md bg-home-bg-1 p-1">
                       <Image
                         src="/images/payment-card.webp"
                         alt="Payment Methods"
-                        width={100}
-                        height={37}
+                        width={90}
+                        height={33}
                       />
                     </div>
                   </div>

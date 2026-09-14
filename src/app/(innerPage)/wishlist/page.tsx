@@ -4,7 +4,7 @@ import PageHeader from "@/components/sections/pageHeader";
 import RecentlyViewed from "@/components/sections/recentlyViewed";
 import RelatedProducts from "@/components/sections/shopDetails/relatedProducts";
 import { Metadata } from "next";
-import WishlistProductsTable from "./wishlistProductsTable";
+import WishlistProductsGrid from "./wishlistProductsGrid";
 import { getTopRatedProducts } from "@/lib/sdk";
 import { getCategoryLinks } from "@/lib/categoryLinks";
 
@@ -28,7 +28,7 @@ const Wishlist = async () => {
         breadcrumbLink="/shop"
         breadcrumbLabel="Shop"
       />
-      <WishlistProductsTable categories={categoryLinks} />
+      <WishlistProductsGrid categories={categoryLinks} />
       <RecentlyViewed />
       <RelatedProducts products={suggestions} />
       <Newsletter />

@@ -2,6 +2,7 @@
 import { addToCompare } from "@/lib/features/CompareProductsSlice";
 import { toCompareItem } from "@/lib/compareItem";
 import { Eye, Heart, ShopCart, Shuffle } from "@/lib/icon";
+import { Trash2 } from "lucide-react";
 import { useAppDispatch } from "@/lib/reduxHooks";
 import { useCart } from "@/lib/cart/cart-context";
 import { cn } from "@/lib/utils";
@@ -113,9 +114,19 @@ export function CardImg({
 // Enhanced CardIcons with built-in functionality
 interface CardIconsProps extends CardPropsType {
   product?: ProductType;
+  /** Hides the "Add to wishlist" action — for surfaces where every card shown
+   *  is already a saved wishlist item (the wishlist page itself), where a
+   *  heart to add it again is redundant. Defaults to showing it, unchanged. */
+  hideWishlist?: boolean;
+  /** Swaps the "Add to cart" action for a remove action in that same slot —
+   *  for the wishlist page, which offers its own Add to Cart control
+   *  elsewhere on the card and needs a quick way to remove a saved item
+   *  instead. Leaves the slot's position, reveal animation and tooltip
+   *  wrapper untouched; only the icon, label and handler change. */
+  onRemove?: () => void;
 }
 
-export function CardIcons({ children, className, product }: CardIconsProps) {
+export function CardIcons({ children, className, product, hideWishlist, onRemove }: CardIconsProps) {
   // Wishlist and compare are still Redux-backed; only the cart is server-side.
   const dispatch = useAppDispatch();
   const { add: addToCartLine } = useCart();
@@ -191,17 +202,19 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
       )}
     >
       {/* Add to wishlist */}
-      <Tooltip text={"Add to wishlist"}>
-        <button
-          aria-label="wishlist"
-          onClick={defaultActions?.handleWishlist}
-          className="w-7.5 h-7.5 bg-background flex justify-center items-center rounded-full lg:opacity-0 lg:group-hover:opacity-100 delay-0 transform lg:translate-y-full lg:group-hover:translate-y-0 transition-all duration-300"
-        >
-          <span className="flex justify-center items-center w-full h-full rounded-full text-gray-1-foreground hover:bg-primary hover:text-white transition-all duration-300">
-            <Heart className="size-4" />
-          </span>
-        </button>
-      </Tooltip>
+      {!hideWishlist && (
+        <Tooltip text={"Add to wishlist"}>
+          <button
+            aria-label="wishlist"
+            onClick={defaultActions?.handleWishlist}
+            className="w-7.5 h-7.5 bg-background flex justify-center items-center rounded-full lg:opacity-0 lg:group-hover:opacity-100 delay-0 transform lg:translate-y-full lg:group-hover:translate-y-0 transition-all duration-300"
+          >
+            <span className="flex justify-center items-center w-full h-full rounded-full text-gray-1-foreground hover:bg-primary hover:text-white transition-all duration-300">
+              <Heart className="size-4" />
+            </span>
+          </button>
+        </Tooltip>
+      )}
 
       {/* Quick view */}
       <Tooltip text={"Quick view"}>
@@ -216,15 +229,15 @@ export function CardIcons({ children, className, product }: CardIconsProps) {
         </button>
       </Tooltip>
 
-      {/* Add to cart */}
-      <Tooltip text={"Add to cart"}>
+      {/* Add to cart — swapped for Remove when onRemove is provided */}
+      <Tooltip text={onRemove ? "Remove from wishlist" : "Add to cart"}>
         <button
-          aria-label="cart"
-          onClick={defaultActions?.handleAddToCart}
+          aria-label={onRemove ? "remove" : "cart"}
+          onClick={onRemove ?? defaultActions?.handleAddToCart}
           className="w-7.5 h-7.5 bg-background flex justify-center items-center rounded-full lg:opacity-0 lg:group-hover:opacity-100 delay-200 transform lg:translate-y-full lg:group-hover:translate-y-0 transition-all duration-300"
         >
           <span className="flex justify-center items-center w-full h-full rounded-full text-gray-1-foreground hover:bg-primary hover:text-white transition-all duration-300">
-            <ShopCart className="size-4" />
+            {onRemove ? <Trash2 className="size-4" /> : <ShopCart className="size-4" />}
           </span>
         </button>
       </Tooltip>

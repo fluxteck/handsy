@@ -3,14 +3,32 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Close } from "@/lib/icon";
+import { CreditCard, Landmark, Percent, QrCode, Wallet } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import currencyFormatter from "currency-formatter";
 import { useCart } from "@/lib/cart/cart-context";
 import { useCheckout } from "@/lib/checkout/checkout-context";
+import CouponCodeForm from "./couponCodeForm";
+import CheckoutUpsell from "./checkoutUpsell";
+import { ProductType } from "@/types/productType";
 
-const CheckoutPayment = () => {
-  const { products, subTotal, currency } = useCart();
+/* What Razorpay's own checkout modal actually offers once "Online payment"
+   is chosen — not separately selectable here, since the server only ever
+   distinguishes "online" from "cod" (see toServerMethod in checkout-context).
+   Purely informational, and truthful: this is the real set of methods the
+   modal presents. */
+const ONLINE_METHODS = [
+  { label: "UPI", icon: QrCode },
+  { label: "Cards", icon: CreditCard },
+  { label: "EMI", icon: Percent },
+  { label: "NetBanking", icon: Landmark },
+  { label: "Wallets", icon: Wallet },
+] as const;
+
+const CheckoutPayment = ({ upsellCandidates }: { upsellCandidates: ProductType[] }) => {
+  const { products, subTotal, tax, total, currency, remove } = useCart();
   const {
     paymentMethod,
     setPaymentMethod,
@@ -23,185 +41,126 @@ const CheckoutPayment = () => {
     currencyFormatter.format(amount, { code: currency || "INR" });
 
   return (
-    <div className="bg-[#F5F5F5] sm:p-10 p-7 rounded-xl">
-      <div className="border border-[#999796] sm:p-7.5 p-5 rounded-lg">
-        <p className="bg-primary text-white lg:py-[15px] py-3 lg:text-2xl sm:text-xl text-lg lg:leading-[125%] font-semibold text-center rounded-md">
-          Your Order
-        </p>
-        <div className="overflow-x-auto">
-          <div className="mt-7.5  min-w-[350px]">
-            <div className="flex justify-between border-b-[1.5px] border-b-[#999796] pb-5">
-              <p className="lg:text-2xl sm:text-xl text-lg lg:leading-[125%] font-semibold text-secondary-foreground">
-                Product
-              </p>
-              <p className="lg:text-2xl sm:text-xl text-lg lg:leading-[125%] font-semibold text-secondary-foreground">
-                Subtotal
-              </p>
-            </div>
+    <div>
+      <p className="text-lg font-semibold text-secondary-foreground">
+        Order summary
+      </p>
 
-            <div className="mt-7.5 flex flex-col gap-5 border-b-[1.5px] border-b-[#999796] pb-7.5">
-              {products.map((line) => (
-              <div className="flex justify-between" key={line.id}>
-                <div className="flex items-center gap-5">
-                  <Image
-                    width={70}
-                    height={70}
-                    src={line.thumbnail}
-                    alt="img"
-                    className="bg-white max-h-[70px] object-contain"
-                  />
-                  <div>
-                    <p className="text-secondary-foreground lg:text-xl sm:text-lg text-base font-medium">
-                      {line.title}
-                    </p>
-                    <span className="text-base text-secondary-foreground">
-                      Qty: {line.quantity}
-                    </span>
-                  </div>
-                </div>
-                <p className="text-secondary-foreground lg:text-xl sm:text-lg text-base font-semibold lg:leading-[150%] mt-2">
-                  {money(line.price * line.quantity)}
+      <div className="mt-3 flex flex-col gap-3 max-h-[20vh] overflow-y-auto" data-lenis-prevent>
+        {products.map((line) => (
+          <div className="flex items-center justify-between gap-3" key={line.id}>
+            <div className="flex items-center gap-3 min-w-0">
+              <Image
+                width={44}
+                height={44}
+                src={line.thumbnail}
+                alt="img"
+                className="bg-white size-11 object-contain rounded-md shrink-0"
+              />
+              <div className="min-w-0">
+                <p className="text-secondary-foreground text-sm font-medium truncate">
+                  {line.title}
                 </p>
+                <span className="text-xs text-gray-1-foreground">
+                  Qty: {line.quantity}
+                </span>
               </div>
-              ))}
             </div>
-
-            <div className="flex justify-between border-b-[1.5px] border-b-[#999796] pb-5 mt-7.5">
-              <p className="lg:text-xl text-lg lg:leading-[150%] font-medium text-secondary-foreground">
-                Subtotal
+            <div className="flex items-center gap-2 shrink-0">
+              <p className="text-secondary-foreground text-sm font-semibold whitespace-nowrap">
+                {money(line.price * line.quantity)}
               </p>
-              <p className="lg:text-xl text-lg lg:leading-[150%] font-medium text-secondary-foreground">
-                {money(subTotal)}
-              </p>
-            </div>
-
-            <div className="flex justify-between items-center border-b-[1.5px] border-b-[#999796] pb-5 mt-7.5">
-              <p className="lg:text-xl text-lg lg:leading-[150%] font-medium text-secondary-foreground">
-                Shipping
-              </p>
-              <RadioGroup defaultValue="0" className="gap-2.5 justify-end">
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem
-                    value="0"
-                    id="free-shipping"
-                    aria-label="radio"
-                    className="border-primary text-transparent"
-                  />
-                  <Label
-                    htmlFor="free-shipping"
-                    className="text-gray-1-foreground text-base"
-                  >
-                    Free Shipping
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2 ">
-                  <RadioGroupItem
-                    value="10"
-                    id="fat-rate"
-                    aria-label="radio"
-                    className="border-primary text-transparent"
-                  />
-                  <Label
-                    htmlFor="fat-rate"
-                    className="text-gray-1-foreground text-base"
-                  >
-                    Fat Rate $10.00
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <div className="flex justify-between mt-7.5">
-              <p className="text-xl leading-[150%] font-medium text-secondary-foreground">
-                Total
-              </p>
-              <p className="text-xl leading-[150%] font-medium text-secondary-foreground">
-                {money(subTotal)}
-              </p>
+              <button
+                type="button"
+                aria-label={`Remove ${line.title} from cart`}
+                onClick={() => void remove(line.id)}
+                className="flex items-center justify-center size-6 rounded-full text-gray-1-foreground hover:bg-primary hover:text-white transition-colors duration-200"
+              >
+                <Close className="size-3" />
+              </button>
             </div>
           </div>
+        ))}
+      </div>
+
+      <div className="mt-3">
+        <CouponCodeForm />
+      </div>
+
+      <div className="mt-3">
+        <CheckoutUpsell candidates={upsellCandidates} />
+      </div>
+
+      <div className="mt-3 pt-3 border-t border-t-[#c9c2b8] flex flex-col gap-1.5">
+        <div className="flex justify-between">
+          <p className="text-sm text-gray-1-foreground">Subtotal</p>
+          <p className="text-sm text-secondary-foreground font-medium">{money(subTotal)}</p>
+        </div>
+        <div className="flex justify-between">
+          <p className="text-sm text-gray-1-foreground">Tax</p>
+          <p className="text-sm text-secondary-foreground font-medium">{money(tax)}</p>
         </div>
       </div>
 
-      <div className="mt-10">
-        <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="gap-y-5">
-          <div>
-            <div className="flex items-center space-x-2">
+      <div className="flex justify-between items-center mt-3 pt-3 border-t border-t-[#c9c2b8]">
+        <p className="text-lg font-semibold text-secondary-foreground">Total</p>
+        <p className="text-lg font-semibold text-secondary-foreground">{money(total || subTotal)}</p>
+      </div>
+
+      <div className="mt-4">
+        <p className="text-xs font-medium text-gray-1-foreground mb-2">
+          Pay with
+        </p>
+        <RadioGroup
+          value={paymentMethod}
+          onValueChange={setPaymentMethod}
+          className="flex flex-col gap-2"
+        >
+          <Label
+            htmlFor="online"
+            className="cursor-pointer flex flex-col gap-2 rounded-xl border-[1.5px] border-[#999796] px-3 py-2 transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-home-bg-3 font-normal"
+          >
+            <span className="flex items-center gap-2">
               <RadioGroupItem
-                value="bank-transfer"
-                id="bank-transfer"
+                value="online"
+                id="online"
                 aria-label="radio"
                 className="w-3 h-3 border-primary text-transparent [&_svg]:w-2 [&_svg]:h-2 [&_svg]:fill-black"
               />
-              <Label
-                htmlFor="bank-transfer"
-                className="text-secondary-foreground text-base"
-              >
-                Direct bank transfer
-              </Label>
-            </div>
-            <p className="text-gray-1-foreground mt-3">
-              Make your payment directly into our bank account. Please your
-              Order ID as the payment reference. Your order will not be shipped
-              until the funds have cleared in our account.
-            </p>
-          </div>
-          <div className="flex items-center space-x-2 ">
-            <RadioGroupItem
-              value="check-payment"
-              id="check-payment"
-              aria-label="radio"
-              className="w-3 h-3 border-primary text-transparent [&_svg]:w-2 [&_svg]:h-2 [&_svg]:fill-black"
-            />
-            <Label
-              htmlFor="check-payment"
-              className="text-secondary-foreground text-base"
-            >
-              Check payments
-            </Label>
-          </div>
-          <div className="flex items-center space-x-2 ">
+              <span className="text-secondary-foreground text-xs font-medium">
+                Online payment
+              </span>
+            </span>
+            <span className="flex flex-wrap gap-x-3 gap-y-1.5 pl-5">
+              {ONLINE_METHODS.map((method) => (
+                <span
+                  key={method.label}
+                  className="flex items-center gap-1 text-[11px] text-gray-1-foreground"
+                >
+                  <method.icon className="size-3.5" />
+                  {method.label}
+                </span>
+              ))}
+            </span>
+          </Label>
+
+          <Label
+            htmlFor="cash-on-delivery"
+            className="cursor-pointer flex items-center gap-2 rounded-xl border-[1.5px] border-[#999796] px-3 py-2 transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-home-bg-3 font-normal"
+          >
             <RadioGroupItem
               value="cash-on-delivery"
               id="cash-on-delivery"
               aria-label="radio"
               className="w-3 h-3 border-primary text-transparent [&_svg]:w-2 [&_svg]:h-2 [&_svg]:fill-black"
             />
-            <Label
-              htmlFor="cash-on-delivery"
-              className="text-secondary-foreground text-base"
-            >
+            <span className="text-secondary-foreground text-xs font-medium">
               Cash on delivery
-            </Label>
-          </div>
-          <div className="flex flex-wrap gap-2.5">
-            <div className="flex items-center space-x-2 ">
-              <RadioGroupItem
-                value="paypal"
-                id="paypal"
-                aria-label="radio"
-                className="w-3 h-3 border-primary text-transparent [&_svg]:w-2 [&_svg]:h-2 [&_svg]:fill-black"
-              />
-              <Label
-                htmlFor="paypal"
-                className="text-secondary-foreground text-base"
-              >
-                PayPal
-              </Label>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <Image
-                width={124}
-                height={24}
-                src={"/images/payment-card.webp"}
-                alt="img"
-              />
-              <p className="text-secondary-foreground">What is paypal?</p>
-            </div>
-          </div>
+            </span>
+          </Label>
         </RadioGroup>
 
-        <div className="flex items-center gap-2.5 mt-10">
+        <div className="flex items-center gap-2 mt-3">
           <Checkbox
             id="terms"
             checked={termsAccepted}
@@ -210,17 +169,29 @@ const CheckoutPayment = () => {
           />
           <Label
             htmlFor="terms"
-            className="lg:text-lg text-base font-normal text-secondary-foreground"
+            className="text-xs font-normal text-secondary-foreground"
           >
-            I have read and agree to the website{" "}
+            I agree to the website{" "}
             <Link href={"/terms-conditions"} className="underline">
               terms and conditions
             </Link>
-            <span className="text-primary-foreground">*</span>{" "}
+            <span className="text-primary-foreground">*</span>
           </Label>
         </div>
 
-        <Button className="w-full mt-10" onClick={() => void placeOrder()} disabled={isPlacing}>{isPlacing ? "Placing Order…" : "Place Order"}</Button>
+        <div className="flex justify-center mt-3">
+          <Button
+            className="h-9 px-5 text-sm"
+            onClick={() => void placeOrder()}
+            disabled={isPlacing}
+          >
+            {isPlacing ? "Placing Order…" : "Place order"}
+          </Button>
+        </div>
+
+        <p className="text-center text-xs text-gray-1-foreground mt-2.5">
+          Secure checkout · Free 15-day returns
+        </p>
       </div>
     </div>
   );

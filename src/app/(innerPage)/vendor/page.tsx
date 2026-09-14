@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import PageHeader from "@/components/sections/pageHeader";
 import VendorHero from "./vendorHero";
+import VendorDirectory from "./vendorDirectory";
 import VendorWhySell from "./vendorWhySell";
 import VendorBenefits from "./vendorBenefits";
 import VendorProcess from "./vendorProcess";
@@ -11,6 +12,7 @@ import VendorOnboardingForm from "./vendorOnboardingForm";
 import VendorFaq from "./vendorFaq";
 import VendorCta from "./vendorCta";
 import { getHomeCategories } from "@/lib/sdk";
+import { getAllVendors } from "@/lib/sdk/catalog";
 
 export const metadata: Metadata = {
   title: "Sell on Handsy",
@@ -19,12 +21,16 @@ export const metadata: Metadata = {
 
 const Vendor = async () => {
   // Real category names for the seller-onboarding enquiry dropdown.
-  const categoryNames = (await getHomeCategories()).map((category) => category.categoryName);
+  const [categoryNames, vendors] = await Promise.all([
+    getHomeCategories().then((categories) => categories.map((category) => category.categoryName)),
+    getAllVendors(),
+  ]);
 
   return (
     <main>
       <PageHeader pageTitle="Sell on Handsy" currentPage="Vendor" renderHeading={false} />
       <VendorHero />
+      <VendorDirectory vendors={vendors} />
       <VendorWhySell />
       <VendorBenefits />
       <VendorProcess />

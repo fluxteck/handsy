@@ -18,8 +18,10 @@ import {
   type ProductDetailView,
 } from "../mappers/product";
 import { toReviewTypes } from "../mappers/review";
+import { toVendorType } from "../mappers/vendor";
 import { PAGE_SIZE, toProductFilters, type CatalogQuery, type SortKey } from "../catalog/filters";
 import { getStorefrontClient } from "./client";
+import type { VendorType } from "@/types/vendorType";
 
 /**
  * Server-backed catalog reads for the homepage.
@@ -382,6 +384,31 @@ export const getVendorBySlug = cache(async (slug: string): Promise<Brand | null>
 export const getVendorSlugs = cache(async (): Promise<string[]> =>
   (await getBrandEntries()).map((brand) => brand.slug),
 );
+
+/**
+ * The full vendor directory — every active maker, with real per-vendor
+ * categories attached (the same derivation a single storefront page uses:
+ * from what that maker actually has listed, via `getVendorProducts`), so a
+ * directory-wide category filter never offers a choice that matches nothing.
+ */
+export const getAllVendors = cache(async (): Promise<VendorType[]> => {
+  const brands = getStorefrontClient().adapter.brands;
+  if (!brands) return [];
+  try {
+    const all = await collectPages("brands", (cursor) =>
+      brands.list({ limit: 100, ...(cursor ? { cursor } : {}) }, ctx()),
+    );
+    return await Promise.all(
+      all.map(async (brand) => {
+        const { categories } = await getVendorProducts(brand.slug);
+        return toVendorType(brand, categories);
+      }),
+    );
+  } catch (err) {
+    console.error("[handsy:sdk] getAllVendors failed", err);
+    return [];
+  }
+});
 
 /**
  * A maker's products, plus the category labels to build the filter pills.

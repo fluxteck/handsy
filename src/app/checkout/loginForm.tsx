@@ -14,12 +14,9 @@ import SocialLoginButtons from "./socialLoginButtons";
 const LoginForm = () => {
   return (
     <Dialog>
-      <div className="text-gray-1-foreground inline">
-        Returning customer?{" "}
-        <DialogTrigger className="text-secondary-foreground multiline-hover ">
-          Click here to login
-        </DialogTrigger>{" "}
-      </div>
+      <DialogTrigger className="text-secondary-foreground font-medium multiline-hover">
+        Log in
+      </DialogTrigger>
       <DialogContent className="sm:max-w-[550px] justify-center max-h-[calc(100vh_-50px)] overflow-y-auto">
         <DialogTitle className="hidden"></DialogTitle>
         <div className="border border-black bg-background p-7.5 max-w-[500px] rounded-lg">

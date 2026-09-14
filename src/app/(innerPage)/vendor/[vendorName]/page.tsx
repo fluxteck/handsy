@@ -116,7 +116,7 @@ const VendorStorefrontPage = async ({ params }: PageProps) => {
          
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <VendorHero vendor={vendor} productCount={products.length} />
+      <VendorHero vendor={vendor} />
       <VendorAbout vendor={vendor} />
       <VendorProducts vendor={vendor} products={vendorProducts} />
       <section aria-label={`Why shop with ${vendor.name} on Handsy Market`} className="border-t border-gray-2 bg-home-bg-1 py-8">

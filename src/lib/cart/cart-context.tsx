@@ -13,6 +13,7 @@ import {
   type ReactNode,
 } from "react";
 import toast from "react-hot-toast";
+import { safeImageUrl } from "../images";
 import { getStorefrontClient } from "../sdk/client";
 import { clearCartCookie, getOrCreateCartId, readCartCookie } from "./cart-cookie";
 
@@ -69,6 +70,12 @@ interface CartContextValue {
   products: CartLineView[];
   itemCount: number;
   subTotal: number;
+  /** Server-computed tax, in major units. Zero until `checkout.estimate` has
+   *  run for this cart with a destination address — genuinely zero, not a
+   *  placeholder, so it's safe to display as-is. */
+  tax: number;
+  /** Server-computed grand total (subtotal - discount + shipping + tax). */
+  total: number;
   currency: string;
   isLoading: boolean;
   isMutating: boolean;
@@ -103,7 +110,7 @@ function toLines(cart: Cart | undefined): CartLineView[] {
     variantId: String(item.variantId),
     title: item.title,
     variantTitle: item.variantTitle ?? "",
-    thumbnail: item.imageUrl || FALLBACK_IMAGE,
+    thumbnail: safeImageUrl(item.imageUrl, FALLBACK_IMAGE),
     price: toMajor(item.unitPrice.amount),
     quantity: item.quantity,
     currency: item.unitPrice.currency,
@@ -261,6 +268,8 @@ function CartState({
          follows a pending change and then settles on the server's figure —
          the one that includes discounts, tax and rounding. */
       subTotal: cart ? toMajor(cart.totals.subtotal.amount) : 0,
+      tax: cart ? toMajor(cart.totals.tax.amount) : 0,
+      total: cart ? toMajor(cart.totals.total.amount) : 0,
       currency: cart?.currency ?? lines[0]?.currency ?? "INR",
       isLoading,
       isMutating,
@@ -293,6 +302,8 @@ function NoCart({
       products: [],
       itemCount: 0,
       subTotal: 0,
+      tax: 0,
+      total: 0,
       currency: "INR",
       isLoading: false,
       isMutating: false,

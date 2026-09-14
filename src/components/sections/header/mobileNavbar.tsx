@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
-import { Heart, IcHome, ShopBug, Shuffle, User } from '@/lib/icon'
+import { Heart, IcHome, ShopBug, /* Shuffle, */ User } from '@/lib/icon'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '@/lib/reduxHooks'
@@ -13,7 +13,7 @@ const navItems = [
     /* Compare sits beside Wishlist because they are the same kind of thing —
        a shortlist the shopper is building — and because the compare icon on a
        product card previously led nowhere at all on a phone. */
-    { href: '/compare', label: 'Compare', icon: Shuffle },
+    // { href: '/compare', label: 'Compare', icon: Shuffle },
     { href: '/account', label: 'Account', icon: User },
 ]
 
