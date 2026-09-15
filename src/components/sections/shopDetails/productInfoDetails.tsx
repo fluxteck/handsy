@@ -6,7 +6,7 @@ import { Minus, Plus, Heart } from "@/lib/icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import calcluteDiscount from "@/lib/calcluteDiscount";
-import { richTextToPlain } from "@/lib/richText";
+import { richTextToPlain } from "@/lib/plainText";
 import { useCart } from "@/lib/cart/cart-context";
 import UspMarquee from "@/components/sections/shopDetails/uspMarquee";
 import { useWishlist } from "@/lib/wishlist/wishlist-context";

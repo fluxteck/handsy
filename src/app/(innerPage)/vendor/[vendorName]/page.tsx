@@ -10,7 +10,7 @@ import VendorAbout from "./vendorAbout";
 import VendorHero from "./vendorHero";
 import VendorProducts from "./vendorProducts";
 import { getSiteUrl } from "@/lib/config";
-import { richTextToPlain } from "@/lib/richText";
+import { richTextToPlain } from "@/lib/plainText";
 
 type PageProps = {
   params: Promise<{ vendorName: string }>;

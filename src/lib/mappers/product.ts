@@ -1,7 +1,7 @@
 import type { Money, Product, Variant } from "@commercekitsdk/core";
 import type { ProductType } from "@/types/productType";
 import { safeImageUrl } from "../images";
-import { richTextToPlain } from "@/lib/richText";
+import { richTextToPlain } from "@/lib/plainText";
 
 /**
  * SDK `Product` → the template's `ProductType`.

@@ -16,7 +16,7 @@ import {
 } from "@/lib/sdk";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { richTextToPlain } from "@/lib/richText";
+import { richTextToPlain } from "@/lib/plainText";
 
 /**
  * Product detail page, served from handsymarket-server through the SDK.
