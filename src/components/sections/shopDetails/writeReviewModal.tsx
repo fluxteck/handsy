@@ -3,7 +3,6 @@
 import { useRef, useState, useTransition } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { Range } from "react-range";
 import toast from "react-hot-toast";
 import { ArrowLeft, CheckCircle2, ImagePlus, Pencil, Star, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -16,8 +15,7 @@ import { useCustomerSession } from "@/lib/useCustomerSession";
 import { submitReview } from "@/lib/sdk/reviews";
 
 const MAX_IMAGES = 5;
-const DURABILITY_LABELS = ["Poor", "Fair", "Good", "Great", "Exceptional"];
-const STEP_ORDER = ["rating", "photo", "durability", "description"] as const;
+const STEP_ORDER = ["rating", "review"] as const;
 
 type Step = (typeof STEP_ORDER)[number] | "guest" | "success";
 
@@ -41,7 +39,6 @@ const WriteReviewModal = ({
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [images, setImages] = useState<UploadedImage[]>([]);
-  const [durability, setDurability] = useState([3]);
   const [description, setDescription] = useState("");
   const [guestName, setGuestName] = useState("");
   const [guestEmail, setGuestEmail] = useState("");
@@ -62,7 +59,6 @@ const WriteReviewModal = ({
     setRating(0);
     setHoverRating(0);
     setImages([]);
-    setDurability([3]);
     setDescription("");
     setGuestName("");
     setGuestEmail("");
@@ -79,7 +75,7 @@ const WriteReviewModal = ({
 
   const handleSelectRating = (value: number) => {
     setRating(value);
-    setTimeout(() => goTo("photo"), 350);
+    setTimeout(() => goTo("review"), 350);
   };
 
   const handleFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,10 +99,10 @@ const WriteReviewModal = ({
    * customer record (so it can't be spoofed), decides "verified purchase" from
    * a delivered order, and files the review as `pending` for moderation.
    *
-   * Two things this form collects have nowhere to go yet — photos and the
-   * durability score. Neither exists in the review contract or the `reviews`
-   * table, so they are deliberately not sent rather than silently pretended
-   * to be saved. Supporting them needs a server change first.
+   * Photos collected on this form have nowhere to go yet — they don't exist in
+   * the review contract or the `reviews` table, so they are deliberately not
+   * sent rather than silently pretended to be saved. Supporting them needs a
+   * server change first.
    */
   const performSubmit = () => {
     startTransition(async () => {
@@ -166,7 +162,7 @@ const WriteReviewModal = ({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className={cn("shrink-0", className)}>
+        <Button size="sm" className={cn("shrink-0", className)}>
           <Pencil className="size-4" />
           Write a Review
         </Button>
@@ -175,7 +171,7 @@ const WriteReviewModal = ({
         <DialogTitle className="sr-only">Write a review{productName ? ` for ${productName}` : ""}</DialogTitle>
 
         {step !== "success" && currentStepIndex >= 0 && (
-          <div className="flex items-center gap-2 px-6 pt-6">
+          <div className="flex items-center gap-2 pl-6 pr-14 pt-12 sm:pr-16">
             {STEP_ORDER.map((s, index) => (
               <span
                 key={s}
@@ -230,7 +226,7 @@ const WriteReviewModal = ({
                 </div>
               )}
 
-              {step === "photo" && (
+              {step === "review" && (
                 <div className="flex flex-1 flex-col">
                   <button
                     type="button"
@@ -240,13 +236,13 @@ const WriteReviewModal = ({
                     <ArrowLeft className="size-4" />
                     Back
                   </button>
-                  <div className="flex-1 flex flex-col items-center justify-center text-center">
+                  <div className="flex-1 flex flex-col items-center text-center mt-2">
                     <p className="text-secondary-foreground text-xl lg:text-2xl font-semibold">
                       Get 5% off your next purchase
                     </p>
                     <p className="text-gray-1-foreground text-sm mt-2 max-w-[320px]">
-                      Add a photo of the product — reviews with photos help other shoppers most, and we&apos;ll email
-                      you a 5% off code for adding one.
+                      Add a photo and a few words about the product — reviews with photos help other shoppers
+                      most, and we&apos;ll email you a 5% off code for adding one.
                     </p>
 
                     <input
@@ -282,107 +278,22 @@ const WriteReviewModal = ({
                         </button>
                       )}
                     </div>
-                  </div>
-                  <div className="flex gap-3 mt-7.5">
-                    <Button type="button" variant="outline" className="flex-1" onClick={() => goTo("durability")}>
-                      Skip
-                    </Button>
-                    <Button type="button" className="flex-1" onClick={() => goTo("durability")}>
-                      Continue
-                    </Button>
-                  </div>
-                </div>
-              )}
 
-              {step === "durability" && (
-                <div className="flex flex-1 flex-col">
-                  <button
-                    type="button"
-                    onClick={() => goTo("photo", -1)}
-                    className="flex items-center gap-1.5 text-sm text-gray-1-foreground hover:text-secondary-foreground transition-colors duration-300 self-start"
-                  >
-                    <ArrowLeft className="size-4" />
-                    Back
-                  </button>
-                  <div className="flex-1 flex flex-col items-center justify-center text-center">
-                    <p className="text-secondary-foreground text-xl lg:text-2xl font-semibold">
-                      Are the products durable?
-                    </p>
-                    <p className="text-secondary-foreground font-semibold text-lg mt-4">
-                      {DURABILITY_LABELS[durability[0] - 1]}
-                    </p>
-                    <div className="w-full max-w-[320px] mt-6">
-                      <Range
-                        step={1}
-                        min={1}
-                        max={5}
-                        values={durability}
-                        onChange={(values) => setDurability(values)}
-                        renderTrack={({ props, children }) => {
-                          const { key, ...restProps } = props as typeof props & { key?: React.Key };
-                          return (
-                            <div
-                              key={key ?? "durability-track"}
-                              {...restProps}
-                              className="h-1.5 w-full rounded-full bg-gray-2"
-                              style={restProps.style}
-                            >
-                              {children}
-                            </div>
-                          );
-                        }}
-                        renderThumb={({ props }) => {
-                          const { key, ...restProps } = props as typeof props & { key?: React.Key };
-                          return (
-                            <div
-                              key={key ?? "durability-thumb"}
-                              {...restProps}
-                              aria-label="Durability rating"
-                              className="size-6 rounded-full bg-primary border-4 border-background shadow-3xl focus-visible:outline-none"
-                              style={restProps.style}
-                            />
-                          );
-                        }}
+                    <div className="w-full mt-6 text-left">
+                      <Label htmlFor="review-description" className="sr-only">
+                        Review description
+                      </Label>
+                      <Textarea
+                        id="review-description"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        required
+                        minLength={10}
+                        placeholder="What did you like or dislike? What did you use this product for?"
+                        className="min-h-[140px] border-input text-gray-1-foreground"
                       />
-                      <div className="flex justify-between text-xs text-gray-3-foreground mt-2.5">
-                        <span>Poor</span>
-                        <span>Exceptional</span>
-                      </div>
+                      {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
                     </div>
-                  </div>
-                  <Button type="button" className="mt-7.5 w-full" onClick={() => goTo("description")}>
-                    Continue
-                  </Button>
-                </div>
-              )}
-
-              {step === "description" && (
-                <div className="flex flex-1 flex-col">
-                  <button
-                    type="button"
-                    onClick={() => goTo("durability", -1)}
-                    className="flex items-center gap-1.5 text-sm text-gray-1-foreground hover:text-secondary-foreground transition-colors duration-300 self-start"
-                  >
-                    <ArrowLeft className="size-4" />
-                    Back
-                  </button>
-                  <div className="flex-1 flex flex-col mt-4">
-                    <p className="text-secondary-foreground text-xl lg:text-2xl font-semibold text-center">
-                      Tell Us Description
-                    </p>
-                    <Label htmlFor="review-description" className="sr-only">
-                      Review description
-                    </Label>
-                    <Textarea
-                      id="review-description"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      required
-                      minLength={10}
-                      placeholder="What did you like or dislike? What did you use this product for?"
-                      className="min-h-[160px] mt-5 border-input text-gray-1-foreground"
-                    />
-                    {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
                   </div>
                   <Button
                     type="button"
@@ -399,7 +310,7 @@ const WriteReviewModal = ({
                 <form onSubmit={handleGuestSubmit} className="flex flex-1 flex-col">
                   <button
                     type="button"
-                    onClick={() => goTo("description", -1)}
+                    onClick={() => goTo("review", -1)}
                     className="flex items-center gap-1.5 text-sm text-gray-1-foreground hover:text-secondary-foreground transition-colors duration-300 self-start"
                   >
                     <ArrowLeft className="size-4" />

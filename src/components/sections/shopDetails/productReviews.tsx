@@ -32,7 +32,7 @@ const ProductReviews = async ({
               <ReviewsSummary reviews={reviews} />
             </div>
 
-            <WriteReviewModal productId={productId} productName={productName} className="mt-7.5 lg:mt-auto w-full" />
+            <WriteReviewModal productId={productId} productName={productName} className="mt-8 self-center" />
           </div>
 
           <div className="min-w-0 border border-gray-2 rounded-2xl bg-background p-6 lg:p-7.5">

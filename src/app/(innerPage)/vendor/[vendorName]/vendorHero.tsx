@@ -1,14 +1,15 @@
 "use client";
 
-import { BadgeCheck, MapPin, Package, Star } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ChevronRight } from "@/lib/icon";
 import { VendorType } from "@/types/vendorType";
 import VendorShareButton from "./vendorShareButton";
+import VendorSocialLinks from "./vendorSocialLinks";
 
-const VendorHero = ({ vendor, productCount }: { vendor: VendorType; productCount: number }) => {
+const VendorHero = ({ vendor }: { vendor: VendorType }) => {
   return (
     <section aria-label={`${vendor.name} storefront banner`} className="relative isolate">
       <div className="relative h-[220px] w-full overflow-hidden lg:h-[300px]">
@@ -70,21 +71,11 @@ const VendorHero = ({ vendor, productCount }: { vendor: VendorType; productCount
               <h1 className="text-heading font-normal text-secondary-foreground">{vendor.name}</h1>
               <p className="mt-1 text-gray-1-foreground">{vendor.tagline}</p>
 
-              <ul className="mt-3 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                <li className="flex items-center gap-1.5 rounded-full border border-gray-2 px-3 py-1 text-xs text-gray-1-foreground">
-                  <MapPin className="size-3.5" /> {vendor.location}
-                </li>
-                <li className="flex items-center gap-1.5 rounded-full border border-gray-2 px-3 py-1 text-xs text-gray-1-foreground">
-                  <Star className="size-3.5 fill-[#FFA34E] text-[#FFA34E]" />
-                  {vendor.rating} ({vendor.totalReviews} Reviews)
-                </li>
-                <li className="flex items-center gap-1.5 rounded-full border border-gray-2 px-3 py-1 text-xs text-gray-1-foreground">
-                  <Package className="size-3.5" /> {productCount} Products
-                </li>
-                <li className="rounded-full border border-gray-2 px-3 py-1 text-xs text-gray-1-foreground">
-                  Selling since {vendor.sellingSince}
-                </li>
-              </ul>
+              <VendorSocialLinks
+                vendor={vendor}
+                iconClassName="size-8"
+                className="mt-3 justify-center sm:justify-start"
+              />
             </div>
           </div>
 

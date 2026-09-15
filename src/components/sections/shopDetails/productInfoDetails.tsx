@@ -169,13 +169,15 @@ const ProductInfoDetails = ({
       )}
 
       <p className="text-xl lg:text-2xl xl:text-3xl text-secondary-foreground mt-4">
-        {currencyFormatter.format(finalPrice)}{" "}
-        {discountPercentage ? (
-          <del className="text-gray-3-foreground text-lg lg:text-xl">
-            {currencyFormatter.format(price)}
-          </del>
-        ) : null}
+        {currencyFormatter.format(finalPrice)}
       </p>
+      {discountPercentage ? (
+        <p className="text-gray-3-foreground text-sm mt-1">
+          Regular price{" "}
+          <del>{currencyFormatter.format(price)}</del>{" "}
+          <span className="text-primary font-medium">({discountPercentage}% OFF)</span>
+        </p>
+      ) : null}
       <p className="text-gray-3-foreground text-sm mt-1">Tax included</p>
 
       {descriptionText && (

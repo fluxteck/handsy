@@ -66,10 +66,10 @@ const EMPTY_FIELDS: CheckoutFields = {
 };
 
 /**
- * The template's radio values, mapped to what the server understands. Only
- * `cash-on-delivery` is genuinely offline; the rest route through Razorpay,
- * which is the single online provider configured. Bank transfer and cheque
- * would each need their own server-side handling to mean anything different.
+ * The UI's two radio values, mapped to what the server understands. Only
+ * `cash-on-delivery` is genuinely offline; "online" routes through Razorpay,
+ * which is the single online provider configured — its own checkout modal is
+ * what actually offers UPI, cards, EMI, netbanking and wallets.
  */
 function toServerMethod(uiMethod: string): "online" | "cod" {
   return uiMethod === "cash-on-delivery" ? "cod" : "online";
@@ -97,7 +97,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   const [fields, setFields] = useState<CheckoutFields>(EMPTY_FIELDS);
   const [emailVerified, setEmailVerified] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("bank-transfer");
+  const [paymentMethod, setPaymentMethod] = useState("online");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isPlacing, setIsPlacing] = useState(false);
 

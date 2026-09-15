@@ -2,11 +2,12 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Tag } from "lucide-react";
 import MegaMenu from "./megaMenu";
 import { menuType } from "@/db/menuList";
 import { ProductType } from "@/types/productType";
 import { cn } from "@/lib/utils";
+import { categoryIcons } from "./categoryIcons";
 
 const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
     const pathName = usePathname()
@@ -19,25 +20,39 @@ const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts
     }, [pathName])
 
     return (
-        <nav className="lg:block hidden">
-            <ul className="flex justify-center gap-10">
+        <nav className="lg:block hidden w-full">
+            <ul className="flex w-full">
                 {data.map((item) => {
                     const forceClosed = closedId === item.id
+                    // Same per-category icon set as the mobile drawer, so the two
+                    // surfaces agree on what represents each menu item.
+                    const ItemIcon = categoryIcons[item.label] ?? Tag
                     return (
                         <li
                             key={item.id}
-                            className="group"
+                            // `relative` anchors the plain dropdown to this item, as before.
+                            // A mega-menu item instead goes `static` at `lg:` (the only
+                            // width this nav renders at) so its panel's `absolute`
+                            // positioning bubbles up to the nav row's own `relative`
+                            // wrapper — letting it span the full bar width instead of
+                            // just this one flex segment.
+                            className={cn("group relative flex-1 text-center", item.megaMenu && "lg:static")}
                             onMouseLeave={() => setClosedId((current) => (current === item.id ? null : current))}
                         >
                             <Link
                                 href={item.path}
                                 onClick={() => setClosedId(item.id)}
-                                className="py-3.5 text-gray-1-foreground flex items-center gap-1 capitalize group-hover:text-secondary-foreground transition-all duration-500"
+                                className="py-2.5 text-gray-1-foreground flex w-full items-center justify-center gap-1.5 capitalize group-hover:text-secondary-foreground transition-all duration-500"
                             >
+                                <ItemIcon
+                                    aria-hidden
+                                    className="size-4 transition-transform duration-300 ease-out group-hover:scale-110 group-hover:-translate-y-0.5"
+                                    strokeWidth={1.75}
+                                />
                                 {item.label}
                                 {(item.dropdownList || item.megaMenu) && (
                                     <span>
-                                        <ChevronDown size={16} />
+                                        <ChevronDown size={16} className="transition-transform duration-300 group-hover:rotate-180" />
                                     </span>
                                 )}
                             </Link>
