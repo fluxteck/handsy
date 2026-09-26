@@ -11,10 +11,10 @@ import { heroData } from "@/db/heroData";
 import { promoCardsData } from "@/db/promoCardsData";
 import { shopTheLookData } from "@/db/shopTheLookData";
 import { paymentMethodsData } from "@/db/paymentMethodsData";
-import { notificationsData } from "@/db/notificationsData";
 import { couponsData } from "@/db/couponsData";
 import { returnsData } from "@/db/returnsData";
 import { productReviewsData } from "@/db/productReviewsData";
+import type { NotificationType } from "@/types/accountType";
 
 /**
  * Editorial and presentational content that has no catalogue behind it —
@@ -58,7 +58,22 @@ export const getShopTheLookData = cache(async () => shopTheLookData);
 
 export const getPaymentMethodsData = cache(async () => paymentMethodsData);
 
-export const getNotificationsData = cache(async () => notificationsData);
+/**
+ * Customer notifications.
+ *
+ * Empty until there is something real to show. The page and its unread badge
+ * were rendering template fixtures — invented order numbers, a sale that never
+ * ran — identically for every signed-in customer, and the badge pulled them
+ * into it. A feed that says nothing is better than one that says something
+ * untrue about their order.
+ *
+ * Nothing in the database backs this yet: there is no notifications table, and
+ * the server's `notifications` module sends transactional email rather than
+ * feeding an in-app list. When that arrives, this is the one place to wire it
+ * — the page already renders whatever it returns, and shows its empty state
+ * when that is nothing.
+ */
+export const getNotificationsData = cache(async (): Promise<NotificationType[]> => []);
 
 export const getCouponsData = cache(async () => couponsData);
 
