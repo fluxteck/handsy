@@ -146,6 +146,8 @@ export interface ProductDetailView {
   price: number;
   currency: string;
   discountPercentage: number;
+  /** What the customer is actually charged — see the note in `toProductType`. */
+  sellingPrice: number;
   stock: number;
   thumbnail: string;
   images: string[];
@@ -371,6 +373,9 @@ export function toProductDetail(product: Product): ProductDetailView {
     price: base.price,
     currency: base.currency,
     discountPercentage: base.discountPercentage,
+    //  is optional for the static sample data; the
+    // catalogue mapper always sets it, and the detail view requires it.
+    sellingPrice: base.sellingPrice ?? base.price,
     stock: base.stock,
     thumbnail: base.thumbnail,
     // Fall back to the single thumbnail so the gallery is never handed an

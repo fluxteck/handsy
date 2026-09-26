@@ -121,6 +121,7 @@ const ProductDetails = async ({ params }: { params: Promise<RouteParams> }) => {
                 title={product.title}
                 price={product.price}
                 discountPercentage={product.discountPercentage}
+                sellingPrice={product.sellingPrice}
                 thumbnail={product.thumbnail}
                 stock={product.stock}
                 colors={product.colors}

@@ -34,6 +34,16 @@ export interface ProductInfoDetailsPropsType {
   title: string;
   price: number;
   discountPercentage: number;
+  /**
+   * What the customer is actually charged, when it is known exactly.
+   *
+   * The percentage is rounded to a whole number for the badge, so deriving the
+   * price from it lands somewhere else entirely whenever the discount is not a
+   * clean percentage: ₹2199 off ₹5999 is 36.66%, shown as "37% OFF", and
+   * 5999 − 37% is ₹3,779.37 — not the ₹3,800 the cart will charge. Passing the
+   * real figure keeps the page and the till agreeing.
+   */
+  sellingPrice?: number;
   thumbnail: string;
   stock: number;
   colors: ProductColorType[];
@@ -61,6 +71,7 @@ const ProductInfoDetails = ({
   title,
   price,
   discountPercentage,
+  sellingPrice,
   thumbnail,
   stock,
   colors,
@@ -88,7 +99,11 @@ const ProductInfoDetails = ({
   const [pincode, setPincode] = useState("");
   const [deliveryEstimate, setDeliveryEstimate] = useState<string | null>(null);
 
-  const finalPrice = discountPercentage ? calcluteDiscount(price, discountPercentage) : price;
+  /* The server's figure wins whenever it is known. The derivation below is the
+     fallback for callers that carry only a percentage — static sample data and
+     anything not yet mapped from the catalogue. */
+  const finalPrice =
+    sellingPrice ?? (discountPercentage ? calcluteDiscount(price, discountPercentage) : price);
 
   const handleProductQuantity = (type: "increment" | "decrement") => {
     if (type === "increment") {

@@ -23,7 +23,7 @@ export type ProductQuickViewProduct = Pick<
 > &
   // `slug` rides along so the quick view can link to the real detail page;
   // optional because callers seed this state with an empty placeholder product.
-  Partial<Pick<ProductType, "images" | "colors" | "description" | "category" | "slug">>;
+  Partial<Pick<ProductType, "images" | "colors" | "description" | "category" | "slug" | "sellingPrice">>;
 
 export type ProductQuickViewType = {
   isDialogOpen: boolean;
@@ -71,6 +71,7 @@ const ProductQuickView = ({
               title={product.title}
               price={product.price}
               discountPercentage={product.discountPercentage}
+              sellingPrice={product.sellingPrice}
               thumbnail={product.thumbnail}
               stock={product.stock}
               colors={colors}
