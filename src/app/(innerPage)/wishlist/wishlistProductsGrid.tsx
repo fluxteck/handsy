@@ -1,6 +1,5 @@
 "use client";
 import Card, {
-  CardDiscount,
   CardFooter,
   CardHeader,
   CardIcons,
@@ -82,11 +81,6 @@ const WishlistProductsGrid = ({ categories = [] }: { categories?: CategoryLink[]
                 <CardLabel isLabel={product.label ? product.label : false}>
                   {product.label}
                 </CardLabel>
-                <CardDiscount
-                  isDiscountTrue={product.discountPercentage ? product.discountPercentage : false}
-                >
-                  -{product.discountPercentage}%
-                </CardDiscount>
                 <CardSoldOut isStockTrue={product.stock}>Sold out</CardSoldOut>
                 <CardIcons product={product} hideWishlist onRemove={() => void remove(product.id)} />
               </CardHeader>

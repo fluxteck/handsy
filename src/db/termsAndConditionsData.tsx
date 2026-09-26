@@ -77,8 +77,8 @@ export const termsAndConditionsData: TermsAndConditionsType[] = [
         title: 'Contact Us',
         description: 'If you have any questions or concerns about these Terms, please contact us at:',
         details: [
-            { label: 'Email', content: 'hello@handsymarket.com' },
-            { label: 'Address', content: 'Jodhpur, Rajasthan, India.' },
+            { label: 'Email', content: 'info@handsymarket.com' },
+            { label: 'Location', content: 'India | Serving Customers Worldwide' },
         ],
     },
 ];

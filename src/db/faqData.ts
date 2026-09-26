@@ -8,17 +8,17 @@ export const faqData: FaqDataType[] = [
     {
         "id": "one",
         "title": "What is your return policy?",
-        "ans": "We offer a 15-day, hassle-free return and exchange window from the date of delivery. Items must be unused and returned in their original packaging — reach out to our support team at hello@handsymarket.com to start a return or exchange."
+        "ans": "We offer a 15-day, hassle-free return and exchange window from the date of delivery. Items must be unused and returned in their original packaging — reach out to our support team at info@handsymarket.com to start a return or exchange."
     },
     {
         "id": "two",
         "title": "How do I track my order?",
-        "ans": "Once your order ships, you can track its status anytime from Order Details in My Orders in your account. If you checked out as a guest or need help, contact us at hello@handsymarket.com or +91 291 234 5678."
+        "ans": "Once your order ships, you can track its status anytime from Order Details in My Orders in your account. If you checked out as a guest or need help, contact us at info@handsymarket.com or +91 9205028025."
     },
     {
         "id": "three",
         "title": "What payment methods do you accept?",
-        "ans": "Available payment methods are shown at checkout and may vary depending on your order and location. If you have questions about a specific payment option, contact us at hello@handsymarket.com before placing your order."
+        "ans": "Available payment methods are shown at checkout and may vary depending on your order and location. If you have questions about a specific payment option, contact us at info@handsymarket.com before placing your order."
     },
     {
         "id": "four",
@@ -28,7 +28,7 @@ export const faqData: FaqDataType[] = [
     {
         "id": "five",
         "title": "How can I contact your customer support?",
-        "ans": "You can reach our support team by email at hello@handsymarket.com or by phone/WhatsApp at +91 291 234 5678, Monday to Saturday, 9am–6pm IST. For wholesale or bulk enquiries, use our dedicated B2B contact form."
+        "ans": "You can reach our support team by email at info@handsymarket.com or by phone/WhatsApp at +91 9205028025, Monday to Saturday, 9am–6pm IST. For wholesale or bulk enquiries, use our dedicated B2B contact form."
     },
     {
         "id": "six",
@@ -38,7 +38,7 @@ export const faqData: FaqDataType[] = [
     {
         "id": "seven",
         "title": "Can I modify or cancel my order after it's been placed?",
-        "ans": "Contact our support team as soon as possible after placing your order at hello@handsymarket.com or +91 291 234 5678 — we'll do our best to accommodate changes or cancellations before your order is processed for shipping."
+        "ans": "Contact our support team as soon as possible after placing your order at info@handsymarket.com or +91 9205028025 — we'll do our best to accommodate changes or cancellations before your order is processed for shipping."
     },
     {
         "id": "eight",

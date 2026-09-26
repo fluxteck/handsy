@@ -17,7 +17,7 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      disallow: ["/downloads/", "/account/", "/cart", "/checkout", "/wishlist", "/compare"],
+      disallow: ["/downloads/", "/account/", "/cart", "/checkout", "/wishlist"],
     },
     sitemap: `${siteUrl}/sitemap.xml`,
   };

@@ -1,7 +1,7 @@
 'use client'
 import { useRef } from 'react'
 import { ArrowLeft, ArrowRight } from '@/lib/icon'
-import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardTitle, CardPriceEnhanced } from '@/components/ui/card'
+import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardTitle, CardPriceEnhanced } from '@/components/ui/card'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
@@ -64,7 +64,6 @@ const ProductCarousel = ({ data, slidesOffset }: { data: ProductType[]; slidesOf
                                 <CardHeader>
                                     <CardImg src={prd.thumbnail} height={400} width={340} path={productPath(prd)} />
                                     <CardLabel isLabel={prd.label ? prd.label : false}>{prd.label}</CardLabel>
-                                    <CardDiscount isDiscountTrue={prd.discountPercentage ? prd.discountPercentage : false}>-{prd.discountPercentage}%</CardDiscount>
                                     <CardIcons product={prd} />
                                 </CardHeader>
                                 <CardFooter>

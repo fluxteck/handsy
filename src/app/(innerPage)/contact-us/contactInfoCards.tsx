@@ -7,24 +7,24 @@ import { ArrowRight, Call, Email, Location } from "@/lib/icon";
 const infoCards = [
   {
     icon: Location,
-    title: "Visit Our Workshop",
-    detail: "Jodhpur, Rajasthan, India",
+    title: "Where We're Based",
+    detail: "India | Serving Customers Worldwide",
     note: undefined as string | undefined,
     href: undefined as string | undefined,
   },
   {
     icon: Email,
     title: "Email Us",
-    detail: "hello@handsymarket.com",
+    detail: "info@handsymarket.com",
     note: "We reply within 24 hours",
-    href: "mailto:hello@handsymarket.com",
+    href: "mailto:info@handsymarket.com",
   },
   {
     icon: Call,
     title: "Call / WhatsApp",
-    detail: "+91 291 234 5678",
+    detail: "+91 9205028025",
     note: "Mon – Sat, 9am – 6pm IST",
-    href: "tel:+912912345678",
+    href: "tel:+919205028025",
   },
 ];
 

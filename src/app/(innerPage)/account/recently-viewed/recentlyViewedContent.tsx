@@ -1,7 +1,7 @@
 "use client";
 
 import { EmptyState, Panel, PanelHeading } from "@/components/sections/account/panel";
-import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from "@/components/ui/card";
+import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from "@/components/ui/card";
 import { productPath } from "@/lib/productPath";
 import { toProductTypes } from "@/lib/mappers/product";
 import { useRecentlyViewed } from "@commercekitsdk/react";
@@ -35,9 +35,6 @@ const RecentlyViewedContent = () => {
                             <CardHeader>
                                 <CardImg src={product.thumbnail} height={400} width={340} path={productPath(product)} />
                                 <CardLabel isLabel={product.label ? product.label : false}>{product.label}</CardLabel>
-                                <CardDiscount isDiscountTrue={product.discountPercentage ? product.discountPercentage : false}>
-                                    -{product.discountPercentage}%
-                                </CardDiscount>
                                 <CardIcons product={product} />
                             </CardHeader>
                             <CardFooter>

@@ -38,7 +38,6 @@ const KNOWN_ROUTES: RegExp[] = [
   /^\/product-details\/[^/]+$/,
   /^\/vendor$/,
   /^\/vendor\/[^/]+$/,
-  /^\/compare$/,
   /^\/wishlist$/,
 ];
 

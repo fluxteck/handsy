@@ -55,14 +55,14 @@ const VendorOnboardingForm = ({ categories = [] }: { categories?: string[] }) =>
           </ul>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 border-t border-gray-2 pt-7.5">
-            <Link href="mailto:vendors@handsymarket.com" className="flex items-center gap-2 text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500">
-              <Email className="size-4" /> vendors@handsymarket.com
+            <Link href="mailto:info@handsymarket.com" className="flex items-center gap-2 text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500">
+              <Email className="size-4" /> info@handsymarket.com
             </Link>
-            <Link href="tel:+912912345678" className="flex items-center gap-2 text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500">
-              <Call className="size-4" /> +91 291 234 5678
+            <Link href="tel:+919205028025" className="flex items-center gap-2 text-gray-1-foreground hover:text-secondary-foreground transition-all duration-500">
+              <Call className="size-4" /> +91 9205028025
             </Link>
             <span className="flex items-center gap-2 text-gray-1-foreground">
-              <Location className="size-4" /> Jodhpur, Rajasthan, India
+              <Location className="size-4" /> India | Serving Customers Worldwide
             </span>
           </div>
         </div>

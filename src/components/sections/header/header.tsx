@@ -12,7 +12,6 @@ import ShopingCartSidebar from "./shopingCartSidebar";
 import StickyHeader from "./stickyHeader";
 import TopHeader from "./topHeader";
 import WishlistButton from "./wishlistButton";
-import CompareButton from "./compareButton";
 
 const Header = async () => {
   const menuList = await getMenuData();
@@ -40,7 +39,7 @@ const Header = async () => {
                 height={50}
                 src={"/images/logo.png"}
                 alt="logo"
-                className="w-14 h-auto lg:w-20"
+                className="w-24 h-auto md:w-14 lg:w-20"
               />
             </Link>
           </div>
@@ -51,7 +50,6 @@ const Header = async () => {
             <div className="lg:block hidden">
               <HeaderExtraInfo />
             </div>
-            <CompareButton />
             <WishlistButton />
             <Link
               aria-label="account"

@@ -4,7 +4,6 @@ export type CustomerType = {
     email: string;
     phone: string;
     avatar: string;
-    verified: boolean;
     memberSince: string;
 };
 

@@ -39,7 +39,7 @@ const Pagination = ({
     // Uncontrolled: the original static markup, for pages not yet wired up.
     if (page === undefined || totalPages === undefined) {
         return (
-            <ul className='flex gap-2.5 mt-15'>
+            <ul className='flex justify-center gap-2.5 mt-15'>
                 <li className={arrow}><ChevronLeft className='size-6' /></li>
                 <li className={active}>1</li>
                 <li className={inactive}>2</li>
@@ -57,7 +57,7 @@ const Pagination = ({
     }
 
     return (
-        <ul className='flex gap-2.5 mt-15'>
+        <ul className='flex justify-center gap-2.5 mt-15'>
             <li
                 className={page <= 1 ? arrowDisabled : arrow}
                 onClick={() => go(page - 1)}

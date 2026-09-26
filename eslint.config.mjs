@@ -58,9 +58,8 @@ const eslintConfig = defineConfig([
      * which would mean rewriting verified cart/session/wishlist hydration for
      * no behavioural gain.
      *
-     * `refs` fires on two documented third-party idioms: Redux's own lazy
-     * store init (`if (!ref.current) ref.current = makeStore()`) in
-     * `StoreProvider`, and Swiper's navigation refs in `productCarousel`.
+     * `refs` fires on a documented third-party idiom: Swiper's navigation
+     * refs in `productCarousel`.
      *
      * A genuine cascading-render bug would still surface here as a warning, so
      * new ones are worth reading rather than assuming they belong to this set.

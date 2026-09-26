@@ -164,8 +164,6 @@ export function toCustomerType(customer: Customer): CustomerType {
     email: customer.email,
     phone: customer.phone ?? "",
     avatar: "",
-    // Reaching the account at all means the email OTP was verified.
-    verified: true,
     memberSince: toDateOnly(customer.createdAt),
   };
 }
