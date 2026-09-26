@@ -25,6 +25,61 @@ const nextConfig: NextConfig = {
   ...tracingRoot,
   images: {
     remotePatterns: [
+      /* Supplier sites the catalogue links product photography from.
+         These are not uploads — an operator pastes a URL from the supplier's
+         own listing, and `next/image` refuses any host it was not told about.
+         Until now that refusal was silent: `safeImageUrl` swapped the photo
+         for local placeholder art, so twenty-seven products showed generic
+         imagery and nothing anywhere said why. Keep in sync with
+         `ALLOWED_HOSTS` in src/lib/images.ts. */
+      {
+        protocol: "https",
+        hostname: "allindiadecor.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "handicraftstown.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "handscarpets.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "ii1.pepperfry.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "ikiru.in",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "irekahomes.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "unit01labs.com",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.homesake.in",
+        port: "",
+        pathname: "/**",
+      },
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
