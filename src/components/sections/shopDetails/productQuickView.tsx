@@ -15,8 +15,7 @@ import { productPath } from "@/lib/productPath";
 
 /** Everything Quick View needs to match the PDP. The 6 core fields are required (every
  * call site already has these); the richer PDP fields are optional so trigger sites with
- * a slimmer product shape (e.g. the compare table's Redux-stored entries) still degrade
- * gracefully instead of breaking. */
+ * a slimmer product shape still degrade gracefully instead of breaking. */
 export type ProductQuickViewProduct = Pick<
   ProductType,
   "id" | "thumbnail" | "title" | "price" | "discountPercentage" | "stock" | "variantId"

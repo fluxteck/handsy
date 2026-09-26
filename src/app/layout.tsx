@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from 'next/font/local'
 import { Instrument_Serif } from 'next/font/google'
 import "./globals.css";
-import StoreProvider from "./StoreProvider";
 import { CartProvider } from "@/lib/cart/cart-context";
 import { WishlistProvider } from "@/lib/wishlist/wishlist-context";
 import { Toaster } from "react-hot-toast";
@@ -66,16 +65,14 @@ const organizationJsonLd = {
   logo: `${siteUrl}/images/logo.png`,
   contactPoint: {
     "@type": "ContactPoint",
-    telephone: "+91-291-234-5678",
-    email: "hello@handsymarket.com",
+    telephone: "+91-9205028025",
+    email: "info@handsymarket.com",
     contactType: "customer service",
-    areaServed: ["IN"],
+    areaServed: "Worldwide",
     availableLanguage: ["English"],
   },
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Jodhpur",
-    addressRegion: "Rajasthan",
     addressCountry: "IN",
   },
 };
@@ -96,19 +93,14 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        <StoreProvider>
-          {/* Cart and wishlist come from the server via the SDK. Redux still
-              backs "compare", which has no server-side equivalent, so the
-              store provider stays mounted. */}
-          <CartProvider>
-            <WishlistProvider>
-            <SmoothScroll />
-            {children}
-            <WelcomePopup />
-            <Toaster position="top-right" reverseOrder={false} />
-            </WishlistProvider>
-          </CartProvider>
-        </StoreProvider>
+        <CartProvider>
+          <WishlistProvider>
+          <SmoothScroll />
+          {children}
+          <WelcomePopup />
+          <Toaster position="top-right" reverseOrder={false} />
+          </WishlistProvider>
+        </CartProvider>
       </body>
     </html>
   );

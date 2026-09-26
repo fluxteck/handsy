@@ -1,9 +1,6 @@
 "use client";
-import { addToCompare } from "@/lib/features/CompareProductsSlice";
-import { toCompareItem } from "@/lib/compareItem";
-import { Eye, Heart, ShopCart, Shuffle } from "@/lib/icon";
+import { Eye, Heart, ShopCart } from "@/lib/icon";
 import { Trash2 } from "lucide-react";
-import { useAppDispatch } from "@/lib/reduxHooks";
 import { useCart } from "@/lib/cart/cart-context";
 import { cn } from "@/lib/utils";
 import { ProductType } from "@/types/productType";
@@ -127,8 +124,6 @@ interface CardIconsProps extends CardPropsType {
 }
 
 export function CardIcons({ children, className, product, hideWishlist, onRemove }: CardIconsProps) {
-  // Wishlist and compare are still Redux-backed; only the cart is server-side.
-  const dispatch = useAppDispatch();
   const { add: addToCartLine } = useCart();
   const { add: addToWishlistEntry } = useWishlist();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -167,14 +162,6 @@ export function CardIcons({ children, className, product, hideWishlist, onRemove
           price: product.price,
           currency: product.currency,
         });
-      }
-    },
-    handleCompare: () => {
-      if (product) {
-        dispatch(
-          // One shared builder, so both entry points store the same shape.
-          addToCompare(toCompareItem(product))
-        );
       }
     },
   };
@@ -241,19 +228,6 @@ export function CardIcons({ children, className, product, hideWishlist, onRemove
           </span>
         </button>
       </Tooltip>
-
-      {/* Compare */}
-      <Tooltip text={"Compare"}>
-        <button
-          aria-label="Compare"
-          onClick={defaultActions?.handleCompare}
-          className="w-7.5 h-7.5 bg-background flex justify-center items-center rounded-full lg:opacity-0 lg:group-hover:opacity-100 delay-300 transform lg:translate-y-full lg:group-hover:translate-y-0 transition-all duration-300"
-        >
-          <span className="flex justify-center items-center w-full h-full rounded-full text-gray-1-foreground hover:bg-primary hover:text-white transition-all duration-300">
-            <Shuffle className="size-4" />
-          </span>
-        </button>
-      </Tooltip>
       <ProductQuickView
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
@@ -275,31 +249,6 @@ export function CardLabel({
   return (
     <>
       {isLabel ? (
-        <div
-          className={cn(
-            "bg-primary py-2 px-4 text-white text-lg leading-6 inline capitalize absolute top-5 left-0",
-            className
-          )}
-        >
-          {children}
-        </div>
-      ) : null}
-    </>
-  );
-}
-
-export function CardDiscount({
-  children,
-  className,
-  isDiscountTrue,
-}: {
-  children: ReactNode;
-  className?: string;
-  isDiscountTrue?: boolean | number;
-}) {
-  return (
-    <>
-      {isDiscountTrue ? (
         <div
           className={cn(
             "bg-primary py-2 px-4 text-white text-lg leading-6 inline capitalize absolute top-5 left-0",

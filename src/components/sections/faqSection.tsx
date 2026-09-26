@@ -31,7 +31,7 @@ const FaqSection = async () => {
                 <div>
                     <Image width={580} height={582} sizes='100vw' style={{ width: "100%", height: "auto" }} src={"/images/faq.webp"} alt='img' />
                     <p className='lg:text-2xl text-xl font-medium text-secondary-foreground md:mt-10 mt-7.5'>Customer support</p>
-                    <p className='text-xl leading-[170%] text-gray-1-foreground'>hello@handsymarket.com</p>
+                    <p className='text-xl leading-[170%] text-gray-1-foreground'>info@handsymarket.com</p>
                 </div>
                 <div>
                     <Accordion type="single" defaultValue={"one"} collapsible>

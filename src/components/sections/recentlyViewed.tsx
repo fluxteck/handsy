@@ -1,6 +1,6 @@
 "use client";
 
-import Card, { CardDiscount, CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from '@/components/ui/card';
+import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardPriceEnhanced, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { productPath } from '@/lib/productPath';
 import { toProductTypes } from '@/lib/mappers/product';
@@ -49,7 +49,6 @@ const RecentlyViewed = ({
                                     <CardHeader>
                                         <CardImg src={prd.thumbnail} height={400} width={340} path={productPath(prd)} />
                                         <CardLabel isLabel={prd.label ? prd.label : false}>{prd.label}</CardLabel>
-                                        <CardDiscount isDiscountTrue={prd.discountPercentage ? prd.discountPercentage : false}>-{prd.discountPercentage}%</CardDiscount>
                                         <CardIcons product={prd} />
                                     </CardHeader>
                                     <CardFooter>

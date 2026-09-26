@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
@@ -16,6 +15,13 @@ type TestimonialSliderProps = {
     title?: string;
     className?: string;
 }
+
+// The site's near-black, warm sand, and the gold accent from the top header.
+const avatarTones = [
+    'bg-primary text-white',
+    'bg-home-bg-4 text-secondary-foreground',
+    'bg-[#C9A968] text-primary',
+]
 
 const TestimonialSlider = ({ testimonials, title = 'Client Testimonials', className }: TestimonialSliderProps) => {
     return (
@@ -59,17 +65,17 @@ const TestimonialSlider = ({ testimonials, title = 'Client Testimonials', classN
                         modules={[Autoplay, Navigation, Pagination]}
                         className='!pt-10 !pb-2'
                     >
-                        {testimonials.map(({ id, name, image, rating, title: caption, review }) => (
+                        {testimonials.map(({ id, name, rating, title: caption, review }, index) => (
                             <SwiperSlide key={id} className='!h-auto'>
                                 <article className='group/card relative flex flex-col items-center h-full rounded-2xl border border-border bg-background pt-13 pb-8 px-6 text-center transition-all duration-500 hover:-translate-y-1 hover:shadow-3xl'>
-                                    <div className='absolute -top-10 size-20 overflow-hidden rounded-full ring-4 ring-background shadow-3xl'>
-                                        <Image
-                                            src={image}
-                                            alt={name}
-                                            fill
-                                            sizes='80px'
-                                            className='object-cover transition-transform duration-500 group-hover/card:scale-110'
-                                        />
+                                    <div
+                                        aria-hidden
+                                        className={cn(
+                                            'absolute -top-10 size-20 flex items-center justify-center rounded-full ring-4 ring-background shadow-3xl font-display text-[34px] leading-none select-none transition-transform duration-500 group-hover/card:scale-105',
+                                            avatarTones[index % avatarTones.length]
+                                        )}
+                                    >
+                                        {name.trim().charAt(0).toUpperCase()}
                                     </div>
                                     <h5 className='text-base text-secondary-foreground leading-[150%]'>{name}</h5>
                                     <Rating star={rating} iconSize='size-4' className='justify-center mt-2' />

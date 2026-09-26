@@ -20,7 +20,7 @@ import {
  *
  * Marketing and legal pages that genuinely exist as static routes. Excluded by
  * design: anything personal or transactional (`/account/**`, `/cart`,
- * `/checkout`, `/login`, `/wishlist`, `/compare`), which is per-visitor and
+ * `/checkout`, `/login`, `/wishlist`), which is per-visitor and
  * must not be indexed. The template's leftover demo routes (`/shop-2`,
  * `/blog-3`, `/404-1`, the bare `/product-details`) have been removed from the
  * codebase entirely, so there is nothing left here to exclude.

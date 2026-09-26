@@ -1,12 +1,5 @@
 "use client";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Close, Search } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import type { CategoryLink } from "@/lib/categoryLinks";
@@ -27,7 +20,6 @@ const SearchPopup = ({ categories = [] }: { categories?: CategoryLink[] }) => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const popupRef = useRef<HTMLDivElement>(null);
-  const [isInteractingWithSelect, setIsInteractingWithSelect] = useState(false);
 
   /* Server-side full-text search, debounced — see `useProductSearch`. The
      previous implementation filtered one preloaded page in the browser, so it
@@ -44,10 +36,8 @@ const SearchPopup = ({ categories = [] }: { categories?: CategoryLink[] }) => {
         popupRef.current &&
         !popupRef.current.contains(event.target as Node)
       ) {
-        if (!isInteractingWithSelect) {
-          setIsOpen(false);
-          setIsMobileOpen(false);
-        }
+        setIsOpen(false);
+        setIsMobileOpen(false);
       }
     };
 
@@ -66,7 +56,7 @@ const SearchPopup = ({ categories = [] }: { categories?: CategoryLink[] }) => {
       document.removeEventListener("click", handleClickOutside);
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [isOpen, isMobileOpen, isInteractingWithSelect]);
+  }, [isOpen, isMobileOpen]);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -104,40 +94,6 @@ const SearchPopup = ({ categories = [] }: { categories?: CategoryLink[] }) => {
     </div>
   );
 
-  const categorySelect = (
-    <div
-      className="relative shrink-0"
-      onPointerDown={() => setIsInteractingWithSelect(true)}
-      onPointerUp={() => setIsInteractingWithSelect(false)}
-    >
-      <Select>
-        <SelectTrigger className="sm:min-w-[150px] w-28 shrink-0 rounded-none border-none text-secondary-foreground text-sm sm:text-base capitalize pr-5 after:absolute after:right-0 after:h-[50%] after:w-px after:bg-border">
-          <SelectValue placeholder="Category" />
-        </SelectTrigger>
-        <SelectContent className="bg-background rounded-none">
-          <SelectItem
-            value="bed room"
-            className="capitalize text-base focus:bg-gray-200"
-          >
-            bed room
-          </SelectItem>
-          <SelectItem
-            value="living room"
-            className="capitalize text-base focus:bg-gray-200"
-          >
-            living room
-          </SelectItem>
-          <SelectItem
-            value="office"
-            className="capitalize text-base focus:bg-gray-200"
-          >
-            office
-          </SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
-  );
-
   return (
     <div ref={popupRef} className="relative w-full">
       {/* Persistent inline search bar (tablet & desktop) */}
@@ -146,8 +102,7 @@ const SearchPopup = ({ categories = [] }: { categories?: CategoryLink[] }) => {
         onSubmit={(e) => e.preventDefault()}
         className="hidden md:flex items-center border border-border bg-home-bg-1 relative rounded-full transition-colors duration-300 focus-within:border-primary"
       >
-        {categorySelect}
-        <span className="pl-1 text-gray-1-foreground shrink-0">
+        <span className="pl-4 text-gray-1-foreground shrink-0">
           <Search />
         </span>
         <div className="relative flex-1 min-w-0">
@@ -191,23 +146,20 @@ const SearchPopup = ({ categories = [] }: { categories?: CategoryLink[] }) => {
           <form
             action=""
             onSubmit={(e) => e.preventDefault()}
-            className="flex items-center border border-primary relative rounded-md"
+            className="flex items-center border border-border bg-home-bg-1 relative rounded-full transition-colors duration-300 focus-within:border-primary"
           >
-            {categorySelect}
+            <span className="pl-4 text-gray-1-foreground shrink-0">
+              <Search />
+            </span>
             <div className="relative flex-1 min-w-0">
               <Input
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder=""
                 aria-label="Search products"
-                className="rounded-none focus-visible:ring-0 border-none h-10 py-1.5"
+                className="rounded-full focus-visible:ring-0 border-none bg-transparent"
               />
               {animatedPlaceholder}
-            </div>
-            <div className="bg-primary text-white flex items-center justify-center p-2.5 cursor-pointer rounded-tr-md rounded-br-md self-stretch">
-              <span className="-rotate-90">
-                <Search className="size-4" />
-              </span>
             </div>
           </form>
           <div data-lenis-prevent className="max-h-[300px] overflow-y-auto">

@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Card, {
-  CardDiscount,
   CardFooter,
   CardHeader,
   CardIcons,
@@ -115,11 +114,6 @@ const VendorProducts = ({ vendor, products }: { vendor: VendorType; products: Ve
                 <CardHeader>
                   <CardImg src={product.thumbnail} height={400} width={340} path={productPath(product)} />
                   <CardLabel isLabel={product.label ? product.label : false}>{product.label}</CardLabel>
-                  <CardDiscount
-                    isDiscountTrue={product.discountPercentage ? product.discountPercentage : false}
-                  >
-                    -{product.discountPercentage}%
-                  </CardDiscount>
                   <CardIcons product={product} />
                 </CardHeader>
                 <CardFooter>

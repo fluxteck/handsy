@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useMyProfile } from "@/lib/account/use-account";
@@ -13,6 +14,7 @@ import { useMyProfile } from "@/lib/account/use-account";
 // Profile is wired to `users.update` via the SDK. There is no password to
 // change — sign-in is an emailed one-time code.
 const SettingsContent = () => {
+    const router = useRouter();
     const { data: customer, loading, save } = useMyProfile();
     const [profile, setProfile] = useState({ name: "", email: "", phone: "" });
 
@@ -54,6 +56,11 @@ const SettingsContent = () => {
         })
             .then(() => toast.success("Profile updated successfully"))
             .catch(() => toast.error("Couldn't save your profile. Please try again."));
+    };
+
+    const handleProfileCancel = () => {
+        if (customer) setProfile({ name: customer.name, email: customer.email, phone: customer.phone });
+        router.push("/account");
     };
 
     /* This store is passwordless — sign-in is an emailed one-time code, so
@@ -98,9 +105,12 @@ const SettingsContent = () => {
                             onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                         />
                     </div>
-                    <div className="sm:col-span-2">
+                    <div className="flex flex-wrap gap-3 sm:col-span-2">
                         <Button type="submit" size="sm" disabled={loading}>
                             Save Changes
+                        </Button>
+                        <Button type="button" size="sm" variant="outline" onClick={handleProfileCancel}>
+                            Cancel
                         </Button>
                     </div>
                 </form>

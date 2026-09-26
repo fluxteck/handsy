@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Tooltip from "@/components/ui/tooltip";
-import { Eye, Heart, Shuffle } from "@/lib/icon";
+import { Eye, Heart } from "@/lib/icon";
 import currencyFormatter from "currency-formatter";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +9,6 @@ import { useState } from "react";
 
 import ProductSorting from "@/components/sections/shopDetails/productSorting";
 import Card, {
-  CardDiscount,
   CardFooter,
   CardHeader,
   CardIcons,
@@ -20,9 +19,6 @@ import Card, {
 } from "@/components/ui/card";
 import Pagination from "@/components/ui/pagination";
 import calcluteDiscount from "@/lib/calcluteDiscount";
-import { addToCompare } from "@/lib/features/CompareProductsSlice";
-import { toCompareItem } from "@/lib/compareItem";
-import { useAppDispatch } from "@/lib/reduxHooks";
 import { useCart } from "@/lib/cart/cart-context";
 import { ProductType } from "@/types/productType";
 import type { CategoryType } from "@/db/categoriesData";
@@ -93,7 +89,6 @@ const ProductsView = ({
     title: "",
     stock: 0,
   });
-  const dispatch = useAppDispatch();
   const { add: addToCartLine } = useCart();
   const { add: addToWishlistEntry } = useWishlist();
 
@@ -174,15 +169,6 @@ const ProductsView = ({
                         <CardLabel isLabel={prd.label ? prd.label : false}>
                           {prd.label}
                         </CardLabel>
-                        <CardDiscount
-                          isDiscountTrue={
-                            prd.discountPercentage
-                              ? prd.discountPercentage
-                              : false
-                          }
-                        >
-                          -{prd.discountPercentage}%
-                        </CardDiscount>
                         <CardIcons product={prd} />
                       </CardHeader>
                       <CardFooter>
@@ -307,25 +293,6 @@ const ProductsView = ({
                                 className="w-9 h-9 rounded-sm flex items-center justify-center border-[1.5px] border-primary text-secondary-foreground cursor-pointer hover:bg-primary hover:text-white transition-all duration-500"
                               >
                                 <Eye className="w-5 h-5" strokeWidth={0.5} />
-                              </div>
-                            </Tooltip>
-                            <Tooltip
-                              text={"Compare Products"}
-                              className="bg-primary text-white"
-                              arrowCalss="bg-primary"
-                            >
-                              <div
-                                onClick={() =>
-                                  dispatch(
-                                    addToCompare(toCompareItem(prd))
-                                  )
-                                }
-                                className="w-9 h-9 rounded-sm flex items-center justify-center border-[1.5px] border-primary text-secondary-foreground cursor-pointer hover:bg-primary hover:text-white transition-all duration-500"
-                              >
-                                <Shuffle
-                                  className="w-5 h-5"
-                                  strokeWidth={0.5}
-                                />
                               </div>
                             </Tooltip>
                           </div>

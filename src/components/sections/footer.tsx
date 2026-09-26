@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram, Linkedin, Twitter } from "@/lib/icon";
+import { Facebook, Instagram, Linkedin, Location, Twitter } from "@/lib/icon";
 import { getHomeCategories } from "@/lib/sdk";
 
 /**
@@ -94,6 +94,9 @@ const Footer = async () => {
               Handcrafted wooden furniture and home decor from independent
               Indian artisans — for your home, or for your business, shipped
               worldwide.
+            </p>
+            <p className="mt-4 flex items-center gap-2 text-sm text-white/60">
+              <Location className="size-4 shrink-0" /> India | Serving Customers Worldwide
             </p>
             <div className="mt-7 flex items-center gap-3">
               {socialLinks.map(({ Icon, href, label }) => (

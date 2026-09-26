@@ -41,10 +41,10 @@ const HelpPage = async () => {
                         <div>
                             <p className="font-medium text-secondary-foreground">Email</p>
                             <Link
-                                href="mailto:hello@handsymarket.com"
+                                href="mailto:info@handsymarket.com"
                                 className="text-sm text-gray-1-foreground transition-all duration-300 hover:text-secondary-foreground"
                             >
-                                hello@handsymarket.com
+                                info@handsymarket.com
                             </Link>
                         </div>
                     </div>
@@ -55,10 +55,10 @@ const HelpPage = async () => {
                         <div>
                             <p className="font-medium text-secondary-foreground">Call Us</p>
                             <Link
-                                href="tel:+912912345678"
+                                href="tel:+919205028025"
                                 className="text-sm text-gray-1-foreground transition-all duration-300 hover:text-secondary-foreground"
                             >
-                                +91 291 234 5678
+                                +91 9205028025
                             </Link>
                         </div>
                     </div>
@@ -67,8 +67,8 @@ const HelpPage = async () => {
                             <Location className="size-5" />
                         </span>
                         <div>
-                            <p className="font-medium text-secondary-foreground">Office Address</p>
-                            <p className="text-sm text-gray-1-foreground">Jodhpur, Rajasthan, India.</p>
+                            <p className="font-medium text-secondary-foreground">Location</p>
+                            <p className="text-sm text-gray-1-foreground">India | Serving Customers Worldwide</p>
                         </div>
                     </div>
                 </div>

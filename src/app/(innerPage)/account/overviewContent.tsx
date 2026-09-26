@@ -5,7 +5,7 @@ import { Call, Email, Heart } from "@/lib/icon";
 import { cn } from "@/lib/utils";
 import { CustomerType } from "@/types/accountType";
 import currencyFormatter from "currency-formatter";
-import { ChevronRight, PackageCheck, PackageSearch, ShieldCheck, ShoppingBag } from "lucide-react";
+import { ChevronRight, PackageCheck, PackageSearch, ShoppingBag } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -59,7 +59,6 @@ const OverviewContent = ({ unreadCount }: { unreadCount: number }) => {
         email: "",
         phone: "",
         avatar: "",
-        verified: false,
         memberSince: "",
     };
     const [isClient, setIsClient] = useState(false);
@@ -117,18 +116,7 @@ const OverviewContent = ({ unreadCount }: { unreadCount: number }) => {
                                     {initials}
                                 </span>
                             )}
-                            {customer.verified && (
-                                <span className="absolute -bottom-0.5 -right-0.5 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-background lg:hidden">
-                                    <ShieldCheck className="size-3" />
-                                </span>
-                            )}
                         </div>
-                        {customer.verified && (
-                            <span className="hidden items-center gap-1 rounded-full bg-home-bg-2 px-3 py-1 text-xs font-medium text-secondary-foreground lg:flex">
-                                <ShieldCheck className="size-3.5" />
-                                Verified
-                            </span>
-                        )}
                     </div>
                     <Button asChild size="sm">
                         <Link href="/account/settings">Edit Profile</Link>
