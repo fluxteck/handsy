@@ -1,5 +1,6 @@
 export { getStorefrontClient } from "./client";
 export {
+  getFeaturedCategories,
   getHomeCategories,
   getTopCollections,
   getFeaturedProducts,

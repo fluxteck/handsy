@@ -12,24 +12,41 @@ import { ArrowLeft, ArrowRight } from "@/lib/icon";
 import { CategoryType } from "@/db/categoriesData";
 import { cn } from "@/lib/utils";
 
+/**
+ * Where a tile points.
+ *
+ * `/category?name=` is resolved by matching the value against each category's
+ * **slug**, so this has to send `value`. It used to send `categoryName`, which
+ * never matched — every tile silently returned the unfiltered catalogue, so
+ * "Lighting" and "Furniture" both showed all 14 products.
+ *
+ * An explicit `href` wins, for strip entries that aren't a category filter.
+ */
+const categoryHref = (value: string | undefined, href: string | undefined): string =>
+    href ?? `/category?name=${encodeURIComponent(value ?? "")}`;
+
 const CategoryCard = ({
     categoryName,
     categoryImg,
     imageSizes,
     imageClassName,
+    value,
+    href,
     compact = false,
 }: {
     categoryName: string;
     categoryImg: string;
     imageSizes: string;
     imageClassName: string;
+    value?: string;
+    href?: string;
     /** Smaller label treatment to match a compact card. Same ring/hover/link
      *  behavior either way — only size changes. */
     compact?: boolean;
 }) => (
     <div className={cn("group flex flex-col items-center text-center", compact && "sm:w-16 md:w-24 lg:w-[92px]")}>
         <Link
-            href={`/category?name=${categoryName}`}
+            href={categoryHref(value, href)}
             aria-label={categoryName}
             className="block overflow-hidden rounded-full ring-1 ring-border transition-all duration-500 group-hover:ring-primary group-hover:shadow-3xl"
         >
@@ -43,7 +60,7 @@ const CategoryCard = ({
             />
         </Link>
         <Link
-            href={`/category?name=${categoryName}`}
+            href={categoryHref(value, href)}
             className={cn(
                 "font-medium text-gray-1-foreground capitalize hover:text-secondary-foreground transition-all duration-500",
                 compact ? "mt-2 text-xs sm:text-sm" : "mt-4 lg:text-lg text-base"
@@ -89,11 +106,13 @@ const HomeCategory = ({
                         compact ? "sm:flex sm:flex-wrap sm:justify-center gap-y-4 mt-0" : "lg:grid-cols-6"
                     )}
                 >
-                    {categories.map(({ categoryName, id, categoryImg }) => (
+                    {categories.map(({ categoryName, id, categoryImg, value, href }) => (
                         <CategoryCard
                             key={id}
                             categoryName={categoryName}
                             categoryImg={categoryImg}
+                            value={value}
+                            href={href}
                             imageSizes={
                                 compact
                                     ? "(max-width: 768px) 20vw, (max-width: 1024px) 14vw, 9vw"
@@ -122,11 +141,13 @@ const HomeCategory = ({
                     modules={[Navigation, Pagination]}
                     className="!px-10"
                 >
-                    {categories.map(({ categoryName, id, categoryImg }) => (
+                    {categories.map(({ categoryName, id, categoryImg, value, href }) => (
                         <SwiperSlide key={id}>
                             <CategoryCard
                                 categoryName={categoryName}
                                 categoryImg={categoryImg}
+                                value={value}
+                                href={href}
                                 imageSizes={compact ? "20vw" : "50vw"}
                                 imageClassName={compact ? "size-12" : "size-28"}
                                 compact={compact}

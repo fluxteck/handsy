@@ -11,7 +11,7 @@ import TopCollections from '@/components/sections/topCollections'
 import HeroSection from '@/components/sections/heroSection'
 import ShopTheLook from '@/components/sections/shopTheLook'
 import { getBrandsData, getHeroData, getPromoCardsData, getShopTheLookData, getTestimonialsData } from '@/lib/data'
-import { getFeaturedProducts, getHomeCategories, getTopCollections } from '@/lib/sdk'
+import { getFeaturedProducts, getFeaturedCategories, getTopCollections } from '@/lib/sdk'
 
 export const metadata: Metadata = {
   title: "Handcrafted Wooden Furniture & Home Decor",
@@ -44,7 +44,7 @@ const Home = async () => {
     brandsData,
     shopTheLookData,
   ] = await Promise.all([
-    getHomeCategories(),
+    getFeaturedCategories(),
     getTestimonialsData(),
     getTopCollections(),
     getFeaturedProducts(),

@@ -20,6 +20,7 @@ import {
 import { toReviewTypes } from "../mappers/review";
 import { toVendorType } from "../mappers/vendor";
 import { PAGE_SIZE, toProductFilters, type CatalogQuery, type SortKey } from "../catalog/filters";
+import { FEATURED_CATEGORIES } from "../catalog/featured-categories";
 import { getStorefrontClient } from "./client";
 import type { VendorType } from "@/types/vendorType";
 
@@ -42,6 +43,15 @@ function ctx(): AdapterContext {
   return { currency: getEnv().NEXT_PUBLIC_CURRENCY, locale: "en-US" };
 }
 
+/**
+ * Every category in the catalogue.
+ *
+ * Keep this complete. Besides the sidebar, `getCatalogPage` resolves a
+ * `?category=` slug against this list to find its id — so narrowing it would
+ * make any category missing from it silently unfilterable, returning the whole
+ * catalogue instead of an error. The *display* strip is curated separately by
+ * `getFeaturedCategories`.
+ */
 export const getHomeCategories = cache(async (): Promise<CategoryType[]> => {
   try {
     const categories = await getStorefrontClient().adapter.categories!.list(ctx());
@@ -50,6 +60,54 @@ export const getHomeCategories = cache(async (): Promise<CategoryType[]> => {
     console.error("[handsy:home] categories failed to load", err);
     return [];
   }
+});
+
+/**
+ * The curated strip for the homepage and /shop — see `featured-categories.ts`
+ * for what is in it and why.
+ *
+ * Resolved against the live catalogue rather than hardcoded, so a tile links
+ * to a category that genuinely exists. An entry whose slug has no match is
+ * dropped with a warning: an unresolvable `?category=` is ignored downstream
+ * and the page shows every product, which reads to a shopper as "this category
+ * contains the entire shop".
+ */
+export const getFeaturedCategories = cache(async (): Promise<CategoryType[]> => {
+  const all = await getHomeCategories();
+  const bySlug = new Map(all.map((c) => [c.value, c]));
+
+  return FEATURED_CATEGORIES.flatMap((entry): CategoryType[] => {
+    if (!entry.slug) {
+      return [
+        {
+          id: `featured-${entry.label}`,
+          categoryName: entry.label,
+          categoryImg: entry.fallbackImage,
+          ...(entry.href ? { href: entry.href } : {}),
+        },
+      ];
+    }
+
+    const match = bySlug.get(entry.slug);
+    if (!match) {
+      console.warn(
+        `[handsy:home] featured category "${entry.slug}" is not in the catalogue — tile hidden`,
+      );
+      return [];
+    }
+
+    /* `toCategoryType` has already substituted template artwork for a category
+       with no `imageUrl`, cycling by index. Prefer this tile's own image over
+       that generic cycle, but never over a real image set in the admin. */
+    const hasRealImage = !match.categoryImg.startsWith("/images/home-1/category/");
+    return [
+      {
+        ...match,
+        categoryName: entry.label,
+        categoryImg: hasRealImage ? match.categoryImg : entry.fallbackImage,
+      },
+    ];
+  });
 });
 
 /** Shared list helper — one place for the fail-soft behaviour. `filter` is
