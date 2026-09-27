@@ -12,6 +12,9 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { getEnv } from "../config";
 import { useCart } from "../cart/cart-context";
+import { adapterCtx, useCustomerId } from "../account/use-account";
+import { getStorefrontClient } from "../sdk/client";
+import type { AddressType } from "@/types/accountType";
 import { readCartCookie } from "../cart/cart-cookie";
 import {
   confirmCheckoutPayment,
@@ -49,6 +52,9 @@ export interface CheckoutFields {
   country: string;
   street: string;
   town: string;
+  /** State / region. Kept separate from `town`: it used to be sent as the
+   *  region, so every order recorded its city as its state. */
+  state: string;
   zip: string;
   notes: string;
 }
@@ -61,9 +67,28 @@ const EMPTY_FIELDS: CheckoutFields = {
   country: "",
   street: "",
   town: "",
+  state: "",
   zip: "",
   notes: "",
 };
+
+/**
+ * Editing any of these means the form no longer matches the saved address it
+ * was filled from, so the selection is dropped — otherwise the picker would
+ * keep one highlighted while the fields said something else, and we would skip
+ * saving an address the shopper had in fact changed. `email` and `notes` are
+ * absent deliberately: neither is part of the address.
+ */
+const ADDRESS_FIELDS: ReadonlySet<keyof CheckoutFields> = new Set([
+  "first_name",
+  "last_name",
+  "phone",
+  "street",
+  "town",
+  "state",
+  "zip",
+  "country",
+]);
 
 /**
  * The UI's two radio values, mapped to what the server understands. Only
@@ -78,6 +103,18 @@ function toServerMethod(uiMethod: string): "online" | "cod" {
 interface CheckoutContextValue {
   fields: CheckoutFields;
   setField: (name: keyof CheckoutFields, value: string) => void;
+  /** Fill the delivery fields from one of the customer's saved addresses. */
+  applyAddress: (address: AddressType) => void;
+  /** Which saved address is in use, or null while the fields are hand-typed. */
+  selectedAddressId: string | null;
+  setSelectedAddressId: (id: string | null) => void;
+  /** Empty the delivery fields so a new address can be typed from scratch. */
+  clearAddress: () => void;
+  /** Persist the typed address to the account once the order succeeds. */
+  saveAddress: boolean;
+  setSaveAddress: (save: boolean) => void;
+  /** Null until the shopper is signed in — gates both of the above. */
+  customerId: string | null;
   /** True once the shopper's email is verified (or they're signed in). */
   emailVerified: boolean;
   setEmailVerified: (verified: boolean) => void;
@@ -95,7 +132,11 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { products, reset: resetCart } = useCart();
 
+  const { customerId } = useCustomerId();
+
   const [fields, setFields] = useState<CheckoutFields>(EMPTY_FIELDS);
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [saveAddress, setSaveAddress] = useState(false);
   const [emailVerified, setEmailVerified] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("online");
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -103,6 +144,41 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
 
   const setField = useCallback((name: keyof CheckoutFields, value: string) => {
     setFields((prev) => ({ ...prev, [name]: value }));
+    if (ADDRESS_FIELDS.has(name)) setSelectedAddressId(null);
+  }, []);
+
+  const applyAddress = useCallback((address: AddressType) => {
+    const [firstName, ...rest] = (address.fullName || "").trim().split(" ");
+    setFields((prev) => ({
+      ...prev,
+      first_name: firstName ?? "",
+      last_name: rest.join(" "),
+      phone: address.phone || prev.phone,
+      street: address.line2 ? `${address.line1}, ${address.line2}` : address.line1,
+      town: address.city,
+      state: address.state,
+      zip: address.postalCode,
+      country: address.country,
+    }));
+    setSelectedAddressId(address.id);
+    // An address already on file does not need saving again.
+    setSaveAddress(false);
+  }, []);
+
+  const clearAddress = useCallback(() => {
+    setFields((prev) => ({
+      ...prev,
+      first_name: "",
+      last_name: "",
+      street: "",
+      town: "",
+      state: "",
+      zip: "",
+      country: "",
+    }));
+    setSelectedAddressId(null);
+    // `phone` and `email` are contact details, not delivery details — clearing
+    // them here would make the shopper retype what the picker never filled.
   }, []);
 
   const toAddress = useCallback(
@@ -111,7 +187,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       lastName: f.last_name,
       line1: f.street,
       city: f.town,
-      region: f.town,
+      region: f.state,
       postalCode: f.zip,
       country: f.country,
       ...(f.phone ? { phone: f.phone } : {}),
@@ -125,15 +201,51 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     if (!fields.first_name.trim() || !fields.last_name.trim()) return "Enter your name.";
     if (!fields.email.trim()) return "Enter your email address.";
     if (!emailVerified) return "Verify your email address before placing the order.";
-    if (!fields.street.trim() || !fields.town.trim() || !fields.zip.trim())
+    if (!fields.street.trim() || !fields.town.trim() || !fields.state.trim() || !fields.zip.trim())
       return "Enter your full delivery address.";
     if (!fields.country.trim()) return "Select your country.";
     if (!termsAccepted) return "Please accept the terms and conditions.";
     return null;
   }, [products.length, fields, emailVerified, termsAccepted]);
 
+  /**
+   * Save the typed address to the account, if asked and possible.
+   *
+   * Runs only after the order is real, so a save failure can never cost the
+   * shopper the purchase — it is reported separately and swallowed. Skipped
+   * when the address came from the account in the first place, and when there
+   * is no signed-in customer to attach it to (a guest who never verified their
+   * email has no `customers` row, and the insert would fail the FK).
+   */
+  const persistAddress = useCallback(async () => {
+    if (!saveAddress || !customerId || selectedAddressId) return;
+    try {
+      await getStorefrontClient().adapter.users.addresses.add(
+        customerId,
+        {
+          firstName: fields.first_name.trim(),
+          lastName: fields.last_name.trim(),
+          line1: fields.street.trim(),
+          city: fields.town.trim(),
+          region: fields.state.trim(),
+          postalCode: fields.zip.trim(),
+          country: fields.country.trim(),
+          ...(fields.phone.trim() ? { phone: fields.phone.trim() } : {}),
+          // The server promotes a customer's first address to default on its
+          // own; checkout has no business overriding a default they chose.
+          isDefault: false,
+        },
+        adapterCtx(customerId),
+      );
+    } catch (err) {
+      console.error("[handsy:checkout] saving the address failed", err);
+      toast.error("Your order is placed, but we couldn't save that address.");
+    }
+  }, [saveAddress, customerId, selectedAddressId, fields]);
+
   const finish = useCallback(
-    (orderId: string | undefined) => {
+    async (orderId: string | undefined) => {
+      await persistAddress();
       resetCart();
       toast.success("Order placed. Thank you!");
       // No dedicated confirmation route exists yet, so land on the account's
@@ -141,7 +253,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       router.push(orderId ? `/account/orders` : "/account/orders");
       router.refresh();
     },
-    [resetCart, router],
+    [persistAddress, resetCart, router],
   );
 
   const placeOrder = useCallback(async () => {
@@ -173,7 +285,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
           toast.error("We couldn't place that order. Please try again.");
           return;
         }
-        finish(result.order?.id);
+        await finish(result.order?.id);
         return;
       }
 
@@ -214,7 +326,7 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
             void (async () => {
               try {
                 const result = await confirmCheckoutPayment(intent.id);
-                if (result.status === "succeeded") finish(result.order?.id);
+                if (result.status === "succeeded") await finish(result.order?.id);
                 else toast.error("Payment didn't complete. You have not been charged twice.");
               } catch (err) {
                 console.error("[handsy:checkout] confirm failed", err);
@@ -251,6 +363,13 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
     () => ({
       fields,
       setField,
+      applyAddress,
+      selectedAddressId,
+      setSelectedAddressId,
+      clearAddress,
+      saveAddress,
+      setSaveAddress,
+      customerId,
       emailVerified,
       setEmailVerified,
       paymentMethod,
@@ -260,7 +379,20 @@ export function CheckoutProvider({ children }: { children: ReactNode }) {
       isPlacing,
       placeOrder,
     }),
-    [fields, setField, emailVerified, paymentMethod, termsAccepted, isPlacing, placeOrder],
+    [
+      fields,
+      setField,
+      applyAddress,
+      selectedAddressId,
+      clearAddress,
+      saveAddress,
+      customerId,
+      emailVerified,
+      paymentMethod,
+      termsAccepted,
+      isPlacing,
+      placeOrder,
+    ],
   );
 
   return <CheckoutContext.Provider value={value}>{children}</CheckoutContext.Provider>;
