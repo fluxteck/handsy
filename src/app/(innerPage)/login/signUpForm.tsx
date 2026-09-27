@@ -12,7 +12,7 @@ import { SOCIAL_LOGIN_ENABLED } from './config'
 import TrustBadges from './trustBadges'
 
 const signUpBenefits = [
-    { icon: Truck, label: 'Free Shipping' },
+    { icon: Truck, label: 'Track Order' },
     { icon: Heart, label: 'Save Favourites' },
     { icon: Gift, label: 'Member Offers' },
 ]

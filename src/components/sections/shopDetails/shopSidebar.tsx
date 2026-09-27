@@ -103,6 +103,7 @@ const tags = [
  */
 const ShopSidebar = ({
   isSidebarCategoryHide,
+  isSidebarTagsHide,
   categories,
   tags: catalogTags,
   priceBounds,
@@ -114,6 +115,7 @@ const ShopSidebar = ({
   onPriceApply,
 }: {
   isSidebarCategoryHide?: boolean;
+  isSidebarTagsHide?: boolean;
   categories?: CategoryType[];
   tags?: string[];
   priceBounds?: { min: number; max: number };
@@ -257,7 +259,7 @@ const ShopSidebar = ({
             </div>
           </div>
         )}
-        {tagItems.length > 0 && (
+        {!isSidebarTagsHide && tagItems.length > 0 && (
           <div className="mt-10 pb-10">
             <strong className="font-medium text-xl text-secondary-foreground uppercase">
               Tags

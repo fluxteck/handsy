@@ -56,7 +56,7 @@ export interface ProductInfoDetailsPropsType {
   variantId?: string;
   /** Short product description shown under the price. Omit to match the original PDP layout, which surfaces the full description via the accordion instead. */
   description?: string;
-  /** Trims the panel to just what's needed for a fast purchase decision — hides the trust-badge marquee and delivery pincode checker. Used by Quick View; the PDP omits it so its full layout is unchanged. */
+  /** Trims the panel to just what's needed for a fast purchase decision — hides the trust-badge marquee. Used by Quick View; the PDP omits it so its full layout is unchanged. */
   compact?: boolean;
   /** Makes the title a link to the product's PDP. Omit on the PDP itself, where the title is already the page you're on. */
   titleHref?: string;
@@ -96,8 +96,6 @@ const ProductInfoDetails = ({
      showed an unfilled heart for products already saved, and filled it on
      click even when the save failed. */
   const isWishlisted = has(id);
-  const [pincode, setPincode] = useState("");
-  const [deliveryEstimate, setDeliveryEstimate] = useState<string | null>(null);
 
   /* The server's figure wins whenever it is known. The derivation below is the
      fallback for callers that carry only a percentage — static sample data and
@@ -156,55 +154,56 @@ const ProductInfoDetails = ({
     });
   };
 
-  const handleCheckDelivery = () => {
-    if (!/^\d{6}$/.test(pincode)) {
-      setDeliveryEstimate("Please enter a valid 6-digit pincode");
-      return;
-    }
-    const date = new Date();
-    date.setDate(date.getDate() + 5);
-    setDeliveryEstimate(
-      `Estimated delivery by ${date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
-    );
-  };
-
   return (
     <div className="min-w-0">
       {titleHref ? (
         <Link
           href={titleHref}
-          className="text-secondary-foreground text-heading font-semibold capitalize block hover:text-gray-1-foreground transition-colors duration-300"
+          className={cn(
+            "text-secondary-foreground text-heading font-semibold capitalize block hover:text-gray-1-foreground transition-colors duration-300",
+            compact && "max-md:text-base max-md:leading-snug"
+          )}
         >
           {title}
         </Link>
       ) : (
-        <strong className="text-secondary-foreground text-heading font-semibold capitalize block">
+        <strong
+          className={cn(
+            "text-secondary-foreground text-heading font-semibold capitalize block",
+            compact && "max-md:text-base max-md:leading-snug"
+          )}
+        >
           {title}
         </strong>
       )}
 
-      <p className="text-xl lg:text-2xl xl:text-3xl text-secondary-foreground mt-4">
+      <p className={cn("text-xl lg:text-2xl xl:text-3xl text-secondary-foreground mt-4", compact && "max-md:text-lg max-md:leading-tight max-md:mt-1.5")}>
         {currencyFormatter.format(finalPrice)}
       </p>
       {discountPercentage ? (
-        <p className="text-gray-3-foreground text-sm mt-1">
+        <p className={cn("text-gray-3-foreground text-sm mt-1", compact && "max-md:text-xs max-md:mt-0.5")}>
           Regular price{" "}
           <del>{currencyFormatter.format(price)}</del>{" "}
           <span className="text-primary font-medium">({discountPercentage}% OFF)</span>
         </p>
       ) : null}
-      <p className="text-gray-3-foreground text-sm mt-1">Tax included</p>
+      <p className={cn("text-gray-3-foreground text-sm mt-1", compact && "max-md:text-xs max-md:mt-0.5")}>Tax included</p>
 
       {descriptionText && (
-        <p className="text-gray-1-foreground leading-[170%] mt-4 line-clamp-3">
+        <p
+          className={cn(
+            "text-gray-1-foreground leading-[170%] mt-4 line-clamp-3",
+            compact && "max-md:text-sm max-md:leading-normal max-md:mt-2 max-md:line-clamp-2"
+          )}
+        >
           {descriptionText}
         </p>
       )}
 
       {colors.length > 0 && (
-        <div className="mt-6">
-          <p className="text-gray-1-foreground font-medium">Color: {selectedColor.label}</p>
-          <ul className="flex gap-3 mt-2.5">
+        <div className={cn("mt-6", compact && "max-md:mt-3")}>
+          <p className={cn("text-gray-1-foreground font-medium", compact && "max-md:text-sm")}>Color: {selectedColor.label}</p>
+          <ul className={cn("flex gap-3 mt-2.5", compact && "max-md:gap-2 max-md:mt-1.5")}>
             {colors.map((color) => (
               <li key={color.code}>
                 <button
@@ -214,6 +213,7 @@ const ProductInfoDetails = ({
                   aria-pressed={selectedColor.code === color.code}
                   className={cn(
                     "size-11 rounded-full overflow-hidden border-2 transition-colors duration-300",
+                    compact && "max-md:size-9",
                     selectedColor.code === color.code ? "border-secondary-foreground" : "border-transparent"
                   )}
                 >
@@ -232,8 +232,13 @@ const ProductInfoDetails = ({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-3 mt-6">
-        <div className="border border-gray-2 text-secondary-foreground flex items-center gap-3 px-3 py-2.5 rounded-full">
+      <div className={cn("flex flex-wrap items-center gap-3 mt-6", compact && "max-md:flex-nowrap max-md:gap-2 max-md:mt-3")}>
+        <div
+          className={cn(
+            "border border-gray-2 text-secondary-foreground flex items-center gap-3 px-3 py-2.5 rounded-full",
+            compact && "max-md:shrink-0 max-md:h-10 max-md:gap-2 max-md:px-2.5 max-md:py-0"
+          )}
+        >
           <button
             type="button"
             aria-label="Decrease quantity"
@@ -252,7 +257,10 @@ const ProductInfoDetails = ({
             <Plus />
           </button>
         </div>
-        <Button className="min-w-[160px]" onClick={handleAddToCart}>
+        <Button
+          className={cn("min-w-[160px]", compact && "max-md:min-w-0 max-md:flex-1 max-md:h-10 max-md:px-4 max-md:text-sm")}
+          onClick={handleAddToCart}
+        >
           Add To Cart
         </Button>
         <button
@@ -260,7 +268,10 @@ const ProductInfoDetails = ({
           onClick={handleWishlist}
           aria-label="Add to wishlist"
           aria-pressed={isWishlisted}
-          className="size-12 shrink-0 rounded-full border border-gray-2 flex items-center justify-center text-gray-1-foreground hover:bg-primary hover:text-white hover:border-primary transition-all duration-500"
+          className={cn(
+            "size-12 shrink-0 rounded-full border border-gray-2 flex items-center justify-center text-gray-1-foreground hover:bg-primary hover:text-white hover:border-primary transition-all duration-500",
+            compact && "max-md:size-10"
+          )}
         >
           <Heart className={cn("size-4", isWishlisted && "fill-current")} />
         </button>
@@ -282,24 +293,6 @@ const ProductInfoDetails = ({
         </div>
       )}
 
-      {!compact && (
-        <div className="mt-7.5">
-          <p className="text-secondary-foreground font-medium mb-3">Check estimated delivery</p>
-          <div className="flex gap-3">
-            <input
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              value={pincode}
-              onChange={(e) => setPincode(e.target.value.replace(/\D/g, ""))}
-              placeholder="Enter your pincode"
-              className="flex-1 min-w-0 border border-gray-2 rounded-full px-5 py-2.5 text-sm outline-none focus:border-secondary-foreground transition-colors duration-300"
-            />
-            <Button onClick={handleCheckDelivery}>Check</Button>
-          </div>
-          {deliveryEstimate && <p className="text-gray-1-foreground text-sm mt-2.5">{deliveryEstimate}</p>}
-        </div>
-      )}
     </div>
   );
 };

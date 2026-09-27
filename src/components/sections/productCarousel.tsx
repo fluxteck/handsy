@@ -1,35 +1,28 @@
 'use client'
-import { useRef } from 'react'
+import { useState } from 'react'
 import { ArrowLeft, ArrowRight } from '@/lib/icon'
 import Card, { CardFooter, CardHeader, CardIcons, CardImg, CardLabel, CardTitle, CardPriceEnhanced } from '@/components/ui/card'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
-import type { Swiper as TypeSwiper } from 'swiper'
 import 'swiper/css';
 import { ProductType } from '@/types/productType'
 import { productPath } from '@/lib/productPath'
 
 // Shared product-card carousel used by every home section that slides through products
-// (Top Collections, Featured Products' Best Sellers/New Arrivals/Featured tabs). Nav buttons
-// are wired via refs assigned in onBeforeInit — Swiper's documented pattern for per-instance
-// nav elements — rather than the `.next-el`/`.prev-el` class selectors this started out with,
-// so multiple carousel instances can safely coexist on the same page without one instance's
-// buttons driving another instance's swiper.
+// (Top Collections, Featured Products' Best Sellers/New Arrivals/Featured tabs). Each instance
+// owns its nav buttons, so several carousels can coexist on one page. The buttons are held in
+// state, not refs: they render after the Swiper, so a ref is still null when Swiper initialises
+// — which left every tab mounted after the first (e.g. New Arrivals) with dead arrows. State
+// re-renders once they exist, and Swiper wires navigation up then.
 const ProductCarousel = ({ data, slidesOffset }: { data: ProductType[]; slidesOffset: number }) => {
-    const nextElRef = useRef<HTMLDivElement>(null)
-    const prevElRef = useRef<HTMLDivElement>(null)
+    const [nextEl, setNextEl] = useState<HTMLDivElement | null>(null)
+    const [prevEl, setPrevEl] = useState<HTMLDivElement | null>(null)
 
     return (
         <div className='relative'>
             <Swiper
-                navigation={{ prevEl: prevElRef.current, nextEl: nextElRef.current }}
-                onBeforeInit={(swiper: TypeSwiper) => {
-                    if (typeof swiper.params.navigation === 'object') {
-                        swiper.params.navigation.prevEl = prevElRef.current
-                        swiper.params.navigation.nextEl = nextElRef.current
-                    }
-                }}
+                navigation={{ prevEl, nextEl }}
                 grabCursor
                 spaceBetween={20}
                 slidesOffsetBefore={slidesOffset}
@@ -76,8 +69,8 @@ const ProductCarousel = ({ data, slidesOffset }: { data: ProductType[]; slidesOf
                 })}
             </Swiper>
             <div className='w-full lg:invisible lg:opacity-0 lg:group-hover/section:visible lg:group-hover/section:opacity-100 transition-all '>
-                <div ref={nextElRef} className='size-9 lg:size-12.5 rounded-full bg-home-bg-1 absolute top-1/2 -translate-y-1/2 2xl:right-[11.5vw] right-0 z-40 drop-shadow-3xl cursor-pointer text-gray-1-foreground flex justify-center items-center hover:text-white hover:bg-primary transition-all duration-500 [&_svg]:size-4 lg:[&_svg]:size-5'><ArrowRight /></div>
-                <div ref={prevElRef} className='size-9 lg:size-12.5 rounded-full bg-home-bg-1 absolute top-1/2 -translate-y-1/2 2xl:left-[11.5vw] left-0 z-40 drop-shadow-3xl cursor-pointer text-gray-1-foreground flex justify-center items-center hover:text-white hover:bg-primary transition-all duration-500 [&_svg]:size-4 lg:[&_svg]:size-5'><ArrowLeft /></div>
+                <div ref={setNextEl} className='size-9 lg:size-12.5 rounded-full bg-home-bg-1 absolute top-1/2 -translate-y-1/2 2xl:right-[11.5vw] right-0 z-40 drop-shadow-3xl cursor-pointer text-gray-1-foreground flex justify-center items-center hover:text-white hover:bg-primary transition-all duration-500 [&_svg]:size-4 lg:[&_svg]:size-5'><ArrowRight /></div>
+                <div ref={setPrevEl} className='size-9 lg:size-12.5 rounded-full bg-home-bg-1 absolute top-1/2 -translate-y-1/2 2xl:left-[11.5vw] left-0 z-40 drop-shadow-3xl cursor-pointer text-gray-1-foreground flex justify-center items-center hover:text-white hover:bg-primary transition-all duration-500 [&_svg]:size-4 lg:[&_svg]:size-5'><ArrowLeft /></div>
             </div>
         </div>
     )

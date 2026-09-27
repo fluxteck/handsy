@@ -37,6 +37,7 @@ const page = async ({ searchParams }: { searchParams: Promise<RawSearchParams> }
         isSortingProductTop={true}
         isGridDefaultView={true}
         isSidebarCategoryHide={true}
+        isSidebarTagsHide={true}
         data={catalog.items}
         catalog={{
           basePath: '/category',

@@ -89,6 +89,7 @@ const CategoryLandingPage = async ({ params, searchParams }: PageProps) => {
         isSortingProductTop={true}
         isGridDefaultView={true}
         isSidebarCategoryHide={true}
+        isSidebarTagsHide={true}
         data={page.items}
         catalog={{
           basePath: `/category/${slug}`,

@@ -66,7 +66,8 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                     <p className='mb-1.5 px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'>Shop</p>
                     <ul className='flex flex-col'>
                         {
-                            data.map((item) => {
+                            // B2B stays in the desktop nav; on mobile it's reachable via "Handsy for Business" below.
+                            data.filter((item) => item.path !== '/b2b').map((item) => {
                                 const isExpandable = Boolean(item.dropdownList || item.megaMenu)
                                 const isExpanded = dropDownActive === item.id
                                 const ItemIcon = categoryIcons[item.label] ?? Tag

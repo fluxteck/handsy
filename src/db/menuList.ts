@@ -25,10 +25,17 @@ export type menuType = {
     "megaMenu"?: MegamenuType[]
 }
 
-/** One mega-menu column: an optional bold heading over a list of links. */
+/**
+ * One mega-menu item. `slug` is the catalogue's own category slug, so the link
+ * lands on a filtered `/category/<slug>` page; items the catalogue has no
+ * category for yet omit it and fall back to their parent category's page.
+ */
+type MegaMenuItem = string | { label: string; slug: string };
+
+/** One mega-menu column: an optional heading over a list of links. */
 type MegaMenuColumn = {
     title?: string;
-    items: string[];
+    items: MegaMenuItem[];
 }
 
 const buildMegaMenu = (categoryPath: string, columns: MegaMenuColumn[]): MegamenuType[] => [
@@ -37,10 +44,10 @@ const buildMegaMenu = (categoryPath: string, columns: MegaMenuColumn[]): Megamen
         "menus": columns.map((column, columnIndex) => ({
             "id": columnIndex,
             ...(column.title ? { "title": column.title } : {}),
-            "items": column.items.map((label, index) => ({
+            "items": column.items.map((item, index) => ({
                 "id": index + 1,
-                "label": label,
-                "path": categoryPath,
+                "label": typeof item === "string" ? item : item.label,
+                "path": typeof item === "string" ? categoryPath : `/category/${encodeURIComponent(item.slug)}`,
             })),
         }))
     }
@@ -53,11 +60,33 @@ export const menuList: menuType[] = [
         "path": "/category/furniture",
         "megaMenu": buildMegaMenu("/category/furniture", [
             {
-                items: ["Sofa", "Chair", "Stools", "Console", "Beds", "Outdoor Furniture", "Shelves", "Cabinet"],
+                title: "Seating",
+                items: [
+                    { label: "Sofas", slug: "sofas" },
+                    { label: "Chairs", slug: "chairs" },
+                    { label: "Benches", slug: "benches" },
+                    { label: "Stools", slug: "stools" },
+                    "Ottomans & Poufs",
+                ],
             },
             {
                 title: "Tables",
-                items: ["Coffee Tables / Center Table", "Side Table", "Study Table"],
+                items: [
+                    { label: "Coffee Tables", slug: "coffee-tables" },
+                    "Dining Tables",
+                    { label: "Side Tables", slug: "side-tables" },
+                    { label: "Console Tables", slug: "consoles" },
+                    "Study Tables & Desks",
+                ],
+            },
+            {
+                title: "More Furniture",
+                items: [
+                    { label: "Beds", slug: "beds" },
+                    "Cabinets",
+                    "Shelves",
+                    "Outdoor Furniture",
+                ],
             },
         ])
     },
@@ -67,15 +96,24 @@ export const menuList: menuType[] = [
         "path": "/category/lighting",
         "megaMenu": buildMegaMenu("/category/lighting", [
             {
+                title: "Ceiling & Hanging",
+                items: [
+                    { label: "Pendant Lights", slug: "pendant-lights" },
+                    { label: "Chandeliers", slug: "chandeliers" },
+                    { label: "Ceiling Lights", slug: "ceiling-lights" },
+                ],
+            },
+            {
+                title: "Wall",
+                items: [{ label: "Wall Lights", slug: "wall-lights" }],
+            },
+            {
                 title: "Lamps",
-                items: ["Table Lamp", "Floor Lamp", "Desk Lamp", "Reading Lamp", "Wall Lamp"],
-            },
-            {
-                title: "Hanging Lights",
-                items: ["Chandelier", "Ceiling Lights", "Pendant"],
-            },
-            {
-                items: ["Outdoor Lights"],
+                items: [
+                    { label: "Table Lamps", slug: "table-lamps" },
+                    { label: "Floor Lamps", slug: "floor-lamps" },
+                    "Portable & Cordless",
+                ],
             },
         ])
     },
@@ -85,10 +123,17 @@ export const menuList: menuType[] = [
         "path": "/category/decor",
         "megaMenu": buildMegaMenu("/category/decor", [
             {
-                items: ["Arts", "Vases", "Mirrors", "Tabletop Decor", "Wall Hanging", "Objects & Sculptures"],
-            },
-            {
-                items: ["Candles", "Clocks", "Rugs & Carpets", "Cushions", "Decor Accessories"],
+                items: [
+                    { label: "Vases", slug: "vases" },
+                    { label: "Mirrors", slug: "mirrors" },
+                    { label: "Clocks", slug: "clocks" },
+                    { label: "Wall Art", slug: "wall-decor" },
+                    { label: "Sculptures & Figurines", slug: "sculptures" },
+                    { label: "Candles & Holders", slug: "candle-holders" },
+                    // The catalogue's slug for this category carries a trailing space.
+                    { label: "Planters & Pots", slug: "planters " },
+                    "Tabletop",
+                ],
             },
         ])
     },
@@ -98,7 +143,15 @@ export const menuList: menuType[] = [
         "path": "/category/kitchen-dining",
         "megaMenu": buildMegaMenu("/category/kitchen-dining", [
             {
-                items: ["Cutlery", "Dinnerware", "Serveware", "Jugs & Glasses", "Bowls", "Drinkware"],
+                items: [
+                    "Plates",
+                    { label: "Bowls", slug: "bowls" },
+                    { label: "Platters & Trays", slug: "platters-trays" },
+                    { label: "Cups & Mugs", slug: "cups-mugs" },
+                    { label: "Glasses", slug: "glasses" },
+                    "Cutlery",
+                    "Dinner Table Setting",
+                ],
             },
         ])
     },
