@@ -7,6 +7,10 @@ import { ComponentType } from "react";
 
 type ShopEmptyStateProps = {
   icon: ComponentType<{ className?: string; strokeWidth?: number }>;
+  /** Corner badge on the icon; defaults to the ✕ used by empty cart/wishlist. */
+  badgeIcon?: ComponentType<{ className?: string }>;
+  /** Small-caps label above the title. */
+  eyebrow?: string;
   title: string;
   description: string;
   ctaLabel: string;
@@ -18,6 +22,8 @@ type ShopEmptyStateProps = {
 
 const ShopEmptyState = ({
   icon: Icon,
+  badgeIcon: BadgeIcon,
+  eyebrow,
   title,
   description,
   ctaLabel,
@@ -32,6 +38,11 @@ const ShopEmptyState = ({
         className
       )}
     >
+      {eyebrow && (
+        <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
+          {eyebrow}
+        </p>
+      )}
       <h3 className="text-heading text-secondary-foreground">{title}</h3>
       <p className="mt-1.5 lg:text-xl text-lg text-gray-1-foreground">
         {description}
@@ -44,7 +55,11 @@ const ShopEmptyState = ({
         />
         <Icon className="relative size-14 lg:size-16 text-gray-1-foreground" />
         <span className="absolute right-2 bottom-2 lg:right-3 lg:bottom-3 flex size-8 lg:size-10 items-center justify-center rounded-full bg-primary text-white shadow-md ring-4 ring-background">
-          <Close className="size-3.5 lg:size-4" strokeWidth="3" />
+          {BadgeIcon ? (
+            <BadgeIcon className="size-3.5 lg:size-4" />
+          ) : (
+            <Close className="size-3.5 lg:size-4" strokeWidth="3" />
+          )}
         </span>
       </div>
 

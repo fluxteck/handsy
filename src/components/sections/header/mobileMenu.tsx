@@ -10,12 +10,11 @@ import { cn } from '@/lib/utils'
 import { Close } from '@/lib/icon'
 import { usePathname } from 'next/navigation'
 import MegaMenu from './megaMenu'
-import { ProductType } from '@/types/productType'
 import HeaderExtraInfo from './headerExtraInfo'
 import { topHeaderLinks } from './topHeader'
 import { categoryIcons } from './categoryIcons'
 
-const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
+const MobileMenu = ({ data }: { data: menuType[] }) => {
     const pathName = usePathname()
     const [dropDownActive, setDropDownActive] = useState<boolean | string | number>(false)
     const [open, setOpen] = useState(false)
@@ -66,7 +65,8 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                     <p className='mb-1.5 px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'>Shop</p>
                     <ul className='flex flex-col'>
                         {
-                            data.map((item) => {
+                            // B2B stays in the desktop nav; on mobile it's reachable via "Handsy for Business" below.
+                            data.filter((item) => item.path !== '/b2b').map((item) => {
                                 const isExpandable = Boolean(item.dropdownList || item.megaMenu)
                                 const isExpanded = dropDownActive === item.id
                                 const ItemIcon = categoryIcons[item.label] ?? Tag
@@ -126,7 +126,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                         )}
                                         {item.megaMenu && (
                                             <div className={cn('overflow-hidden transition-all duration-300 ease-in-out', isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0')}>
-                                                <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} onNavigate={() => setOpen(false)} />
+                                                <MegaMenu data={item.megaMenu} onNavigate={() => setOpen(false)} />
                                             </div>
                                         )}
                                     </li>

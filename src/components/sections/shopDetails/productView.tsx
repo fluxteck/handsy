@@ -18,6 +18,8 @@ import Card, {
   CardTitle,
 } from "@/components/ui/card";
 import Pagination from "@/components/ui/pagination";
+import ShopEmptyState from "@/components/ui/shopEmptyState";
+import { Clock, Sparkles } from "lucide-react";
 import calcluteDiscount from "@/lib/calcluteDiscount";
 import { useCart } from "@/lib/cart/cart-context";
 import { ProductType } from "@/types/productType";
@@ -52,6 +54,7 @@ type ProductsViewPropsType = {
   isSortingProductTop: boolean;
   isGridDefaultView: boolean;
   isSidebarCategoryHide: boolean;
+  isSidebarTagsHide?: boolean;
   data: ProductType[];
   catalog?: CatalogViewProps;
 };
@@ -61,6 +64,7 @@ const ProductsView = ({
   isSortingProductTop,
   isGridDefaultView,
   isSidebarCategoryHide,
+  isSidebarTagsHide,
   data,
   catalog,
 }: ProductsViewPropsType) => {
@@ -92,6 +96,20 @@ const ProductsView = ({
   const { add: addToCartLine } = useCart();
   const { add: addToWishlistEntry } = useWishlist();
 
+  // A category page that is empty with no search/tag/price filter applied has
+  // genuinely no stock yet — as opposed to filters that simply matched nothing.
+  const isAwaitingProducts = Boolean(
+    catalog &&
+      !catalog.failed &&
+      catalog.total === 0 &&
+      catalog.basePath.startsWith("/category/") &&
+      !catalog.query.q &&
+      catalog.query.tags.length === 0 &&
+      catalog.query.minPrice === undefined &&
+      catalog.query.maxPrice === undefined &&
+      catalog.query.page <= 1
+  );
+
   return (
     <>
       <div className="container lg:pt-25 lg:pb-25 pt-15 pb-15">
@@ -113,6 +131,7 @@ const ProductsView = ({
         <div className="grid lg:grid-cols-[minmax(220px,18%)_auto] grid-cols-1 gap-7.5">
           <ShopSidebar
             isSidebarCategoryHide={isSidebarCategoryHide}
+            isSidebarTagsHide={isSidebarTagsHide}
             categories={catalog?.categories}
             tags={catalog?.tags}
             priceBounds={catalog?.priceBounds}
@@ -153,11 +172,24 @@ const ProductsView = ({
               />
             )}
             {catalog && data.length === 0 && (
-              <p className="text-gray-1-foreground text-base mt-7.5">
-                {catalog.failed
-                  ? "We couldn't load products just now. Please refresh to try again."
-                  : "No products match these filters."}
-              </p>
+              isAwaitingProducts ? (
+                <ShopEmptyState
+                  icon={Sparkles}
+                  badgeIcon={Clock}
+                  eyebrow="Coming Soon"
+                  title="Something Beautiful Is Coming"
+                  description="We're onboarding selected artisans and vendors to curate this collection. Check back soon."
+                  ctaLabel="Explore Other Categories"
+                  ctaHref="/shop"
+                  className="mt-7.5"
+                />
+              ) : (
+                <p className="text-gray-1-foreground text-base mt-7.5">
+                  {catalog.failed
+                    ? "We couldn't load products just now. Please refresh to try again."
+                    : "No products match these filters."}
+                </p>
+              )
             )}
             {isGridView ? (
               <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-x-5 gap-y-10 mt-7.5">
