@@ -7,7 +7,7 @@ import ProductsView from '@/components/sections/shopDetails/productView'
 import Newsletter from '@/components/sections/newsletter'
 import InstagramGallery from '@/components/sections/instagramGallery'
 import { parseCatalogQuery, type RawSearchParams } from '@/lib/catalog/filters'
-import { getCatalogPage, getHomeCategories, getTopRatedProducts } from '@/lib/sdk'
+import { getCatalogPage, getFeaturedCategories, getTopRatedProducts } from '@/lib/sdk'
 import { getStoreCurrency } from '@/lib/config'
 
 export const metadata: Metadata = {
@@ -34,7 +34,7 @@ const ShopOne = async ({ searchParams }: { searchParams: Promise<RawSearchParams
     const [page, bestSellers, categories] = await Promise.all([
         getCatalogPage(query),
         getTopRatedProducts(3),
-        getHomeCategories(),
+        getFeaturedCategories(),
     ])
     return (
         <main>

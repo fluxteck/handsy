@@ -3,6 +3,10 @@ export type CategoryType = {
     "categoryImg": string,
     "categoryName": string,
     "value"?: string,
+    /** Explicit destination, for tiles that aren't a plain category filter
+     *  (e.g. "Bestsellers", which is a sort order). Defaults to the category
+     *  page for `value`. */
+    "href"?: string,
 }
 
 export const categoriesOneData: CategoryType[] = [

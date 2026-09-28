@@ -45,8 +45,9 @@ import {
  * for data as the wrong identity, not about trusting the client.
  */
 
-/** `users.*` isn't sugar-wrapped on the client, so it needs a context. */
-function ctx(customerId: string): AdapterContext {
+/** `users.*` isn't sugar-wrapped on the client, so it needs a context.
+ *  Exported because checkout writes an address through the same operations. */
+export function adapterCtx(customerId: string): AdapterContext {
   return { currency: getEnv().NEXT_PUBLIC_CURRENCY, locale: "en-IN", customerId };
 }
 
@@ -57,18 +58,33 @@ export function useCustomerId(): { customerId: string | null; ready: boolean } {
 
   useEffect(() => {
     let active = true;
+    let unsubscribe = () => {};
+
     (async () => {
       try {
-        const { data } = await getSupabaseBrowserClient().auth.getUser();
+        const supabase = getSupabaseBrowserClient();
+        const { data } = await supabase.auth.getUser();
         if (active) setCustomerId(data.user?.id ?? null);
+
+        /* Stay subscribed rather than reading once. Checkout signs a guest in
+           mid-page when they verify their email OTP; without this the id would
+           still be null for the rest of the visit, and every screen keyed off
+           it — the saved-address picker, the "save this address" checkbox —
+           would behave as though nobody were signed in. */
+        const sub = supabase.auth.onAuthStateChange((_event, session) => {
+          if (active) setCustomerId(session?.user?.id ?? null);
+        });
+        unsubscribe = () => sub.data.subscription.unsubscribe();
       } catch {
         if (active) setCustomerId(null);
       } finally {
         if (active) setReady(true);
       }
     })();
+
     return () => {
       active = false;
+      unsubscribe();
     };
   }, []);
 
@@ -187,7 +203,7 @@ export function useMyProfile(): Resource<CustomerType | null> & {
     ready && customerId
       ? async () =>
           toCustomerType(
-            await getStorefrontClient().adapter.users.get(customerId, ctx(customerId)),
+            await getStorefrontClient().adapter.users.get(customerId, adapterCtx(customerId)),
           )
       : null,
     null,
@@ -197,7 +213,7 @@ export function useMyProfile(): Resource<CustomerType | null> & {
   const save = useCallback(
     async (input: UpdateCustomerInput) => {
       if (!customerId) throw new Error("Not signed in");
-      await getStorefrontClient().adapter.users.update(customerId, input, ctx(customerId));
+      await getStorefrontClient().adapter.users.update(customerId, input, adapterCtx(customerId));
       resource.reload();
     },
     [customerId, resource],
@@ -218,7 +234,7 @@ export function useMyAddresses(): Resource<AddressType[]> & {
     ready && customerId
       ? async () =>
           toAddressTypes(
-            await getStorefrontClient().adapter.users.addresses.list(customerId, ctx(customerId)),
+            await getStorefrontClient().adapter.users.addresses.list(customerId, adapterCtx(customerId)),
           )
       : null,
     [],
@@ -230,7 +246,7 @@ export function useMyAddresses(): Resource<AddressType[]> & {
   const add = useCallback(
     async (input: CreateAddressInput) => {
       if (!customerId) throw new Error("Not signed in");
-      await users().addresses.add(customerId, input, ctx(customerId));
+      await users().addresses.add(customerId, input, adapterCtx(customerId));
       resource.reload();
     },
     [customerId, resource],
@@ -239,7 +255,7 @@ export function useMyAddresses(): Resource<AddressType[]> & {
   const update = useCallback(
     async (addressId: string, input: UpdateAddressInput) => {
       if (!customerId) throw new Error("Not signed in");
-      await users().addresses.update(customerId, addressId, input, ctx(customerId));
+      await users().addresses.update(customerId, addressId, input, adapterCtx(customerId));
       resource.reload();
     },
     [customerId, resource],
@@ -248,7 +264,7 @@ export function useMyAddresses(): Resource<AddressType[]> & {
   const remove = useCallback(
     async (addressId: string) => {
       if (!customerId) throw new Error("Not signed in");
-      await users().addresses.remove(customerId, addressId, ctx(customerId));
+      await users().addresses.remove(customerId, addressId, adapterCtx(customerId));
       resource.reload();
     },
     [customerId, resource],
