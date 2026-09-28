@@ -10,12 +10,11 @@ import { cn } from '@/lib/utils'
 import { Close } from '@/lib/icon'
 import { usePathname } from 'next/navigation'
 import MegaMenu from './megaMenu'
-import { ProductType } from '@/types/productType'
 import HeaderExtraInfo from './headerExtraInfo'
 import { topHeaderLinks } from './topHeader'
 import { categoryIcons } from './categoryIcons'
 
-const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
+const MobileMenu = ({ data }: { data: menuType[] }) => {
     const pathName = usePathname()
     const [dropDownActive, setDropDownActive] = useState<boolean | string | number>(false)
     const [open, setOpen] = useState(false)
@@ -127,7 +126,7 @@ const MobileMenu = ({ data, featuredProducts }: { data: menuType[], featuredProd
                                         )}
                                         {item.megaMenu && (
                                             <div className={cn('overflow-hidden transition-all duration-300 ease-in-out', isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0')}>
-                                                <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} onNavigate={() => setOpen(false)} />
+                                                <MegaMenu data={item.megaMenu} onNavigate={() => setOpen(false)} />
                                             </div>
                                         )}
                                     </li>

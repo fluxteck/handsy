@@ -5,11 +5,10 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, Tag } from "lucide-react";
 import MegaMenu from "./megaMenu";
 import { menuType } from "@/db/menuList";
-import { ProductType } from "@/types/productType";
 import { cn } from "@/lib/utils";
 import { categoryIcons } from "./categoryIcons";
 
-const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts: ProductType[] }) => {
+const Navbar = ({ data }: { data: menuType[] }) => {
     const pathName = usePathname()
     // Opening stays pure-CSS `group-hover` (works instantly, no hydration wait).
     // closedId only force-closes the just-clicked item until the pointer leaves it.
@@ -79,7 +78,7 @@ const Navbar = ({ data, featuredProducts }: { data: menuType[], featuredProducts
                                     })}
                                 </ul>
                             )}
-                            {item.megaMenu && <MegaMenu data={item.megaMenu} featuredProducts={featuredProducts} forceClosed={forceClosed} onNavigate={() => setClosedId(item.id)} />}
+                            {item.megaMenu && <MegaMenu data={item.megaMenu} forceClosed={forceClosed} onNavigate={() => setClosedId(item.id)} />}
                         </li>
                     );
                 })}

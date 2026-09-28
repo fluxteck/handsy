@@ -156,16 +156,6 @@ export const menuList: menuType[] = [
         ])
     },
     {
-        "id": 5,
-        "label": "Luxury",
-        "path": "/category/luxury",
-        "megaMenu": buildMegaMenu("/category/luxury", [
-            {
-                items: ["Lights", "Furniture"],
-            },
-        ])
-    },
-    {
         "id": 6,
         "label": "B2B",
         "path": "/b2b",

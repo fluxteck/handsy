@@ -15,9 +15,8 @@ import WishlistButton from "./wishlistButton";
 
 const Header = async () => {
   const menuList = await getMenuData();
-  /* Mega-menu and mobile-menu product rails come from the catalogue. The menu
-     STRUCTURE stays local (`src/db/menuList.ts`) — its slugs are editorial and
-     don't correspond to server categories yet; see BUILD-ORDER.md. */
+  /* The cart sidebar's product suggestions come from the catalogue. The menu
+     STRUCTURE stays local (`src/db/menuList.ts`); see BUILD-ORDER.md. */
   const featuredProducts = await getTopRatedProducts(3);
   /* Real catalogue categories for the surfaces that suggest somewhere to go:
      the search placeholder rotation and the empty-cart state. The mega-menu and
@@ -28,7 +27,7 @@ const Header = async () => {
       <div className="lg:h-20 h-14 bg-home-bg-1 [.header-pinned_&]:shadow-md">
         <div className="container flex items-center gap-4 lg:gap-8 h-full relative">
           <div className="flex items-center gap-3 shrink-0">
-            <MobileMenu data={menuList} featuredProducts={featuredProducts} />
+            <MobileMenu data={menuList} />
             <Link
               href={"/"}
               aria-label="Handsy Market home"
@@ -64,7 +63,7 @@ const Header = async () => {
       </div>
       <div className="hidden lg:block border-t border-t-[#E5E2E1]">
         <div className="container flex justify-center relative">
-          <Navbar data={menuList} featuredProducts={featuredProducts} />
+          <Navbar data={menuList} />
         </div>
       </div>
     </StickyHeader>
