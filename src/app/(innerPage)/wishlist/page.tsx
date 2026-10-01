@@ -1,4 +1,3 @@
-import InstagramGallery from "@/components/sections/instagramGallery";
 import Newsletter from "@/components/sections/newsletter";
 import PageHeader from "@/components/sections/pageHeader";
 import RecentlyViewed from "@/components/sections/recentlyViewed";
@@ -26,7 +25,6 @@ const Wishlist = async () => {
       <WishlistProductsGrid categories={categoryLinks} />
       <RecentlyViewed />
       <Newsletter />
-      <InstagramGallery />
     </main>
   );
 };

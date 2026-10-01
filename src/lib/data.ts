@@ -1,7 +1,6 @@
 import { cache } from "react";
 import { menuList } from "@/db/menuList";
 import { faqData } from "@/db/faqData";
-import { galleryDataOne } from "@/db/galleryData";
 import { partnerData } from "@/db/partnerData";
 import { brandsData } from "@/db/brandsData";
 import { privacyPolicyData } from "@/db/privacyPolicyData";
@@ -18,7 +17,7 @@ import type { NotificationType } from "@/types/accountType";
 
 /**
  * Editorial and presentational content that has no catalogue behind it —
- * marketing copy, legal text, the FAQ, the gallery.
+ * marketing copy, legal text, the FAQ.
  *
  * Anything with a real backing store (products, categories, brands, reviews,
  * orders, addresses) goes through `lib/sdk/*` instead. This module must never
@@ -43,8 +42,6 @@ export const getPromoCardsData = cache(async () => promoCardsData);
 export const getMenuData = cache(async () => menuList);
 
 export const getFaqData = cache(async () => faqData);
-
-export const getGalleryData = cache(async () => galleryDataOne);
 
 export const getPartnerData = cache(async () => partnerData);
 

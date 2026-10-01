@@ -9,7 +9,7 @@ import ProductCarousel from "./productCarousel";
 const FeaturedProducts = ({ featuredProducts }: { featuredProducts: ProductType[] }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const [slidesOffset, setSlidesOffset] = useState(0);
-    const filterList: string[] = ["Best Sellers", "New arrivals", "featured"];
+    const filterList: string[] = ["Best Sellers", "New arrivals"];
 
     useEffect(() => {
         function updateOffset() {
@@ -27,9 +27,9 @@ const FeaturedProducts = ({ featuredProducts }: { featuredProducts: ProductType[
         <section className="bg-home-bg-1 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5 group/section">
             <Tabs defaultValue={filterList[0] || ''} className="relative">
                 <div className="container" ref={containerRef}>
-                    <Title>Featured Products</Title>
+                    <Title>Curated collections</Title>
                     <p className="text-gray-1-foreground mt-3 leading-[166.667%]">
-                        Explore the best of Handsy Market Featured Collection.
+                        Explore the best of Handsy Market Collection.
                     </p>
                     <div className="mt-10">
                         <div className="flex flex-col items-start md:flex-row md:justify-between md:items-center mb-5">

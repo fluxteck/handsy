@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import PageHeader from "@/components/sections/pageHeader";
 import ProductsView from "@/components/sections/shopDetails/productView";
 import Newsletter from "@/components/sections/newsletter";
-import InstagramGallery from "@/components/sections/instagramGallery";
 import { parseCatalogQuery, type RawSearchParams } from "@/lib/catalog/filters";
 import { getCollectionPage, getTopRatedProducts } from "@/lib/sdk";
 import { getStoreCurrency, getSiteUrl } from "@/lib/config";
@@ -113,7 +112,6 @@ const CollectionPage = async ({ params, searchParams }: PageProps) => {
         }}
       />
       <Newsletter />
-      <InstagramGallery />
     </main>
   );
 };

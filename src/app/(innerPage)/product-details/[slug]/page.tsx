@@ -1,4 +1,3 @@
-import InstagramGallery from "@/components/sections/instagramGallery";
 import Newsletter from "@/components/sections/newsletter";
 import ProductGalleryVertical from "@/components/sections/shopDetails/productGalleryVertical";
 import ProductInfoDetails from "@/components/sections/shopDetails/productInfoDetails";
@@ -137,7 +136,6 @@ const ProductDetails = async ({ params }: { params: Promise<RouteParams> }) => {
       <ProductReviews productId={product.id} productName={product.title} reviews={reviews} />
       <RelatedProducts products={related} />
       <Newsletter />
-      <InstagramGallery />
     </main>
   );
 };

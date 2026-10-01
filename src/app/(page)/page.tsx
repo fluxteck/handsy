@@ -1,16 +1,16 @@
 import React from 'react'
 import { Metadata } from 'next'
 import AboutTeaser from '@/components/sections/aboutTeaser'
-import BrandCarousel from '@/components/sections/brandCarousel'
+// "Brands You'll Love" section hidden — uncomment to restore
+// import BrandCarousel from '@/components/sections/brandCarousel'
 import FeaturedProducts from '@/components/sections/featuredProducts'
-import InstagramGallery from '@/components/sections/instagramGallery'
 import HomeCategory from '@/components/sections/homeCategory'
 import Newsletter from '@/components/sections/newsletter'
 import TestimonialSlider from '@/components/sections/testimonialSlider'
 import TopCollections from '@/components/sections/topCollections'
 import HeroSection from '@/components/sections/heroSection'
 import ShopTheLook from '@/components/sections/shopTheLook'
-import { getBrandsData, getHeroData, getPromoCardsData, getShopTheLookData, getTestimonialsData } from '@/lib/data'
+import { /* getBrandsData, */ getHeroData, getPromoCardsData, getShopTheLookData, getTestimonialsData } from '@/lib/data'
 import { getFeaturedProducts, getFeaturedCategories, getTopCollections } from '@/lib/sdk'
 
 export const metadata: Metadata = {
@@ -41,7 +41,7 @@ const Home = async () => {
     featuredProducts,
     heroData,
     promoCardsData,
-    brandsData,
+    // brandsData,
     shopTheLookData,
   ] = await Promise.all([
     getFeaturedCategories(),
@@ -50,7 +50,7 @@ const Home = async () => {
     getFeaturedProducts(),
     getHeroData(),
     getPromoCardsData(),
-    getBrandsData(),
+    // getBrandsData(),
     getShopTheLookData(),
   ]);
 
@@ -62,10 +62,10 @@ const Home = async () => {
       <TopCollections data={topCollections} />
       <AboutTeaser />
       <ShopTheLook data={shopTheLookData} />
-      <BrandCarousel brands={brandsData} />
+      {/* "Brands You'll Love" section hidden — uncomment to restore */}
+      {/* <BrandCarousel brands={brandsData} /> */}
       <TestimonialSlider testimonials={testimonialData} />
       <Newsletter />
-      <InstagramGallery />
     </>
   )
 }

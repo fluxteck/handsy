@@ -1,7 +1,6 @@
 import React from 'react'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import InstagramGallery from '@/components/sections/instagramGallery'
 import Newsletter from '@/components/sections/newsletter'
 import PageHeader from '@/components/sections/pageHeader'
 import ProductsView from '@/components/sections/shopDetails/productView'
@@ -105,7 +104,6 @@ const CategoryLandingPage = async ({ params, searchParams }: PageProps) => {
         }}
       />
       <Newsletter />
-      <InstagramGallery />
     </main>
   )
 }

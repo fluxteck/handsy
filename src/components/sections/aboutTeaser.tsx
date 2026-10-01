@@ -79,8 +79,8 @@ const AboutTeaser = ({ className }: { className?: string }) => {
                   <Globe2 className="relative size-5" />
                 </span>
                 <div>
-                  <p className="text-lg font-semibold leading-none text-secondary-foreground">20K+</p>
-                  <p className="mt-1 text-xs text-gray-1-foreground">Happy customers worldwide</p>
+                  <p className="text-lg font-semibold leading-none text-secondary-foreground">50+ countries</p>
+                  <p className="mt-1 text-xs text-gray-1-foreground">We serve worldwide</p>
                 </div>
               </div>
             </motion.div>
