@@ -1,6 +1,5 @@
 import PageHeader from '@/components/sections/pageHeader'
 import Newsletter from '@/components/sections/newsletter'
-import InstagramGallery from '@/components/sections/instagramGallery'
 
 import React from 'react'
 import ContactHero from './contactHero'
@@ -21,7 +20,6 @@ const ContactUs = () => {
             <ContactInfoCards />
             <ContactForm />
             <Newsletter />
-            <InstagramGallery />
         </main>
     )
 }

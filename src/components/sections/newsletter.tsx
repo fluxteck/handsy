@@ -41,7 +41,7 @@ const Newsletter = ({ className, source = 'footer' }: { className?: string; sour
                         </span>
                         <div>
                             <p className='text-lg lg:text-xl font-medium leading-tight text-secondary-foreground'>
-                                Subscribe &amp; grab <span className='font-display italic'>30% off</span>
+                                Subscribe to get <span className='font-display italic'>more offers</span>
                             </p>
                             <p className='mt-1 text-sm text-gray-1-foreground'>Fresh arrivals and offers, straight to your inbox.</p>
                         </div>

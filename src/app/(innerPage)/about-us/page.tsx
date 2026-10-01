@@ -2,7 +2,6 @@ import PageHeader from '@/components/sections/pageHeader'
 import TestimonialSlider from '@/components/sections/testimonialSlider';
 import BrandCarousel from '@/components/sections/brandCarousel';
 import Newsletter from '@/components/sections/newsletter';
-import InstagramGallery from '@/components/sections/instagramGallery';
 import AboutHero from './aboutHero';
 import AboutValues from './aboutValues';
 import AboutCraftsmanship from './aboutCraftsmanship';
@@ -33,7 +32,6 @@ const AboutUs = async () => {
             <BrandCarousel brands={brandsData} title="Trusted by Retailers & Homes Worldwide" />
             <AboutCta />
             <Newsletter />
-            <InstagramGallery />
         </main>
     )
 }

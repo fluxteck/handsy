@@ -1,9 +1,10 @@
 "use client";
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { ArrowUp } from "@/lib/icon";
 import Link from "next/link";
-import { motion } from "framer-motion";
+// Banner text & CTA hidden — these imports are only used by the commented-out JSX below.
+// import { Button } from "@/components/ui/button";
+// import { ArrowUp } from "@/lib/icon";
+// import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { Autoplay, Pagination } from "swiper/modules";
@@ -30,15 +31,35 @@ const Hero = ({ data, className }: { data: HeroDataType[]; className?: string })
         }}
         modules={[Autoplay, Pagination]}
       >
-        {data.map(({ description, id, thumbnail, title }) => {
+        {/* Banner text & CTA hidden — restore `description`, `title` and `isActive` below together with the commented JSX. */}
+        {data.map(({ id, thumbnail, mobileThumbnail /* , description, title */ }) => {
           return (
             <SwiperSlide
               key={id}
-              style={{ backgroundImage: `url(${thumbnail})` }}
-              className={`hero-slide bg-no-repeat bg-center bg-cover bg-gradient-to-l from-[rgba(255,255,255,0)_50%] to-[rgba(255,255,255,0.7)_100%]`}
+              // Phones get the portrait artwork, sm+ the landscape one — anchored left
+              // there so its built-in headline is never cropped by `bg-cover`.
+              style={{
+                "--hero-bg-desktop": `url(${thumbnail})`,
+                "--hero-bg-mobile": `url(${mobileThumbnail ?? thumbnail})`,
+                backgroundImage: "var(--hero-bg)",
+              } as React.CSSProperties}
+              className={`hero-slide bg-no-repeat bg-center bg-cover bg-gradient-to-l from-[rgba(255,255,255,0)_50%] to-[rgba(255,255,255,0.7)_100%] [--hero-bg:var(--hero-bg-mobile)] sm:[--hero-bg:var(--hero-bg-desktop)] sm:bg-left`}
             >
-              {({ isActive }) => (
-                <div className="container sm:pt-[140px] pt-30 lg:pt-0 pb-[150px] lg:pb-0 lg:h-full lg:flex lg:flex-col lg:justify-center">
+              {/* The min-h values hold the slide at the height the hidden text used to give it
+                  below lg; they can be dropped once the text is restored. */}
+              {(/* { isActive } */) => (
+                <>
+                {/* Whole-slide link. Swiper's default `preventClicks` swallows the click that
+                    ends a swipe, and `draggable={false}` stops the browser's native link-drag
+                    from hijacking grab-to-swipe on desktop. */}
+                <Link
+                  href="/shop"
+                  aria-label="Shop now"
+                  draggable={false}
+                  className="absolute inset-0 z-10"
+                />
+                <div className="container sm:pt-[140px] pt-30 lg:pt-0 pb-[150px] lg:pb-0 lg:h-full lg:flex lg:flex-col lg:justify-center min-h-[672px] sm:min-h-[612px] lg:min-h-0">
+                  {/* Banner text & CTA hidden — uncomment to restore.
                   <motion.h1
                     initial={{ y: 90, opacity: 0 }}
                     animate={
@@ -86,7 +107,9 @@ const Hero = ({ data, className }: { data: HeroDataType[]; className?: string })
                       </Link>
                     </Button>
                   </motion.div>
+                  */}
                 </div>
+                </>
               )}
             </SwiperSlide>
           );

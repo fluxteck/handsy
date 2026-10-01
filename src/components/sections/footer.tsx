@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Facebook, Instagram, Linkedin, Location, Twitter } from "@/lib/icon";
+import { Facebook, Instagram, Linkedin, Location, Pinterest } from "@/lib/icon";
 import { getHomeCategories } from "@/lib/sdk";
 
 /**
@@ -47,10 +47,10 @@ const staticFooterLinks = [
 ];
 
 const socialLinks = [
-  { Icon: Facebook, href: "#", label: "Facebook" },
-  { Icon: Twitter, href: "#", label: "Twitter" },
-  { Icon: Instagram, href: "#", label: "Instagram" },
-  { Icon: Linkedin, href: "#", label: "LinkedIn" },
+  { Icon: Facebook, href: "https://www.facebook.com/handsymarket", label: "Facebook" },
+  { Icon: Pinterest, href: "https://www.pinterest.com/handsymarket/", label: "Pinterest" },
+  { Icon: Instagram, href: "https://www.instagram.com/handsymarket/", label: "Instagram" },
+  { Icon: Linkedin, href: "https://www.linkedin.com/company/handsymarket/", label: "LinkedIn" },
 ];
 
 const Footer = async () => {
@@ -91,9 +91,10 @@ const Footer = async () => {
               />
             </Link>
             <p className="mt-6 text-base text-white/60 leading-[170%]">
-              Handcrafted wooden furniture and home decor from independent
-              Indian artisans — for your home, or for your business, shipped
-              worldwide.
+              All of India&apos;s Home Décor, at Hand.
+              <br />
+              Lighting, furniture, décor and dining, from India&apos;s finest
+              hands to homes and projects.
             </p>
             <p className="mt-4 flex items-center gap-2 text-sm text-white/60">
               <Location className="size-4 shrink-0" /> India | Serving Customers Worldwide

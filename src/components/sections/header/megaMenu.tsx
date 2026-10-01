@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 /** Small-caps section label — the same treatment the mobile drawer already
  *  uses for "Shop" / "Quick Links", reused here for column headings so the
  *  two surfaces read as one design language. */
-const sectionLabelClass = 'mb-2.5 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-2-foreground'
+const sectionLabelClass = 'mb-2.5 text-[11px] font-bold uppercase tracking-[0.14em] text-secondary-foreground'
 
 const MegaMenu = ({ data, forceClosed, onNavigate }: { data: MegamenuType[], forceClosed?: boolean, onNavigate?: () => void }) => {
 

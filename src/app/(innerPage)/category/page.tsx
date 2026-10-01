@@ -1,6 +1,5 @@
 import React from 'react'
 import { Metadata } from 'next'
-import InstagramGallery from '@/components/sections/instagramGallery'
 import Newsletter from '@/components/sections/newsletter'
 import PageHeader from '@/components/sections/pageHeader'
 import ProductsView from '@/components/sections/shopDetails/productView'
@@ -53,7 +52,6 @@ const page = async ({ searchParams }: { searchParams: Promise<RawSearchParams> }
         }}
       />
       <Newsletter />
-      <InstagramGallery />
     </main>
   )
 }

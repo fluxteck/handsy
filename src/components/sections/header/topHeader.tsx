@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import { Globe, Headphones, Package, PackageSearch, Percent, Store, Truck, Building2 } from 'lucide-react'
+import { BadgeCheck, Boxes, Building2, Globe, HandHeart, Store, Truck } from 'lucide-react'
 
 type PromoItem = {
     id: number
@@ -13,27 +13,22 @@ const promoItems: PromoItem[] = [
     {
         id: 1,
         icon: Truck,
-        content: <>Fast &amp; Free Shipping</>,
+        content: <>Free Shipping Across India</>,
     },
     {
         id: 2,
-        icon: Percent,
-        content: <>15% Off First Order - <Link href={"/login"} className='multiline-hover hover:text-[#C9A968]'>Sign Up</Link> Today</>,
+        icon: HandHeart,
+        content: <>Handcrafted by Indian Artisans</>,
     },
     {
         id: 3,
-        icon: Headphones,
-        content: <>Exclusive Deals for Bulk Orders</>,
+        icon: Globe,
+        content: <>Shipping Worldwide</>,
     },
     {
         id: 4,
-        icon: Package,
-        content: <>Shop Handmade. Support Artisans.</>,
-    },
-    {
-        id: 5,
-        icon: Globe,
-        content: <>Worldwide Shipping Available</>,
+        icon: BadgeCheck,
+        content: <>Exclusive Perks for Trade Partners</>,
     },
 ]
 
@@ -46,8 +41,8 @@ export type TopHeaderLink = {
 
 export const topHeaderLinks: TopHeaderLink[] = [
     { id: 1, icon: Store, label: 'Sell on Handsy', href: '/vendor' },
-    { id: 2, icon: Building2, label: 'Handsy for Business', href: '/b2b' },
-    { id: 3, icon: PackageSearch, label: 'Track Order', href: '/account/orders' },
+    { id: 2, icon: Building2, label: 'Trade Programme', href: '/b2b' },
+    { id: 3, icon: Boxes, label: 'Bulk Orders', href: '/bulk-orders-and-gifting' },
 ]
 
 const ROTATE_INTERVAL_MS = 4500

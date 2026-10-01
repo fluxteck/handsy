@@ -96,6 +96,14 @@ export const menuList: menuType[] = [
         "path": "/category/lighting",
         "megaMenu": buildMegaMenu("/category/lighting", [
             {
+                title: "Lamps",
+                items: [
+                    { label: "Table Lamps", slug: "table-lamps" },
+                    { label: "Floor Lamps", slug: "floor-lamps" },
+                    "Portable & Cordless",
+                ],
+            },
+            {
                 title: "Ceiling & Hanging",
                 items: [
                     { label: "Pendant Lights", slug: "pendant-lights" },
@@ -106,14 +114,6 @@ export const menuList: menuType[] = [
             {
                 title: "Wall",
                 items: [{ label: "Wall Lights", slug: "wall-lights" }],
-            },
-            {
-                title: "Lamps",
-                items: [
-                    { label: "Table Lamps", slug: "table-lamps" },
-                    { label: "Floor Lamps", slug: "floor-lamps" },
-                    "Portable & Cordless",
-                ],
             },
         ])
     },

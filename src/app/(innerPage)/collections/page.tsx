@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Link from "next/link";
 import PageHeader from "@/components/sections/pageHeader";
 import Newsletter from "@/components/sections/newsletter";
-import InstagramGallery from "@/components/sections/instagramGallery";
 import { getCollections } from "@/lib/sdk";
 import { getSiteUrl } from "@/lib/config";
 
@@ -57,7 +56,6 @@ const CollectionsIndex = async () => {
         )}
       </section>
       <Newsletter />
-      <InstagramGallery />
     </main>
   );
 };

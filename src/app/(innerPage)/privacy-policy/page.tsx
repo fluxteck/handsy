@@ -2,7 +2,6 @@ import React from 'react'
 import { Metadata } from 'next'
 import PageHeader from '@/components/sections/pageHeader'
 import Newsletter from '@/components/sections/newsletter'
-import InstagramGallery from '@/components/sections/instagramGallery'
 import { getPrivacyPolicyData } from '@/lib/data'
 import { PrivacyPolicType } from '@/db/privacyPolicyData'
 
@@ -51,7 +50,6 @@ const PrivacyPolicy = async () => {
                 <p className='mt-5 font-medium text-xl text-[#333232]'>By using our website and services, you consent to the terms of this Privacy Policy. Thank you for trusting Handsy Market with your personal information.</p>
             </section>
             <Newsletter />
-            <InstagramGallery />
         </main>
     )
 }

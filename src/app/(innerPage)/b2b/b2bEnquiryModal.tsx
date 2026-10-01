@@ -44,9 +44,18 @@ const SUCCESS_MESSAGE =
 export interface B2bEnquiryModalProps {
   className?: string;
   categories?: string[];
+  /** Subject the lead is filed under, so the team can tell sources apart. */
+  subject?: string;
+  /** Individuals (e.g. wedding gifting) have no company, so pages may relax it. */
+  companyRequired?: boolean;
 }
 
-const B2bEnquiryModal = ({ className, categories = [] }: B2bEnquiryModalProps) => {
+const B2bEnquiryModal = ({
+  className,
+  categories = [],
+  subject = "Wholesale enquiry",
+  companyRequired = true,
+}: B2bEnquiryModalProps) => {
   const [open, setOpen] = useState(false);
   /* Posted through the SDK to the server's enquiries endpoint, keyed by type
      so wholesale leads land in their own queue. The wholesale-specific answers
@@ -62,7 +71,7 @@ const B2bEnquiryModal = ({ className, categories = [] }: B2bEnquiryModalProps) =
       name: String(data.get("fullName") ?? ""),
       email: String(data.get("email") ?? ""),
       phone: String(data.get("phone") ?? ""),
-      subject: "Wholesale enquiry",
+      subject,
       message: String(data.get("message") ?? ""),
       fields: {
         companyName: String(data.get("companyName") ?? ""),
@@ -137,8 +146,15 @@ const B2bEnquiryModal = ({ className, categories = [] }: B2bEnquiryModalProps) =
                   <Input type="text" name="fullName" id="fullName" required placeholder="Your name" className={fieldClass} />
                 </Label>
                 <Label htmlFor="companyName" className="text-gray-1-foreground text-base w-full">
-                  Company Name<span className="text-primary-foreground">*</span>
-                  <Input type="text" name="companyName" id="companyName" required placeholder="Your company" className={fieldClass} />
+                  Company Name{companyRequired && <span className="text-primary-foreground">*</span>}
+                  <Input
+                    type="text"
+                    name="companyName"
+                    id="companyName"
+                    required={companyRequired}
+                    placeholder={companyRequired ? "Your company" : "Your company (optional)"}
+                    className={fieldClass}
+                  />
                 </Label>
                 <Label htmlFor="email" className="text-gray-1-foreground text-base w-full">
                   Business Email<span className="text-primary-foreground">*</span>

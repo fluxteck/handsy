@@ -1,4 +1,3 @@
-import InstagramGallery from '@/components/sections/instagramGallery'
 import Newsletter from '@/components/sections/newsletter'
 import PageHeader from '@/components/sections/pageHeader'
 import React from 'react'
@@ -50,7 +49,6 @@ const TermsConditions = async () => {
                 </ol>
             </section>
             <Newsletter />
-            <InstagramGallery />
         </main>
     )
 }

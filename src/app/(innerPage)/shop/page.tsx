@@ -5,7 +5,6 @@ import PageHeader from '@/components/sections/pageHeader'
 import HomeCategory from '@/components/sections/homeCategory'
 import ProductsView from '@/components/sections/shopDetails/productView'
 import Newsletter from '@/components/sections/newsletter'
-import InstagramGallery from '@/components/sections/instagramGallery'
 import { parseCatalogQuery, type RawSearchParams } from '@/lib/catalog/filters'
 import { getCatalogPage, getFeaturedCategories, getTopRatedProducts } from '@/lib/sdk'
 import { getStoreCurrency } from '@/lib/config'
@@ -60,7 +59,6 @@ const ShopOne = async ({ searchParams }: { searchParams: Promise<RawSearchParams
                 }}
             />
             <Newsletter />
-            <InstagramGallery />
         </main>
 
     )
