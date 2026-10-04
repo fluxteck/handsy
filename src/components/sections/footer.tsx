@@ -31,7 +31,7 @@ const staticFooterLinks = [
     title: "For Business",
     links: [
       { label: "Wholesale & B2B", href: "/b2b" },
-      { label: "Interior & Home Decor Solutions", href: "/interior-solutions" },
+      { label: "Trade Programme", href: "/partner-with-us" },
       { label: "Sell on Handsy", href: "/vendor" },
       { label: "Track Your Order", href: "/account/orders" },
     ],

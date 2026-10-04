@@ -18,11 +18,11 @@ export type AccountNavItemType = {
     icon: ComponentType<{ className?: string }>;
 };
 
-// Wishlist reuses the site's existing /wishlist page instead of a duplicate account/wishlist route.
+// /account/wishlist renders the same grid component as the site's /wishlist page, inside the account shell.
 export const accountNavItems: AccountNavItemType[] = [
     { href: "/account", label: "Overview", icon: LayoutGrid },
     { href: "/account/orders", label: "My Orders", icon: Package },
-    { href: "/wishlist", label: "Wishlist", icon: Heart },
+    { href: "/account/wishlist", label: "Wishlist", icon: Heart },
     { href: "/account/addresses", label: "Saved Addresses", icon: MapPin },
     { href: "/account/payment-methods", label: "Payment Methods", icon: CreditCard },
     { href: "/account/reviews", label: "Reviews & Ratings", icon: StarFill },

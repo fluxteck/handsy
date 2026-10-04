@@ -18,9 +18,8 @@ const Header = async () => {
   /* The cart sidebar's product suggestions come from the catalogue. The menu
      STRUCTURE stays local (`src/db/menuList.ts`); see BUILD-ORDER.md. */
   const featuredProducts = await getTopRatedProducts(3);
-  /* Real catalogue categories for the surfaces that suggest somewhere to go:
-     the search placeholder rotation and the empty-cart state. The mega-menu and
-     mobile menu still render the local structure above. */
+  /* Real catalogue categories for the search placeholder rotation. The
+     mega-menu and mobile menu still render the local structure above. */
   const categoryLinks = await getCategoryLinks();
   return (
     <StickyHeader topHeaderContent={<TopHeader />}>
@@ -57,7 +56,7 @@ const Header = async () => {
             >
               <User />
             </Link>
-            <ShopingCartSidebar featuredProducts={featuredProducts} categories={categoryLinks} />
+            <ShopingCartSidebar featuredProducts={featuredProducts} />
           </div>
         </div>
       </div>

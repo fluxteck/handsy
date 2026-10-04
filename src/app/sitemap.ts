@@ -31,7 +31,7 @@ const STATIC_ROUTES = [
   "/category",
   "/about-us",
   "/b2b",
-  "/interior-solutions",
+  "/partner-with-us",
   "/bulk-orders-and-gifting",
   "/vendor",
   "/collections",

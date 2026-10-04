@@ -9,11 +9,13 @@ import { testimonialData } from "@/db/testimonialsData";
 import { heroData } from "@/db/heroData";
 import { promoCardsData } from "@/db/promoCardsData";
 import { shopTheLookData } from "@/db/shopTheLookData";
-import { paymentMethodsData } from "@/db/paymentMethodsData";
-import { couponsData } from "@/db/couponsData";
-import { returnsData } from "@/db/returnsData";
 import { productReviewsData } from "@/db/productReviewsData";
-import type { NotificationType } from "@/types/accountType";
+import type {
+  CouponType,
+  NotificationType,
+  PaymentMethodType,
+  ReturnRequestType,
+} from "@/types/accountType";
 
 /**
  * Editorial and presentational content that has no catalogue behind it —
@@ -53,7 +55,16 @@ export const getTermsAndConditionsData = cache(async () => termsAndConditionsDat
 
 export const getShopTheLookData = cache(async () => shopTheLookData);
 
-export const getPaymentMethodsData = cache(async () => paymentMethodsData);
+/**
+ * Saved payment methods, coupons and return requests for the account pages.
+ *
+ * Empty for the same reason as notifications below: these rendered template
+ * fixtures — someone else's cards, coupon codes that were never issued, returns
+ * against orders that do not exist — identically for every signed-in customer.
+ * Each page renders whatever its function returns and shows its empty state
+ * when that is nothing, so these three are the places to wire the real reads.
+ */
+export const getPaymentMethodsData = cache(async (): Promise<PaymentMethodType[]> => []);
 
 /**
  * Customer notifications.
@@ -72,9 +83,9 @@ export const getPaymentMethodsData = cache(async () => paymentMethodsData);
  */
 export const getNotificationsData = cache(async (): Promise<NotificationType[]> => []);
 
-export const getCouponsData = cache(async () => couponsData);
+export const getCouponsData = cache(async (): Promise<CouponType[]> => []);
 
-export const getReturnsData = cache(async () => returnsData);
+export const getReturnsData = cache(async (): Promise<ReturnRequestType[]> => []);
 
 export const getTestimonialsData = cache(async () => testimonialData);
 
