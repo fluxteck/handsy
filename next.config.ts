@@ -23,6 +23,13 @@ const tracingRoot = process.env.VERCEL ? {} : { outputFileTracingRoot: workspace
 
 const nextConfig: NextConfig = {
   ...tracingRoot,
+  // The trade programme page moved; permanent so search engines carry the old
+  // URL's ranking across and existing links keep working.
+  async redirects() {
+    return [
+      { source: "/interior-solutions", destination: "/partner-with-us", permanent: true },
+    ];
+  },
   images: {
     remotePatterns: [
       /* Supplier sites the catalogue links product photography from.

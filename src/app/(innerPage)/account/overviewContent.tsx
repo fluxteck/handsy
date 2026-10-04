@@ -204,7 +204,7 @@ const OverviewContent = ({ unreadCount }: { unreadCount: number }) => {
                     <div className="mb-5 flex items-center justify-between">
                         <h2 className="text-xl font-medium text-secondary-foreground">From Your Wishlist</h2>
                         <Link
-                            href="/wishlist"
+                            href="/account/wishlist"
                             className="flex items-center gap-1 text-sm text-gray-1-foreground transition-all duration-300 hover:text-secondary-foreground"
                         >
                             View all

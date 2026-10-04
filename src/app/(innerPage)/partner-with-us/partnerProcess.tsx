@@ -1,70 +1,71 @@
 "use client";
 
 import { motion } from "framer-motion";
+import PartnerJoinModal from "./partnerJoinModal";
 
 const steps = [
   {
     number: "01",
-    title: "Project Brief & Consultation",
-    description: "Share your segment — design, build, or hospitality — along with scope, specifications, and timeline with our B2B team.",
+    title: "Apply",
+    description: "Tell us about your firm and share a portfolio or website. It takes about two minutes.",
   },
   {
     number: "02",
-    title: "Concept & Sampling",
-    description: "We propose materials, finishes, and dimensions, with physical or digital samples available for approval.",
+    title: "Get Verified",
+    description: "Our team reviews your details and confirms your membership.",
   },
   {
     number: "03",
-    title: "Custom Quote & Pricing",
-    description: "Receive transparent, tiered B2B pricing based on project scale, customization, and specification.",
-  },
-  {
-    number: "04",
-    title: "Manufacturing & Quality Check",
-    description: "Your order moves into production across our partner workshops, with quality checks at every stage.",
-  },
-  {
-    number: "05",
-    title: "Logistics & Delivery",
-    description: "We coordinate packaging, freight, and delivery scheduling aligned to your project or handover timeline.",
-  },
-  {
-    number: "06",
-    title: "Ongoing Collaboration",
-    description: "A dedicated account manager supports reorders, future phases, and portfolio-wide rollouts.",
+    title: "Start Sourcing with Member Benefits",
+    description: "Enjoy trade pricing, rewards and dedicated support on every project.",
   },
 ];
 
-const InteriorSolutionsProcess = () => {
+const PartnerProcess = () => {
   return (
-    <section className="container lg:py-25 py-15" aria-label="How our B2B collaboration works">
-      <div className="max-w-2xl">
-        <p className="flex items-center gap-2.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
-          Our Process <span className="h-px w-8 bg-gray-2" aria-hidden />
-        </p>
-        <h2 className="mt-3 text-heading capitalize text-secondary-foreground font-normal">
-          How our collaboration works
-        </h2>
-      </div>
+    <section id="join" className="container pb-15 lg:pb-25 scroll-mt-24" aria-label="How to partner with us">
+      <div className="relative overflow-hidden rounded-3xl bg-home-bg-3 px-6 py-12 lg:px-12 lg:py-16">
+        <div
+          className="pointer-events-none absolute -top-24 -right-24 size-72 rounded-full bg-gradient-radial from-primary/10 to-transparent blur-2xl"
+          aria-hidden
+        />
 
-      <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {steps.map((step, index) => (
-          <motion.div
-            key={step.number}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.05 }}
-            className="relative pl-4 border-l border-gray-2"
-          >
-            <span className="text-3xl font-display italic text-gray-2">{step.number}</span>
-            <p className="mt-3 text-lg font-medium text-secondary-foreground">{step.title}</p>
-            <p className="mt-2 text-gray-1-foreground leading-[170%]">{step.description}</p>
-          </motion.div>
-        ))}
+        <div className="relative max-w-2xl">
+          <h3 className="flex items-center gap-2.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
+            Our Process <span className="h-px w-8 bg-gray-2" aria-hidden />
+          </h3>
+          <h2 className="mt-3 text-heading text-secondary-foreground font-normal">
+            Partner <span className="font-display italic">with us</span>
+          </h2>
+        </div>
+
+        <ol className="relative mt-10 grid gap-8 md:grid-cols-3 md:gap-6 lg:gap-10">
+          {steps.map((step, index) => (
+            <motion.li
+              key={step.number}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.1 }}
+              className="relative border-l border-gray-2 pl-5 md:border-l-0 md:border-t md:pl-0 md:pt-6"
+            >
+              <span
+                className="absolute -left-[5px] top-1 size-2.5 rounded-full bg-primary md:-top-[5px] md:left-0"
+                aria-hidden
+              />
+              <span className="font-display text-3xl italic text-gray-3-foreground" aria-hidden>{step.number}</span>
+              <p className="mt-3 text-lg font-medium text-secondary-foreground">{step.title}</p>
+              <p className="mt-2 text-gray-1-foreground leading-[170%]">{step.description}</p>
+            </motion.li>
+          ))}
+        </ol>
+
+        <div className="relative mt-10 lg:mt-12">
+          <PartnerJoinModal />
+        </div>
       </div>
     </section>
   );
 };
 
-export default InteriorSolutionsProcess;
+export default PartnerProcess;

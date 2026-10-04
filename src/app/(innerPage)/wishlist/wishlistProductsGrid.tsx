@@ -16,18 +16,31 @@ import { useCart } from "@/lib/cart/cart-context";
 import { useWishlist } from "@/lib/wishlist/wishlist-context";
 import { productPath } from "@/lib/productPath";
 import type { CategoryLink } from "@/lib/categoryLinks";
+import { PanelHeading } from "@/components/sections/account/panel";
+import { cn } from "@/lib/utils";
 
-const WishlistProductsGrid = ({ categories = [] }: { categories?: CategoryLink[] }) => {
+const WishlistProductsGrid = ({
+  categories = [],
+  embedded = false,
+}: {
+  categories?: CategoryLink[];
+  /** Rendered inside the account dashboard's panel rather than as a full page:
+   *  drops the page container and spacing, and fits the columns to the
+   *  narrower content area beside the sidebar. */
+  embedded?: boolean;
+}) => {
   const { products, remove, isLoading } = useWishlist();
   const { add: addToCartLine } = useCart();
+  const savedCount = `${products.length} ${products.length === 1 ? "item" : "items"} saved for later`;
 
   if (!products.length) {
     // "Empty" is only true once the fetch has finished. A signed-in customer
     // with saved items would otherwise be told their wishlist is empty while
     // it is still loading.
     return (
-      <div className="container lg:pt-25 lg:pb-25 pt-15 pb-15">
+      <div className={cn(!embedded && "container lg:pt-25 lg:pb-25 pt-15 pb-15")}>
         <ShopEmptyState
+          className={cn(embedded && "border-0 px-0 py-6 lg:py-8")}
           categories={categories}
           icon={Heart}
           title={isLoading ? "Loading your wishlist…" : "Your Wishlist is Empty"}
@@ -40,17 +53,24 @@ const WishlistProductsGrid = ({ categories = [] }: { categories?: CategoryLink[]
   }
 
   return (
-    <div className="container lg:pt-20 lg:pb-25 pt-12 pb-15">
-      <div className="flex items-end justify-between gap-4 flex-wrap mb-7.5">
-        <div>
-          <p className="text-heading font-semibold text-secondary-foreground">My Wishlist</p>
-          <p className="text-gray-1-foreground text-sm mt-1">
-            {products.length} {products.length === 1 ? "item" : "items"} saved for later
-          </p>
+    <div className={cn(!embedded && "container lg:pt-20 lg:pb-25 pt-12 pb-15")}>
+      {embedded ? (
+        <PanelHeading title="My Wishlist" description={savedCount} />
+      ) : (
+        <div className="flex items-end justify-between gap-4 flex-wrap mb-7.5">
+          <div>
+            <p className="text-heading font-semibold text-secondary-foreground">My Wishlist</p>
+            <p className="text-gray-1-foreground text-sm mt-1">{savedCount}</p>
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8">
+      <div
+        className={cn(
+          "grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-8",
+          embedded ? "lg:grid-cols-4" : "md:grid-cols-4 lg:grid-cols-5"
+        )}
+      >
         {products.map((product) => {
           const path = productPath(product);
           return (

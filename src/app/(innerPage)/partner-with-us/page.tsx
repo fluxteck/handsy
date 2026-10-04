@@ -1,43 +1,42 @@
 import { Metadata } from "next";
 import PageHeader from "@/components/sections/pageHeader";
-import { getPartnerData } from "@/lib/data";
-import InteriorSolutionsHero from "./interiorSolutionsHero";
-import InteriorSolutionsPositioning from "./interiorSolutionsPositioning";
-import InteriorSolutionsSegments from "./interiorSolutionsSegments";
-import InteriorSolutionsCapabilities from "./interiorSolutionsCapabilities";
-import InteriorSolutionsProcess from "./interiorSolutionsProcess";
-import InteriorSolutionsFaq from "./interiorSolutionsFaq";
-import InteriorSolutionsCta from "./interiorSolutionsCta";
+import PartnerHero from "./partnerHero";
+import PartnerStatement from "./partnerStatement";
+import PartnerSegments from "./partnerSegments";
+import PartnerPerks from "./partnerPerks";
+import PartnerWhyUs from "./partnerWhyUs";
+import PartnerProcess from "./partnerProcess";
+import PartnerCta from "./partnerCta";
 import { getHomeCategories } from "@/lib/sdk";
 
+// The root layout's title template appends "| Handsy Market".
 export const metadata: Metadata = {
-  title: "B2B Interior & Home Decor Solutions",
+  title: "Trade Programme for Designers & Architects",
   description:
-    "Handsy Market delivers handcrafted interior and home decor solutions for architects, interior designers, builders, and hospitality brands — trusted partners, custom manufacturing, and competitive B2B pricing worldwide.",
+    "Partner with us and get easy project sourcing for interior designers, architects, hospitality and builders. Apply to join.",
 };
 
 const serviceJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
-  serviceType: "B2B Interior & Home Decor Solutions",
-  name: "Handsy Market B2B Interior & Home Decor Solutions",
+  serviceType: "Trade Programme",
+  name: "Handsy Market Trade Programme",
   description:
-    "Handsy Market is a one-stop provider of handcrafted interior and home decor solutions, bringing together trusted partners, collaborating brands, and state-of-the-art manufacturing to deliver high-quality interior solutions at competitive B2B pricing.",
+    "Handsy Market brings skilled makers and design-led brands from across India into one place. Trade members get exclusive pricing, samples for client approvals and one point of contact, from first brief to final delivery, in India and worldwide.",
   provider: { "@type": "Organization", name: "Handsy Market" },
   areaServed: "Worldwide",
   audience: [
-    { "@type": "Audience", audienceType: "Architects & Interior Designers" },
-    { "@type": "Audience", audienceType: "Builders" },
+    { "@type": "Audience", audienceType: "Interior Designers & Architects" },
     { "@type": "Audience", audienceType: "Hospitality" },
+    { "@type": "Audience", audienceType: "Builders & Developers" },
+    { "@type": "Audience", audienceType: "Workspace & Institutions" },
   ],
 };
 
-const InteriorSolutions = async () => {
-  // Real category names for the B2B enquiry dropdown, read here because
+const PartnerWithUs = async () => {
+  // Real category names for the bulk enquiry dropdown, read here because
   // the modal that renders them is a client component.
   const categoryNames = (await getHomeCategories()).map((category) => category.categoryName);
-
-  const partners = await getPartnerData();
 
   return (
     <main>
@@ -46,19 +45,19 @@ const InteriorSolutions = async () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
       />
       <PageHeader
-        pageTitle="B2B Interior & Home Decor Solutions"
-        currentPage="Interior Solutions"
+        pageTitle="Trade Programme"
+        currentPage="Partner With Us"
         renderHeading={false}
       />
-      <InteriorSolutionsHero categories={categoryNames} />
-      <InteriorSolutionsPositioning partners={partners} />
-      <InteriorSolutionsSegments />
-      <InteriorSolutionsCapabilities />
-      <InteriorSolutionsProcess />
-      <InteriorSolutionsFaq />
-      <InteriorSolutionsCta categories={categoryNames} />
+      <PartnerHero categories={categoryNames} />
+      <PartnerStatement />
+      <PartnerSegments />
+      <PartnerPerks />
+      <PartnerWhyUs />
+      <PartnerProcess />
+      <PartnerCta categories={categoryNames} />
     </main>
   );
 };
 
-export default InteriorSolutions;
+export default PartnerWithUs;

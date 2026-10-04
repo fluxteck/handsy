@@ -1,69 +1,53 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Factory, Globe2, Handshake, Percent, ShieldCheck, Wand2 } from "lucide-react";
+import { BadgePercent, Gift, Headset } from "lucide-react";
 
-const capabilities = [
-  {
-    icon: Factory,
-    title: "State-of-the-Art Manufacturing",
-    description: "Our partner workshops combine traditional woodcraft with modern production capacity, so every order meets consistent, exacting quality at scale.",
-  },
-  {
-    icon: Wand2,
-    title: "Full Design Customization",
-    description: "Sizing, joinery, wood species, finishes, and upholstery adapted to your project specifications, mood boards, and brand guidelines.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Rigorous Quality Assurance",
-    description: "Every batch is inspected against agreed specifications before it leaves our workshops, so what you approve is what arrives on site.",
-  },
-  {
-    icon: Percent,
-    title: "Competitive B2B Pricing",
-    description: "Transparent, tiered pricing that improves with project scale — with no unnecessary middlemen between our workshops and your project.",
-  },
-  {
-    icon: Handshake,
-    title: "Trusted Partner Network",
-    description: "Access our curated network of verified artisan workshops and collaborating brands for private-label and multi-category sourcing.",
-  },
-  {
-    icon: Globe2,
-    title: "Global Project Logistics",
-    description: "Export documentation, freight coordination, and on-time delivery support for projects across 30+ countries.",
-  },
+const perks = [
+  { icon: BadgePercent, title: "Exclusive Trade Pricing" },
+  { icon: Gift, title: "Rewards, Offers & Gifts" },
+  { icon: Headset, title: "Dedicated Support" },
 ];
 
-const InteriorSolutionsCapabilities = () => {
+const PartnerPerks = () => {
   return (
-    <section className="bg-home-bg-1 lg:py-25 py-15" aria-label="Product capabilities, quality, and pricing">
+    <section className="bg-home-bg-1 lg:py-25 py-15" aria-label="Member perks and offers">
       <div className="container">
         <div className="max-w-2xl">
-          <p className="flex items-center gap-2.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
+          <h3 className="flex items-center gap-2.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
             What We Offer <span className="h-px w-8 bg-gray-2" aria-hidden />
-          </p>
-          <h2 className="mt-3 text-heading capitalize text-secondary-foreground font-normal">
-            Capabilities built around your project
+          </h3>
+          <h2 className="mt-3 text-heading text-secondary-foreground font-normal">
+            Member Perks &amp; <span className="font-display italic">Offers</span>
           </h2>
+          <p className="mt-4 text-gray-1-foreground leading-[170%]">
+            Join free and get rewards and support built around your projects.
+          </p>
         </div>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {capabilities.map(({ icon: Icon, title, description }, index) => (
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {perks.map(({ icon: Icon, title }, index) => (
             <motion.div
               key={title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.05 }}
-              className="rounded-2xl bg-background p-7 shadow-3xl"
+              transition={{ duration: 0.5, ease: "easeOut", delay: index * 0.08 }}
+              className="group relative overflow-hidden rounded-2xl bg-background p-7 shadow-3xl lg:p-8"
             >
-              <span className="flex size-12 items-center justify-center rounded-full bg-primary text-white">
-                <Icon className="size-5" />
-              </span>
-              <p className="mt-5 text-lg font-medium text-secondary-foreground">{title}</p>
-              <p className="mt-2 text-gray-1-foreground leading-[170%]">{description}</p>
+              <div
+                className="pointer-events-none absolute -top-16 -right-16 size-44 rounded-full bg-gradient-radial from-primary/10 to-transparent opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+                aria-hidden
+              />
+              <div className="relative flex items-start justify-between">
+                <span className="flex size-12 items-center justify-center rounded-full bg-primary text-white">
+                  <Icon className="size-5" />
+                </span>
+                <span className="font-display text-3xl italic text-gray-2" aria-hidden>
+                  0{index + 1}
+                </span>
+              </div>
+              <h3 className="relative mt-8 text-xl font-medium text-secondary-foreground lg:text-2xl">{title}</h3>
             </motion.div>
           ))}
         </div>
@@ -72,4 +56,4 @@ const InteriorSolutionsCapabilities = () => {
   );
 };
 
-export default InteriorSolutionsCapabilities;
+export default PartnerPerks;

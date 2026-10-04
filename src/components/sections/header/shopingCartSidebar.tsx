@@ -12,7 +12,6 @@ import {
 import { useCart } from "@/lib/cart/cart-context";
 import { Close, Minus, Plus, ShopCart } from "@/lib/icon";
 import { Check } from "lucide-react";
-import type { CategoryLink } from "@/lib/categoryLinks";
 import { couponsData } from "@/db/couponsData";
 import { ProductType } from "@/types/productType";
 import CartOfferMarquee from "./cartOfferMarquee";
@@ -27,11 +26,8 @@ import toast from "react-hot-toast";
 
 const ShopingCartSidebar = ({
   featuredProducts = [],
-  categories = [],
 }: {
   featuredProducts?: ProductType[];
-  /** Catalogue categories suggested when the cart is empty. */
-  categories?: CategoryLink[];
 }) => {
   const pathName = usePathname();
   const [isClient, setIsClient] = useState(false);
@@ -245,29 +241,11 @@ const ShopingCartSidebar = ({
                   <CartCrossSell products={crossSellProducts} />
                 </>
               ) : (
-                <div className="text-center">
-                  <p className="capitalize text-secondary-foreground text-xl">
-                    No Product in cart
-                  </p>
-                  {categories.length > 0 && (
-                  <div className="mt-6">
-                    <p className="font-medium text-secondary-foreground">
-                      What would you like to buy? Pick from our best-selling categories
-                    </p>
-                    <ul className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-                      {categories.map(({ label, href }) => (
-                        <li key={href}>
-                          <Link
-                            href={href}
-                            className="multiline-hover text-gray-1-foreground hover:text-secondary-foreground capitalize transition-colors duration-300"
-                          >
-                            {label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  )}
+                <div className="flex flex-1 items-center justify-center">
+                  <span className="flex size-32 items-center justify-center rounded-full bg-home-bg-1">
+                    <ShopCart className="size-14 text-gray-1-foreground" />
+                  </span>
+                  <p className="sr-only">No product in cart</p>
                 </div>
               )}
             </div>

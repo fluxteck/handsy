@@ -3,9 +3,10 @@
 import type React from "react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { Boxes, CheckCircle2, Globe2 } from "lucide-react";
+import { BadgeCheck, CheckCircle2, Clock3 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,75 +19,67 @@ import {
 } from "@/components/ui/select";
 import { ArrowRight } from "@/lib/icon";
 import { cn } from "@/lib/utils";
-import { useEnquiry } from "@commercekitsdk/react";
+import { useEnquiry, useNewsletter } from "@commercekitsdk/react";
+import { countries, fieldClass, selectTriggerClass } from "../b2b/b2bEnquiryModal";
 
-export const countries = [
-  "United States", "United Kingdom", "Canada", "Australia", "Germany", "France",
-  "Netherlands", "United Arab Emirates", "Saudi Arabia", "India", "Singapore",
-  "Japan", "South Korea", "South Africa", "Brazil", "Mexico", "Italy", "Spain",
-  "Sweden", "New Zealand", "Other",
-];
+/** Who is applying. One entry per segment on the page, so a segment's own
+ *  "Join as …" button can open the form with its option already chosen. */
+export const memberTypes = [
+  "Interior Designer / Architect",
+  "Hospitality",
+  "Builder / Developer",
+  "Workspace / Institution",
+] as const;
 
-export const fieldClass = "mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground";
-export const selectTriggerClass ="h-12.5 py-2.5 border-[1.5px] border-[#999796] text-base text-gray-1-foreground mt-2.5 w-full";
+export type MemberType = (typeof memberTypes)[number];
 
 const SUCCESS_MESSAGE =
-  "Thanks — our wholesale team will review your enquiry and reply by email within 2–3 business days.";
+  "Thanks for applying — our team will review your details and confirm your membership by email.";
 
-/**
- * Category options for the enquiry dropdown.
- *
- * Supplied by the page rather than read here, because this is a client
- * component and the categories live behind a server-side catalogue read. It
- * previously listed the purchased template's categories, so a B2B enquiry could
- * only be filed against a product range this store does not sell.
- */
-export interface B2bEnquiryModalProps {
+interface PartnerJoinModalProps {
   className?: string;
-  categories?: string[];
-  /** Subject the lead is filed under, so the team can tell sources apart. */
-  subject?: string;
-  /** Individuals (e.g. wedding gifting) have no company, so pages may relax it. */
-  companyRequired?: boolean;
   /** Text on the button that opens the modal. */
   label?: string;
+  /** Preselects the "Joining as" option. */
+  memberType?: MemberType;
 }
 
-const B2bEnquiryModal = ({
-  className,
-  label = "Request a Bulk Quote",
-  categories = [],
-  subject = "Wholesale enquiry",
-  companyRequired = true,
-}: B2bEnquiryModalProps) => {
+const PartnerJoinModal = ({ className, label = "Join with us!", memberType }: PartnerJoinModalProps) => {
   const [open, setOpen] = useState(false);
-  /* Posted through the SDK to the server's enquiries endpoint, keyed by type
-     so wholesale leads land in their own queue. The wholesale-specific answers
-     ride along in `fields`, which is why adding a question to this form needs
-     no schema or contract change. */
+  /* Filed through the same enquiries endpoint as the wholesale form, under the
+     `b2b` type the server already queues; the subject tells the team it is a
+     trade programme application, and the firm details ride along in `fields`. */
   const { submit, isSubmitting, isSuccess, error, reset } = useEnquiry("b2b");
+  const { subscribe } = useNewsletter();
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const email = String(data.get("email") ?? "");
+    const wantsUpdates = data.get("subscribe") === "on";
     const result = await submit({
       name: String(data.get("fullName") ?? ""),
-      email: String(data.get("email") ?? ""),
+      email,
       phone: String(data.get("phone") ?? ""),
-      subject,
+      subject: "Trade Programme application",
       message: String(data.get("message") ?? ""),
       fields: {
         companyName: String(data.get("companyName") ?? ""),
         country: String(data.get("country") ?? ""),
-        category: String(data.get("category") ?? ""),
-        quantity: String(data.get("quantity") ?? ""),
+        memberType: String(data.get("memberType") ?? ""),
+        portfolio: String(data.get("portfolio") ?? ""),
+        subscribe: wantsUpdates ? "yes" : "no",
       },
     });
     // From the result, not `error` state: this closure predates the update.
     if (!result.ok) {
-      toast.error(result.error.message || "We couldn't send your enquiry. Please try again.");
+      toast.error(result.error.message || "We couldn't send your application. Please try again.");
+      return;
     }
+    /* Opt-in only, and never allowed to fail the application: signing up is
+       idempotent server-side, and the choice is recorded in `fields` above. */
+    if (wantsUpdates) void subscribe({ email, source: "trade-programme" });
   };
 
   const handleOpenChange = (next: boolean) => {
@@ -111,7 +104,7 @@ const B2bEnquiryModal = ({
         showCloseButton={!isSuccess}
         className="max-w-[640px] w-[calc(100%-2rem)] sm:w-full p-0 gap-0 rounded-3xl overflow-hidden border border-gray-2 shadow-3xl max-h-[90vh] overflow-y-auto"
       >
-        <DialogTitle className="sr-only">Request a bulk quote</DialogTitle>
+        <DialogTitle className="sr-only">Join the Handsy Market Trade Programme</DialogTitle>
 
         {isSuccess ? (
           <div className="flex flex-col items-center justify-center text-center px-8 py-16">
@@ -119,7 +112,7 @@ const B2bEnquiryModal = ({
               <span className="absolute inset-0 rounded-full bg-primary/30 animate-spring-one" aria-hidden />
               <CheckCircle2 className="relative size-8" strokeWidth={1.5} />
             </div>
-            <p className="mt-6 text-secondary-foreground text-xl lg:text-2xl font-medium">Enquiry Sent</p>
+            <p className="mt-6 text-secondary-foreground text-xl lg:text-2xl font-medium">Application Sent</p>
             <p className="mt-2 max-w-sm text-gray-1-foreground leading-[170%]">{SUCCESS_MESSAGE}</p>
             <Button type="button" className="mt-7.5 min-w-[160px]" onClick={() => handleOpenChange(false)}>
               Done
@@ -133,12 +126,11 @@ const B2bEnquiryModal = ({
                 aria-hidden
               />
               <span className="relative flex size-12 items-center justify-center rounded-full bg-primary text-white">
-                <Boxes className="size-5" />
+                <BadgeCheck className="size-5" />
               </span>
-              <p className="relative mt-4 text-heading capitalize text-secondary-foreground">Request a Bulk Quote</p>
+              <p className="relative mt-4 text-heading text-secondary-foreground">Join the Trade Programme</p>
               <p className="relative mt-2 max-w-md text-gray-1-foreground leading-[170%]">
-                Share your business details and requirements — our B2B team will respond with
-                tiered pricing within 1–2 business days.
+                Tell us about your firm and share a portfolio or website. It takes about two minutes.
               </p>
             </div>
 
@@ -149,15 +141,8 @@ const B2bEnquiryModal = ({
                   <Input type="text" name="fullName" id="fullName" required placeholder="Your name" className={fieldClass} />
                 </Label>
                 <Label htmlFor="companyName" className="text-gray-1-foreground text-base w-full">
-                  Company Name{companyRequired && <span className="text-primary-foreground">*</span>}
-                  <Input
-                    type="text"
-                    name="companyName"
-                    id="companyName"
-                    required={companyRequired}
-                    placeholder={companyRequired ? "Your company" : "Your company (optional)"}
-                    className={fieldClass}
-                  />
+                  Firm / Company Name<span className="text-primary-foreground">*</span>
+                  <Input type="text" name="companyName" id="companyName" required placeholder="Your firm or studio" className={fieldClass} />
                 </Label>
                 <Label htmlFor="email" className="text-gray-1-foreground text-base w-full">
                   Business Email<span className="text-primary-foreground">*</span>
@@ -182,49 +167,60 @@ const B2bEnquiryModal = ({
                     </SelectContent>
                   </Select>
                 </Label>
-                <Label htmlFor="category" className="text-gray-1-foreground text-base w-full">
-                  Product / Category Interested In<span className="text-primary-foreground">*</span>
-                  <Select name="category" required>
-                    <SelectTrigger id="category" className={selectTriggerClass}>
-                      <SelectValue placeholder="Select a category" />
+                <Label htmlFor="memberType" className="text-gray-1-foreground text-base w-full">
+                  Joining As<span className="text-primary-foreground">*</span>
+                  <Select name="memberType" required defaultValue={memberType}>
+                    <SelectTrigger id="memberType" className={selectTriggerClass}>
+                      <SelectValue placeholder="Select one" />
                     </SelectTrigger>
                     <SelectContent className="py-[14px] bg-background">
-                      {categories.map((label) => (
-                        <SelectItem key={label} value={label} className="cursor-pointer">
-                          {label}
+                      {memberTypes.map((type) => (
+                        <SelectItem key={type} value={type} className="cursor-pointer">
+                          {type}
                         </SelectItem>
                       ))}
-                      <SelectItem value="Multiple / Not sure yet" className="cursor-pointer">
-                        Multiple / Not sure yet
-                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </Label>
-                <Label htmlFor="quantity" className="text-gray-1-foreground text-base w-full sm:col-span-2">
-                  Estimated Quantity<span className="text-primary-foreground">*</span>
-                  <Input type="text" name="quantity" id="quantity" required placeholder="e.g. 200 units" className={fieldClass} />
+                <Label htmlFor="portfolio" className="text-gray-1-foreground text-base w-full sm:col-span-2">
+                  Portfolio or Website<span className="text-primary-foreground">*</span>
+                  <Input
+                    type="text"
+                    inputMode="url"
+                    name="portfolio"
+                    id="portfolio"
+                    required
+                    placeholder="yourstudio.com"
+                    className={fieldClass}
+                  />
                 </Label>
                 <Label htmlFor="message" className="text-gray-1-foreground text-base w-full sm:col-span-2">
-                  Message / Requirements
+                  About Your Projects
                   <Textarea
                     name="message"
                     id="message"
-                    placeholder="Customization needs, target market, timeline..."
+                    placeholder="The kind of projects you work on, and what you are sourcing..."
                     className="mt-2.5 border-[1.5px] border-[#999796] py-3 text-gray-1-foreground min-h-[110px]"
                   />
                 </Label>
+                <div className="flex items-center gap-3 sm:col-span-2">
+                  <Checkbox id="subscribe" name="subscribe" />
+                  <Label htmlFor="subscribe" className="text-sm font-normal leading-normal text-gray-1-foreground">
+                    Subscribe to trade offers, rewards and updates by email
+                  </Label>
+                </div>
               </div>
 
               {!isSuccess && error && (
                 <p className="mt-5 text-sm text-red-500">{error.message}</p>
               )}
 
-              <div className="mt-7.5 flex items-center gap-4">
+              <div className="mt-7.5 flex flex-wrap items-center gap-4">
                 <Button type="submit" disabled={isSubmitting} className="min-w-[180px]">
-                  {isSubmitting ? "Submitting..." : "Submit Enquiry"}
+                  {isSubmitting ? "Submitting..." : "Submit Application"}
                 </Button>
                 <p className="flex items-center gap-1.5 text-xs text-gray-3-foreground">
-                  <Globe2 className="size-3.5" /> Trusted by 500+ businesses worldwide
+                  <Clock3 className="size-3.5" /> Our team reviews your details and confirms your membership
                 </p>
               </div>
             </form>
@@ -235,4 +231,4 @@ const B2bEnquiryModal = ({
   );
 };
 
-export default B2bEnquiryModal;
+export default PartnerJoinModal;
