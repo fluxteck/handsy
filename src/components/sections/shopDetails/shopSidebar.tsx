@@ -1,115 +1,108 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Close } from "@/lib/icon";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { CategoryType } from "@/db/categoriesData";
-import { productPath } from "@/lib/productPath";
-import type { ProductType } from "@/types/productType";
-import currencyFormatter from "currency-formatter";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+import { TAG_GROUPS, tagGroupOf } from "@/lib/catalog/tagGroups";
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 import PriceRangeSlider from "./priceRangeSlider";
 
-export const categoriesDataSidebar = [
-  {
-    id: 1,
-    categoryName: "Furniture (2200)",
-    categoryImg: "",
-    value: "furniture",
-  },
-  {
-    id: 2,
-    categoryName: "Living Room (720)",
-    categoryImg: "",
-    value: "Living Room",
-  },
-  {
-    id: 3,
-    categoryName: "Decoration (210)",
-    categoryImg: "",
-    value: "Decoration",
-  },
-  {
-    id: 4,
-    categoryName: "Office (210)",
-    categoryImg: "",
-    value: "Office",
-  },
-  {
-    id: 5,
-    categoryName: "Accessories (580)",
-    categoryImg: "",
-    value: "Accessories",
-  },
-];
-const colors = [
-  "#1A1A19",
-  "#D9D9D9",
-  "#96532A",
-  "#0000001A",
-  "#FFA34E",
-  "#FBDBAC",
-  "#EADDC9",
-];
-
-const bestProducts = [
-  {
-    id: 1,
-    thumbnail: "/images/sidebar/img-1.webp",
-    title: "Modular sofa with wood",
-    price: 100,
-  },
-  {
-    id: 2,
-    thumbnail: "/images/sidebar/img-2.webp",
-    title: "Modern Accent Chair",
-    price: 299,
-  },
-  {
-    id: 3,
-    thumbnail: "/images/sidebar/img-3.webp",
-    title: "Wooden Black Chair",
-    price: 280,
-  },
-];
-
-const tags = [
-  "furniture",
-  "Bed Room",
-  "Living Room",
-  "Office",
-  "Decoration",
-  "Lighting",
-  "Accessories",
-];
-
 /**
- * Filter sidebar.
+ * Filter panel — the content of the shared `FilterDrawer`. Used by every
+ * listing: the catalogue pages drive it from the URL, the vendor pages from
+ * local state; this component only renders and reports changes.
  *
- * Two modes. Without the catalogue props it renders exactly as it always has,
- * on the sample data the un-migrated pages still use. With them, each control
- * drives the URL and the results come from the server.
- *
- * Two blocks are hidden in catalogue mode:
- *
- *  - **Filter by Color.** The API exposes variant options as value strings
- *    (`{ Wood: "Walnut" }`); the `swatch_hex` those circles need never crosses
- *    the SDK boundary, so the control could only ever render decorative dots
- *    that filter nothing.
- *  - **Best Sellers**, when no real products are supplied — a hardcoded rail of
- *    products that aren't in the catalogue, sitting beside ones that are, reads
- *    as broken.
+ * Categories nest under their parent (empty ones are left out), extra
+ * single-choice groups (e.g. a directory's Location) render the same way,
+ * price is the shared range slider, and product tags are split into the
+ * groups in `tagGroups.ts`. Sections start open when they hold a selection,
+ * so a returning shopper sees what is applied.
  */
+
+/** Radio value for "All …" — an empty string reads as "no selection" to the radio group. */
+const ALL_OPTIONS = "__all";
+
+export type FilterOption = { value: string; label: string; count?: number; depth?: number };
+
+/** A single-choice section; `selected` is "" when nothing is chosen. */
+export type FilterOptionGroup = {
+  id: string;
+  label: string;
+  allLabel: string;
+  options: FilterOption[];
+  selected: string;
+  onChange: (value: string) => void;
+};
+
+/** Categories with products, each followed by its own subcategories. */
+function nestCategories(categories: CategoryType[]): FilterOption[] {
+  const withProducts = categories.filter((c) => (c.productCount ?? 0) > 0);
+  const ids = new Set(withProducts.map((c) => String(c.id)));
+  const childrenOf = (parentId: string) => withProducts.filter((c) => c.parentId === parentId);
+  const walk = (list: CategoryType[], depth: number): FilterOption[] =>
+    list.flatMap((c) => [
+      { value: c.value ?? String(c.id), label: c.categoryName, depth, count: c.productCount },
+      ...walk(childrenOf(String(c.id)), depth + 1),
+    ]);
+  return walk(withProducts.filter((c) => !c.parentId || !ids.has(c.parentId)), 0);
+}
+
+const SectionTitle = ({ label, selectedCount }: { label: string; selectedCount: number }) => (
+  <span className="flex items-center gap-2 text-base font-medium text-secondary-foreground">
+    {label}
+    {selectedCount > 0 && (
+      <span className="flex min-w-5 h-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-medium text-white">
+        {selectedCount}
+      </span>
+    )}
+  </span>
+);
+
+const RadioSection = ({ id, label, allLabel, options, selected, onChange }: FilterOptionGroup) => (
+  <AccordionItem value={id} className="border-border">
+    <AccordionTrigger className="py-5 hover:no-underline [&_svg]:size-4">
+      <SectionTitle label={label} selectedCount={selected ? 1 : 0} />
+    </AccordionTrigger>
+    <AccordionContent className="pb-5">
+      <RadioGroup
+        value={selected || ALL_OPTIONS}
+        onValueChange={(value) => onChange(value === ALL_OPTIONS ? "" : value)}
+        aria-label={label}
+        className="gap-0.5"
+      >
+        {[{ value: ALL_OPTIONS, label: allLabel } as FilterOption, ...options].map(({ value, label: optionLabel, depth, count }) => (
+          <label
+            key={value}
+            style={depth ? { paddingLeft: 8 + depth * 20 } : undefined}
+            className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-2 transition-colors duration-200 hover:bg-home-bg-1"
+          >
+            <RadioGroupItem value={value} />
+            <span
+              className={cn(
+                "flex-1 text-[15px] capitalize",
+                (selected || ALL_OPTIONS) === value ? "text-secondary-foreground font-medium" : "text-gray-1-foreground"
+              )}
+            >
+              {optionLabel}
+            </span>
+            {count !== undefined && <span className="text-sm text-gray-3-foreground">{count}</span>}
+          </label>
+        ))}
+      </RadioGroup>
+    </AccordionContent>
+  </AccordionItem>
+);
+
 const ShopSidebar = ({
   isSidebarCategoryHide,
   isSidebarTagsHide,
-  categories,
-  tags: catalogTags,
+  categories = [],
+  optionGroups = [],
+  tags = [],
   priceBounds,
   selected,
   currency = "USD",
-  bestSellers,
   onCategoryChange,
   onTagToggle,
   onPriceApply,
@@ -117,180 +110,104 @@ const ShopSidebar = ({
   isSidebarCategoryHide?: boolean;
   isSidebarTagsHide?: boolean;
   categories?: CategoryType[];
+  /** Extra single-choice sections, rendered after Category. */
+  optionGroups?: FilterOptionGroup[];
   tags?: string[];
   priceBounds?: { min: number; max: number };
   selected?: { category: string; tags: string[]; minPrice?: number; maxPrice?: number };
   currency?: string;
-  bestSellers?: ProductType[];
   onCategoryChange?: (slug: string) => void;
   onTagToggle?: (tag: string) => void;
+  /** Omit to hide the Price section (e.g. a listing of vendors). */
   onPriceApply?: (range: [number, number]) => void;
 }) => {
-  const [isSidebarActive, setIsSidebatActive] = useState(false);
-  const isCatalogMode = Boolean(categories && selected);
+  const current = selected ?? { category: "", tags: [] };
+  const categoryOptions = isSidebarCategoryHide ? [] : nestCategories(categories);
+  const radioGroups: FilterOptionGroup[] = [
+    ...(categoryOptions.length
+      ? [{
+          id: "category",
+          label: "Category",
+          allLabel: "All categories",
+          options: categoryOptions,
+          selected: current.category,
+          onChange: (value: string) => onCategoryChange?.(value),
+        }]
+      : []),
+    ...optionGroups,
+  ];
+  const hasPrice = current.minPrice !== undefined || current.maxPrice !== undefined;
+  const tagSections = isSidebarTagsHide
+    ? []
+    : [...TAG_GROUPS, { id: "more", label: "More" } as const]
+        .map(({ id, label }) => {
+          const sectionTags = tags.filter((tag) => tagGroupOf(tag) === id);
+          return { id, label, tags: sectionTags, selectedCount: sectionTags.filter((t) => current.tags.includes(t)).length };
+        })
+        .filter((section) => section.tags.length > 0);
 
-  const categoryItems = isCatalogMode
-    ? categories!.map((c) => ({
-        id: c.id,
-        categoryName: c.categoryName,
-        value: c.value ?? String(c.id),
-      }))
-    : categoriesDataSidebar;
-  const tagItems = isCatalogMode ? (catalogTags ?? []) : tags;
-  const bestSellerItems = isCatalogMode ? (bestSellers ?? []) : bestProducts;
+  // Open by default: anything with a selection, plus the everyday sections.
+  const defaultOpen = [
+    ...radioGroups.map((group) => group.id),
+    "price",
+    ...tagSections.filter((s) => s.id !== "more" || s.selectedCount > 0).map((s) => s.id),
+  ];
 
   return (
-    <aside className="relative">
-      <Button
-        size={"sm"}
-        className="lg:hidden inline-flex"
-        onClick={() => setIsSidebatActive(true)}
-      >
-        Filter
-      </Button>
-      <div
-        className={`bg-background max-w-[340px] pr-5 py-7.5 absolute top-0 z-40 lg:static lg:max-w-full lg:pr-0 lg:py-0 transition-all duration-500 ${
-          isSidebarActive ? "left-0" : "-left-[150%] lg:left-0"
-        }`}
-      >
-        <div
-          className="text-gray-1-foreground absolute right-5 lg:hidden"
-          onClick={() => setIsSidebatActive(false)}
-        >
-          <Close className="size-5" />
-        </div>
-        {isSidebarCategoryHide || (
-          <div className="pb-10 border-b border-b-[#999796]">
-            <strong className="font-medium text-xl text-secondary-foreground uppercase">
-              Categories
-            </strong>
-            <ul className="mt-5 flex flex-col gap-2.5">
-              {categoryItems.map(({ categoryName, id, value }) => (
-                <li key={id}>
-                  {isCatalogMode ? (
-                    <button
-                      type="button"
-                      onClick={() => onCategoryChange?.(selected!.category === value ? "" : value)}
-                      className={`text-base leading-[162%] transition-all duration-500 text-left ${selected!.category === value ? "text-secondary-foreground" : "text-gray-1-foreground hover:text-secondary-foreground"}`}
-                    >
-                      {categoryName}
-                    </button>
-                  ) : (
-                    <Link
-                      href={`/category?name=${value}`}
-                      className="text-gray-1-foreground text-base leading-[162%] hover:text-secondary-foreground transition-all duration-500"
-                    >
-                      {categoryName}
-                    </Link>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        <div className="mt-10 pb-10 border-b border-b-[#999796]">
-          <strong className="font-medium text-xl text-secondary-foreground uppercase">
-            Filter by Price
-          </strong>
-          <PriceRangeSlider
-            min={priceBounds?.min}
-            max={priceBounds?.max}
-            currency={currency}
-            value={
-              selected && (selected.minPrice !== undefined || selected.maxPrice !== undefined)
-                ? [selected.minPrice ?? priceBounds?.min ?? 0, selected.maxPrice ?? priceBounds?.max ?? 0]
-                : undefined
-            }
-            onApply={onPriceApply}
-          />
-        </div>
-        {!isCatalogMode && (
-          <div className="mt-10 pb-10 border-b border-b-[#999796]">
-            <strong className="font-medium text-xl text-secondary-foreground uppercase">
-              Filter by Color
-            </strong>
-            <ul className="mt-5 flex flex-wrap gap-2.5">
-              {colors.map((color, index) => (
-                <li
-                  key={index}
-                  className={`rounded-full w-7.5 h-7.5 cursor-pointer`}
-                  style={{ backgroundColor: color }}
-                >
-                  {" "}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-        {bestSellerItems.length > 0 && (
-          <div className="mt-10 pb-10">
-            <strong className="font-medium text-xl text-secondary-foreground uppercase">
-              Best Sellers
-            </strong>
-            <div className="mt-5 flex flex-col gap-5">
-              {bestSellerItems.map((prd) => {
-                const { id, price, thumbnail, title } = prd;
+    <Accordion type="multiple" defaultValue={defaultOpen} className="[&>[data-slot=accordion-item]:last-child]:border-b-0">
+      {radioGroups.map((group) => (
+        <RadioSection key={group.id} {...group} />
+      ))}
+
+      {onPriceApply && (
+        <AccordionItem value="price" className="border-border">
+          <AccordionTrigger className="py-5 hover:no-underline [&_svg]:size-4">
+            <SectionTitle label="Price" selectedCount={hasPrice ? 1 : 0} />
+          </AccordionTrigger>
+          <AccordionContent className="pb-6">
+            <PriceRangeSlider
+              min={priceBounds?.min}
+              max={priceBounds?.max}
+              currency={currency}
+              value={hasPrice ? [current.minPrice ?? priceBounds?.min ?? 0, current.maxPrice ?? priceBounds?.max ?? 0] : undefined}
+              onApply={onPriceApply}
+            />
+          </AccordionContent>
+        </AccordionItem>
+      )}
+
+      {tagSections.map(({ id, label, tags: sectionTags, selectedCount }) => (
+        <AccordionItem key={id} value={id} className="border-border">
+          <AccordionTrigger className="py-5 hover:no-underline [&_svg]:size-4">
+            <SectionTitle label={label} selectedCount={selectedCount} />
+          </AccordionTrigger>
+          <AccordionContent className="pb-5">
+            <div className="flex flex-wrap gap-2">
+              {sectionTags.map((tag) => {
+                const isActive = current.tags.includes(tag);
                 return (
-                  <div key={id} className="flex items-center gap-5">
-                    <Image
-                      width={90}
-                      height={70}
-                      sizes="100vw"
-                      src={thumbnail}
-                      alt="img"
-                      className="rounded-sm"
-                    />
-                    <div>
-                      <Link
-                        href={isCatalogMode ? productPath(prd as ProductType) : "/product-details"}
-                        className="capitalize text-gray-1-foreground font-medium hover:text-secondary-foreground transition-all duration-500"
-                      >
-                        {title}
-                      </Link>
-                      <p className="text-secondary-foreground mt-1 font-medium">
-                        {isCatalogMode
-                          ? currencyFormatter.format(price, { code: currency || "USD" })
-                          : `$${price.toFixed(2)}`}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        {!isSidebarTagsHide && tagItems.length > 0 && (
-          <div className="mt-10 pb-10">
-            <strong className="font-medium text-xl text-secondary-foreground uppercase">
-              Tags
-            </strong>
-            <div className="mt-5 flex flex-wrap gap-x-[15px] gap-y-2.5">
-              {tagItems.map((tag, index) => {
-                const isActive = isCatalogMode && selected!.tags.includes(tag);
-                return isCatalogMode ? (
                   <button
                     type="button"
-                    key={index}
+                    key={tag}
+                    aria-pressed={isActive}
                     onClick={() => onTagToggle?.(tag)}
-                    className={`underline decoration-skip-ink-none text-underline-position capitalize text-base transition-all duration-500 ${isActive ? "text-secondary-foreground" : "text-gray-1-foreground hover:text-secondary-foreground"}`}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm capitalize transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40",
+                      isActive
+                        ? "border-primary bg-primary text-white"
+                        : "border-border text-gray-1-foreground hover:border-primary hover:text-secondary-foreground"
+                    )}
                   >
+                    {isActive && <Check className="size-3.5" strokeWidth={2} aria-hidden />}
                     {tag}
                   </button>
-                ) : (
-                  <Link
-                    href={"#"}
-                    key={index}
-                    className="underline decoration-skip-ink-none text-underline-position capitalize text-gray-1-foreground text-base hover:text-secondary-foreground transition-all duration-500"
-                  >
-                    {tag}
-                  </Link>
                 );
               })}
             </div>
-          </div>
-        )}
-      </div>
-    </aside>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
   );
 };
 

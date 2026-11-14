@@ -10,7 +10,9 @@ import TestimonialSlider from '@/components/sections/testimonialSlider'
 import TopCollections from '@/components/sections/topCollections'
 import HeroSection from '@/components/sections/heroSection'
 import ShopTheLook from '@/components/sections/shopTheLook'
-import { /* getBrandsData, */ getHeroData, getPromoCardsData, getShopTheLookData, getTestimonialsData } from '@/lib/data'
+import PromoBento from '@/components/sections/promoBento'
+import UspStrip from '@/components/sections/uspStrip'
+import { /* getBrandsData, */ getHeroData, getPromoBentoData, getPromoCardsData, getUspData, getShopTheLookData, getVendorTestimonialsData } from '@/lib/data'
 import { getFeaturedProducts, getFeaturedCategories, getTopCollections } from '@/lib/sdk'
 
 export const metadata: Metadata = {
@@ -21,7 +23,7 @@ export const metadata: Metadata = {
 /**
  * Catalogue sections (categories, top collections, featured products) come
  * from handsymarket-server through the SDK. The editorial sections — hero,
- * promo cards, brands, testimonials, shop-the-look — have no server
+ * promo cards, brands, vendor testimonials, shop-the-look — have no server
  * counterpart and keep reading local content from `src/db`.
  *
  * Revalidated hourly; the catalogue changes far less often than a request
@@ -36,35 +38,41 @@ const Home = async () => {
   // time-to-first-byte the *sum* of every round trip instead of the slowest.
   const [
     categoriesData,
-    testimonialData,
+    vendorTestimonialData,
     topCollections,
     featuredProducts,
     heroData,
     promoCardsData,
     // brandsData,
     shopTheLookData,
+    promoBentoData,
+    uspData,
   ] = await Promise.all([
     getFeaturedCategories(),
-    getTestimonialsData(),
+    getVendorTestimonialsData(),
     getTopCollections(),
     getFeaturedProducts(),
     getHeroData(),
     getPromoCardsData(),
     // getBrandsData(),
     getShopTheLookData(),
+    getPromoBentoData(),
+    getUspData(),
   ]);
 
   return (
     <>
       <HeroSection heroData={heroData} promoCards={promoCardsData} />
+      <UspStrip items={uspData} />
       <HomeCategory categories={categoriesData} />
       <FeaturedProducts featuredProducts={featuredProducts} />
+      <PromoBento cards={promoBentoData} />
       <TopCollections data={topCollections} />
       <AboutTeaser />
       <ShopTheLook data={shopTheLookData} />
       {/* "Brands You'll Love" section hidden — uncomment to restore */}
       {/* <BrandCarousel brands={brandsData} /> */}
-      <TestimonialSlider testimonials={testimonialData} />
+      <TestimonialSlider testimonials={vendorTestimonialData} title="What Our Vendors Say" />
       <Newsletter />
     </>
   )

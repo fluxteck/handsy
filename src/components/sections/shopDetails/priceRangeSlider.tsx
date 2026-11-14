@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { Range } from "react-range";
+import { Range, getTrackBackground } from "react-range";
 import currencyFormatter from "currency-formatter";
 
 /**
@@ -11,7 +11,7 @@ import currencyFormatter from "currency-formatter";
  * nothing. Values are in major units; the caller converts to the minor units
  * the API compares against.
  *
- * `onApply` fires on the Filter button, not on drag — every drag frame would
+ * `onApply` fires on the Apply button, not on drag — every drag frame would
  * otherwise become a navigation.
  */
 const PriceRangeSlider = ({
@@ -33,10 +33,8 @@ const PriceRangeSlider = ({
     const maxLimit = max > min ? max : min + 1;
 
     const clamp = (v: number) => Math.min(maxLimit, Math.max(minLimit, v));
-    const [values, setValues] = useState<number[]>([
-        clamp(value?.[0] ?? minLimit),
-        clamp(value?.[1] ?? maxLimit),
-    ]);
+    const applied: [number, number] = [clamp(value?.[0] ?? minLimit), clamp(value?.[1] ?? maxLimit)];
+    const [values, setValues] = useState<number[]>(applied);
 
     // Re-sync when the URL (and so the incoming value) changes.
     useEffect(() => {
@@ -46,62 +44,68 @@ const PriceRangeSlider = ({
 
     const format = (amount: number) =>
         currencyFormatter.format(amount, { code: currency || "USD", precision: 0 });
+    const low = values[0] ?? minLimit;
+    const high = values[1] ?? maxLimit;
+    const isDirty = low !== applied[0] || high !== applied[1];
 
     return (
-        <div className="w-full mt-5">
+        // Padding keeps the 18px thumbs clear of the accordion's overflow clip at both ends.
+        <div className="w-full px-3 pt-2">
             <Range
                 step={1}
                 min={minLimit}
                 max={maxLimit}
                 values={values}
                 onChange={(newValues) => setValues(newValues)}
-                renderTrack={({ props, children }) => {
-                    // Destructure key from props to avoid the warning
-                    const { ...restProps } = props;
-                    return (
-                        <div
-                            key={1}
-                            {...restProps}
-                            style={{
-                                ...restProps.style,
-                                height: "2px",
-                                width: "100%",
-                                background: "#4D4C4B",
-                            }}
-                        >
-                            {children}
-                        </div>
-                    );
-                }}
-                renderThumb={({ props }) => {
-                    // Destructure key from props to avoid the warning
+                renderTrack={({ props, children }) => (
+                    <div
+                        {...props}
+                        className="h-1 w-full rounded-full"
+                        style={{
+                            ...props.style,
+                            // Selected span in the primary colour, the rest muted.
+                            background: getTrackBackground({
+                                values,
+                                colors: ["var(--gray-2)", "var(--primary)", "var(--gray-2)"],
+                                min: minLimit,
+                                max: maxLimit,
+                            }),
+                        }}
+                    >
+                        {children}
+                    </div>
+                )}
+                renderThumb={({ props, index }) => {
                     const { key, ...restProps } = props;
                     return (
                         <div
-                        key={key}
+                            key={key}
                             {...restProps}
-                            style={{
-                                ...restProps.style,
-                                height: "8px",
-                                width: "8px",
-                                backgroundColor: "#4D4C4B",
-                                borderRadius: "none",
-                            }}
+                            aria-label={index === 0 ? "Minimum price" : "Maximum price"}
+                            aria-valuetext={format(values[index] ?? 0)}
+                            className="size-[18px] rounded-full border-2 border-primary bg-background shadow-sm outline-none transition-shadow focus-visible:ring-4 focus-visible:ring-primary/15"
+                            style={restProps.style}
                         />
                     );
                 }}
             />
-            <div className="flex justify-between items-center mt-5">
-                <div>
-                    <span className='text-gray-1-foreground'>Price:</span>
-                    <p className="border border-primary py-1 px-4 inline-flex gap-3 ml-2 text-secondary-foreground rounded-sm">{format(values[0] ?? minLimit)} - {format(values[1] ?? maxLimit)}</p>
-                </div>
-                <button
-                    type="button"
-                    onClick={() => onApply?.([values[0] ?? minLimit, values[1] ?? maxLimit])}
-                    className='px-4 py-1 bg-primary text-white leading-[162%] text-base rounded-[4px]'
-                >Filter</button>
+            <div className="mt-5 flex items-center gap-2 text-sm">
+                <span className="flex-1 rounded-lg bg-home-bg-1 px-3 py-2">
+                    <span className="block text-[11px] uppercase tracking-wide text-gray-3-foreground">Min</span>
+                    <span className="text-secondary-foreground">{format(low)}</span>
+                </span>
+                <span aria-hidden className="text-gray-3-foreground">–</span>
+                <span className="flex-1 rounded-lg bg-home-bg-1 px-3 py-2">
+                    <span className="block text-[11px] uppercase tracking-wide text-gray-3-foreground">Max</span>
+                    <span className="text-secondary-foreground">{format(high)}</span>
+                </span>
             </div>
+            <button
+                type="button"
+                disabled={!isDirty}
+                onClick={() => onApply?.([low, high])}
+                className='mt-3 w-full rounded-full border border-primary py-2 text-sm font-medium text-secondary-foreground transition-colors duration-300 hover:bg-primary hover:text-white disabled:pointer-events-none disabled:opacity-40'
+            >Apply price</button>
         </div>
     );
 };

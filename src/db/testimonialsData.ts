@@ -2,7 +2,8 @@ export interface testimonialType {
     id: number;
     name: string;
     image: string;
-    rating: number;
+    /** Omit when no rating was given. */
+    rating?: number;
     title: string;
     review: string;
 }

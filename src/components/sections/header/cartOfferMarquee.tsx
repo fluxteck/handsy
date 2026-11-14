@@ -2,9 +2,9 @@ import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const defaultMessages = [
-  "Get 8% off on your first order — use code WELCOME8",
-  "Free shipping on prepaid orders",
-  "Handcrafted by 350+ verified artisans",
+  "Crafted in India",
+  "Free shipping",
+  "Verified artisans",
 ];
 
 const CartOfferMarqueeTrack = ({

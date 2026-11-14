@@ -1,5 +1,5 @@
 import { getMenuData } from "@/lib/data";
-import { getTopRatedProducts } from "@/lib/sdk";
+import { getFeaturedCategories, getTopRatedProducts } from "@/lib/sdk";
 import { getCategoryLinks } from "@/lib/categoryLinks";
 import { User } from "@/lib/icon";
 import Image from "next/image";
@@ -21,6 +21,9 @@ const Header = async () => {
   /* Real catalogue categories for the search placeholder rotation. The
      mega-menu and mobile menu still render the local structure above. */
   const categoryLinks = await getCategoryLinks();
+  /* The homepage's curated strip, reused as the search panel's image tiles.
+     Cached per request, so the homepage pays for it once. */
+  const featuredCategories = await getFeaturedCategories();
   return (
     <StickyHeader topHeaderContent={<TopHeader />}>
       <div className="lg:h-20 h-14 bg-home-bg-1 [.header-pinned_&]:shadow-md">
@@ -42,7 +45,7 @@ const Header = async () => {
             </Link>
           </div>
           <div className="flex-1 max-w-xl mx-auto">
-            <SearchPopup categories={categoryLinks} />
+            <SearchPopup categories={categoryLinks} popularCategories={featuredCategories} />
           </div>
           <div className="flex items-center justify-end gap-5 shrink-0">
             <div className="lg:block hidden">

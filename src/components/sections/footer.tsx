@@ -46,7 +46,8 @@ const staticFooterLinks = [
   },
 ];
 
-const socialLinks = [
+/** Brand accounts — also shown on the category landing banner. */
+export const socialLinks = [
   { Icon: Facebook, href: "https://www.facebook.com/handsymarket", label: "Facebook" },
   { Icon: Pinterest, href: "https://www.pinterest.com/handsymarket/", label: "Pinterest" },
   { Icon: Instagram, href: "https://www.instagram.com/handsymarket/", label: "Instagram" },

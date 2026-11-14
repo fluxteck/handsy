@@ -4,7 +4,7 @@ import PageHeader from "@/components/sections/pageHeader";
 import ProductsView from "@/components/sections/shopDetails/productView";
 import Newsletter from "@/components/sections/newsletter";
 import { parseCatalogQuery, type RawSearchParams } from "@/lib/catalog/filters";
-import { getCollectionPage, getTopRatedProducts } from "@/lib/sdk";
+import { getCollectionPage } from "@/lib/sdk";
 import { getStoreCurrency, getSiteUrl } from "@/lib/config";
 
 /**
@@ -75,10 +75,7 @@ const CollectionPage = async ({ params, searchParams }: PageProps) => {
   const { slug } = await params;
   const query = parseCatalogQuery(await searchParams);
 
-  const [collection, bestSellers] = await Promise.all([
-    getCollectionPage(slug, query),
-    getTopRatedProducts(3),
-  ]);
+  const collection = await getCollectionPage(slug, query);
   // Unknown or unpublished. A real 404 rather than an empty grid: an empty
   // collection is a page that will fill up, a missing one is not a page.
   if (!collection) notFound();
@@ -106,7 +103,6 @@ const CollectionPage = async ({ params, searchParams }: PageProps) => {
           categories: collection.categories,
           tags: collection.tags,
           priceBounds: collection.priceBounds,
-          bestSellers,
           currency: getStoreCurrency(),
           failed: collection.failed,
         }}

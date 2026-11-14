@@ -4,7 +4,7 @@ import Newsletter from '@/components/sections/newsletter'
 import PageHeader from '@/components/sections/pageHeader'
 import ProductsView from '@/components/sections/shopDetails/productView'
 import { parseCatalogQuery, type RawSearchParams } from '@/lib/catalog/filters'
-import { getCatalogPage, getTopRatedProducts } from '@/lib/sdk'
+import { getCatalogPage } from '@/lib/sdk'
 import { getStoreCurrency } from '@/lib/config'
 
 export const metadata: Metadata = {
@@ -24,10 +24,7 @@ const page = async ({ searchParams }: { searchParams: Promise<RawSearchParams> }
   // The template's sidebar linked here as `/category?name=<value>`; honour it
   // so those links narrow the results instead of being ignored.
   const query = parseCatalogQuery({ ...raw, category: raw.category ?? raw.name })
-  const [catalog, bestSellers] = await Promise.all([
-    getCatalogPage(query),
-    getTopRatedProducts(3),
-  ])
+  const catalog = await getCatalogPage(query)
   return (
     <main>
       <PageHeader pageTitle='Shop by Category' currentPage='Category' />
@@ -46,7 +43,6 @@ const page = async ({ searchParams }: { searchParams: Promise<RawSearchParams> }
           categories: catalog.categories,
           tags: catalog.tags,
           priceBounds: catalog.priceBounds,
-          bestSellers,
           currency: getStoreCurrency(),
           failed: catalog.failed,
         }}

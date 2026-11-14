@@ -6,8 +6,11 @@ import { brandsData } from "@/db/brandsData";
 import { privacyPolicyData } from "@/db/privacyPolicyData";
 import { termsAndConditionsData } from "@/db/termsAndConditionsData";
 import { testimonialData } from "@/db/testimonialsData";
+import { vendorTestimonialData } from "@/db/vendorTestimonialsData";
 import { heroData } from "@/db/heroData";
 import { promoCardsData } from "@/db/promoCardsData";
+import { promoBentoData } from "@/db/promoBentoData";
+import { uspData } from "@/db/uspData";
 import { shopTheLookData } from "@/db/shopTheLookData";
 import { productReviewsData } from "@/db/productReviewsData";
 import type {
@@ -40,6 +43,10 @@ import type {
 export const getHeroData = cache(async () => heroData);
 
 export const getPromoCardsData = cache(async () => promoCardsData);
+
+export const getPromoBentoData = cache(async () => promoBentoData);
+
+export const getUspData = cache(async () => uspData);
 
 export const getMenuData = cache(async () => menuList);
 
@@ -88,6 +95,7 @@ export const getCouponsData = cache(async (): Promise<CouponType[]> => []);
 export const getReturnsData = cache(async (): Promise<ReturnRequestType[]> => []);
 
 export const getTestimonialsData = cache(async () => testimonialData);
+export const getVendorTestimonialsData = cache(async () => vendorTestimonialData);
 
 export const getProductReviewsData = cache(async (productId: number | string) =>
   productReviewsData.filter((review) => String(review.productId) === String(productId)),

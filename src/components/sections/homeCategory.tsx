@@ -63,7 +63,7 @@ const CategoryCard = ({
             href={categoryHref(value, href)}
             className={cn(
                 "font-medium text-gray-1-foreground capitalize hover:text-secondary-foreground transition-all duration-500",
-                compact ? "mt-2 text-xs sm:text-sm" : "mt-4 lg:text-lg text-base"
+                compact ? "mt-2 text-xs sm:text-sm" : "mt-2 text-sm sm:mt-4 sm:text-base lg:text-lg"
             )}
         >
             {categoryName}
@@ -77,7 +77,7 @@ const HomeCategory = ({
     compact = false,
 }: {
     categories: CategoryType[];
-    /** Hides the "Shop by Category" title and subtitle — for surfaces that
+    /** Hides the "Shop by Category" title — for surfaces that
      *  just need the category strip itself. Defaults to showing them. */
     showHeading?: boolean;
     /** Smaller, denser cards (8 per row on desktop) — for surfaces where the
@@ -88,12 +88,7 @@ const HomeCategory = ({
     return (
         <div className={cn("pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5", compact && "pt-3 pb-0 md:pt-3.5 lg:pt-4")}>
             <div className="container">
-                {showHeading && (
-                    <>
-                        <Title>Shop by Category</Title>
-                        <p className="text-gray-1-foreground leading-[150%] font-light mt-1">Discover everything you need through the categories!</p>
-                    </>
-                )}
+                {showHeading && <Title className="text-center">Shop by Category</Title>}
 
                 {/* Tablet & desktop: full row, every category visible at once.
                     Compact mode uses flex-wrap with a fixed card width (rather
@@ -128,8 +123,8 @@ const HomeCategory = ({
             {/* Mobile only: swipeable carousel with nav arrows + pagination dots */}
             <div className={cn("sm:hidden container relative", compact ? "mt-3" : "mt-8 lg:mt-11")}>
                 <Swiper
-                    spaceBetween={compact ? 8 : 12}
-                    slidesPerView={compact ? 4.5 : 1.8}
+                    spaceBetween={8}
+                    slidesPerView={compact ? 4.5 : 3}
                     grabCursor
                     navigation={{ nextEl: ".category-next", prevEl: ".category-prev" }}
                     pagination={{
@@ -139,7 +134,9 @@ const HomeCategory = ({
                         bulletActiveClass: "category-pagination-bullet-active",
                     }}
                     modules={[Navigation, Pagination]}
-                    className="!px-10"
+                    // Clip the side padding so the arrows sit on empty space
+                    // rather than on a sliver of the next slide.
+                    className="!px-10 [clip-path:inset(0_2.5rem)]"
                 >
                     {categories.map(({ categoryName, id, categoryImg, value, href }) => (
                         <SwiperSlide key={id}>
@@ -148,8 +145,8 @@ const HomeCategory = ({
                                 categoryImg={categoryImg}
                                 value={value}
                                 href={href}
-                                imageSizes={compact ? "20vw" : "50vw"}
-                                imageClassName={compact ? "size-12" : "size-28"}
+                                imageSizes={compact ? "20vw" : "25vw"}
+                                imageClassName={compact ? "size-12" : "size-[min(20vw,84px)]"}
                                 compact={compact}
                             />
                         </SwiperSlide>
