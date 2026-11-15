@@ -61,6 +61,7 @@ const AboutCraftsmanship = () => {
         </motion.div>
       </div>
     </section>
+    
   );
 };
 
