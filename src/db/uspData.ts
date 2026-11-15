@@ -33,7 +33,7 @@ export const uspData: UspBlockType[] = [
     {
         id: "returns",
         icon: HeartHandshake,
-        title: "15-Day Returns",
+        title: "7-Day Returns",
         text: "Easy returns & exchanges",
         href: "/faq",
     },
