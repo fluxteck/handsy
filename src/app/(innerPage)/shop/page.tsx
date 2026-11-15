@@ -6,7 +6,7 @@ import HomeCategory from '@/components/sections/homeCategory'
 import ProductsView from '@/components/sections/shopDetails/productView'
 import Newsletter from '@/components/sections/newsletter'
 import { parseCatalogQuery, type RawSearchParams } from '@/lib/catalog/filters'
-import { getCatalogPage, getFeaturedCategories, getTopRatedProducts } from '@/lib/sdk'
+import { getCatalogPage, getFeaturedCategories } from '@/lib/sdk'
 import { getStoreCurrency } from '@/lib/config'
 
 export const metadata: Metadata = {
@@ -30,9 +30,8 @@ export const dynamic = 'force-dynamic'
 
 const ShopOne = async ({ searchParams }: { searchParams: Promise<RawSearchParams> }) => {
     const query = parseCatalogQuery(await searchParams)
-    const [page, bestSellers, categories] = await Promise.all([
+    const [page, categories] = await Promise.all([
         getCatalogPage(query),
-        getTopRatedProducts(3),
         getFeaturedCategories(),
     ])
     return (
@@ -43,7 +42,7 @@ const ShopOne = async ({ searchParams }: { searchParams: Promise<RawSearchParams
                 isCategoryShow={false}
                 isSortingProductTop={true}
                 isGridDefaultView={true}
-                isSidebarCategoryHide={true}
+                isSidebarCategoryHide={false}
                 data={page.items}
                 catalog={{
                     basePath: '/shop',
@@ -53,7 +52,6 @@ const ShopOne = async ({ searchParams }: { searchParams: Promise<RawSearchParams
                     categories: page.categories,
                     tags: page.tags,
                     priceBounds: page.priceBounds,
-                    bestSellers,
                     currency: getStoreCurrency(),
                     failed: page.failed,
                 }}

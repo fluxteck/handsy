@@ -30,6 +30,7 @@ export function toCategoryType(category: Category, index: number): CategoryType 
       FALLBACK_IMAGES[index % FALLBACK_IMAGES.length]!,
     ),
     value: category.slug,
+    ...(category.parentId ? { parentId: String(category.parentId) } : {}),
   };
 }
 

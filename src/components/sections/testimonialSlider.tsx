@@ -24,11 +24,12 @@ const avatarTones = [
 ]
 
 const TestimonialSlider = ({ testimonials, title = 'Client Testimonials', className }: TestimonialSliderProps) => {
+    if (testimonials.length === 0) return null;
     return (
-        <section className={cn('pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5 group/section', className)} aria-label="Client testimonials">
+        <section className={cn('pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5 group/section', className)} aria-label={title || 'Testimonials'}>
             <div className='container'>
                 {title && (
-                    <Title className='mb-10'>{title}</Title>
+                    <Title className='mb-10 text-center'>{title}</Title>
                 )}
                 <div className='relative'>
                     <Swiper
@@ -78,7 +79,7 @@ const TestimonialSlider = ({ testimonials, title = 'Client Testimonials', classN
                                         {name.trim().charAt(0).toUpperCase()}
                                     </div>
                                     <h5 className='text-base text-secondary-foreground leading-[150%]'>{name}</h5>
-                                    <Rating star={rating} iconSize='size-4' className='justify-center mt-2' />
+                                    {rating !== undefined && <Rating star={rating} iconSize='size-4' className='justify-center mt-2' />}
                                     <h6 className='mt-4 text-lg text-secondary-foreground leading-[140%]'>{caption}</h6>
                                     <p className='mt-3 text-sm text-gray-1-foreground leading-[170%]'>{review}</p>
                                 </article>

@@ -27,13 +27,12 @@ const FeaturedProducts = ({ featuredProducts }: { featuredProducts: ProductType[
         <section className="bg-home-bg-1 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5 group/section">
             <Tabs defaultValue={filterList[0] || ''} className="relative">
                 <div className="container" ref={containerRef}>
-                    <Title>Curated collections</Title>
-                    <p className="text-gray-1-foreground mt-3 leading-[166.667%]">
-                        Explore the best of Handsy Market Collection.
-                    </p>
+                    <Title className="text-center">Curated collections</Title>
                     <div className="mt-10">
-                        <div className="flex flex-col items-start md:flex-row md:justify-between md:items-center mb-5">
-                            <TabsList className="w-full flex-nowrap justify-between gap-2 md:w-auto md:flex-wrap md:justify-start md:gap-5 lg:gap-7.5">
+                        {/* Mobile: one row — tabs then "View All", evenly spaced, scrolling
+                            sideways rather than wrapping when it can't fit. */}
+                        <div className="scrollbar-hidden flex items-center gap-6 overflow-x-auto md:gap-0 md:overflow-visible md:justify-between mb-5">
+                            <TabsList className="shrink-0 flex-nowrap justify-start gap-6 md:flex-wrap md:gap-5 lg:gap-7.5">
                                 {filterList.map((item, index) => (
                                     <TabsTrigger
                                         key={index}
@@ -46,7 +45,7 @@ const FeaturedProducts = ({ featuredProducts }: { featuredProducts: ProductType[
                             </TabsList>
                             <Link
                                 href={"/shop"}
-                                className="text-gray-1-foreground lg:text-xl text-lg border-b border-b-primary mt-2.5 md:mt-0 inline-block hover:border-b-primary hover:text-secondary-foreground duration-500"
+                                className="text-gray-1-foreground lg:text-xl text-lg border-b border-b-primary shrink-0 whitespace-nowrap py-2 md:py-0 inline-block hover:border-b-primary hover:text-secondary-foreground duration-500"
                             >
                                 View All
                             </Link>

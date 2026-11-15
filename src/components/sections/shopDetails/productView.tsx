@@ -25,11 +25,13 @@ import { useCart } from "@/lib/cart/cart-context";
 import { ProductType } from "@/types/productType";
 import type { CategoryType } from "@/db/categoriesData";
 import { buildCatalogHref, type CatalogQuery, type SortKey } from "@/lib/catalog/filters";
+import { toggleTag } from "@/lib/catalog/tagGroups";
 import { productPath } from "@/lib/productPath";
 import { useRouter } from "next/navigation";
 import ProductQuickView, { ProductQuickViewProduct } from "./productQuickView";
 import ProductsCategory from "./productsCategory";
 import ShopSidebar from "./shopSidebar";
+import FilterDrawer from "./filterDrawer";
 import { useWishlist } from "@/lib/wishlist/wishlist-context";
 
 /** Everything the catalogue-backed listing needs. Absent on pages still
@@ -43,7 +45,6 @@ export type CatalogViewProps = {
   categories: CategoryType[];
   tags: string[];
   priceBounds: { min: number; max: number };
-  bestSellers: ProductType[];
   currency: string;
   /** The product query failed, as opposed to matching nothing. */
   failed: boolean;
@@ -110,6 +111,62 @@ const ProductsView = ({
       catalog.query.page <= 1
   );
 
+  // Filters the shopper has applied, for the badge on the Filter button.
+  const activeFilterCount = catalog
+    ? (isSidebarCategoryHide ? 0 : Number(Boolean(catalog.query.category))) +
+      (isSidebarTagsHide ? 0 : catalog.query.tags.length) +
+      Number(catalog.query.minPrice !== undefined || catalog.query.maxPrice !== undefined)
+    : 0;
+
+  /* The filter panel lives in the shared left drawer opened from the sorting
+     row, so the grid gets the full width. */
+  const filterDrawer = (
+    <FilterDrawer
+      activeCount={activeFilterCount}
+      resultLabel={
+        !catalog || catalog.failed
+          ? "Show results"
+          : `Show ${catalog.total} ${catalog.total === 1 ? "product" : "products"}`
+      }
+      // Only what this drawer offers: a category page's own category comes
+      // from its path, and search and sort are kept.
+      onClearAll={() =>
+        applyFilters({
+          ...(isSidebarCategoryHide ? {} : { category: "" }),
+          tags: [],
+          minPrice: undefined,
+          maxPrice: undefined,
+        })
+      }
+    >
+      <ShopSidebar
+        isSidebarCategoryHide={isSidebarCategoryHide}
+        isSidebarTagsHide={isSidebarTagsHide}
+        categories={catalog?.categories}
+        tags={catalog?.tags}
+        priceBounds={catalog?.priceBounds}
+        currency={catalog?.currency}
+        selected={
+          catalog && {
+            category: catalog.query.category,
+            tags: catalog.query.tags,
+            minPrice: catalog.query.minPrice,
+            maxPrice: catalog.query.maxPrice,
+          }
+        }
+        onCategoryChange={catalog ? (category) => applyFilters({ category }) : undefined}
+        onTagToggle={
+          catalog
+            ? (tag) => applyFilters({ tags: toggleTag(catalog.query.tags, tag) })
+            : undefined
+        }
+        onPriceApply={
+          catalog ? ([min, max]) => applyFilters({ minPrice: min, maxPrice: max }) : undefined
+        }
+      />
+    </FilterDrawer>
+  );
+
   return (
     <>
       <div className="container lg:pt-25 lg:pb-25 pt-15 pb-15">
@@ -120,55 +177,22 @@ const ProductsView = ({
               <ProductSorting
                 isGridView={isGridView}
                 setIsGridView={setIsGridView}
-                searchTerm={catalog?.query.q}
                 sort={catalog?.query.sort}
-                onSearch={catalog ? (q) => applyFilters({ q }) : undefined}
                 onSortChange={catalog ? (sort: SortKey) => applyFilters({ sort }) : undefined}
+                filterSlot={filterDrawer}
               />
             </div>
           </div>
         )}
-        <div className="grid lg:grid-cols-[minmax(220px,18%)_auto] grid-cols-1 gap-7.5">
-          <ShopSidebar
-            isSidebarCategoryHide={isSidebarCategoryHide}
-            isSidebarTagsHide={isSidebarTagsHide}
-            categories={catalog?.categories}
-            tags={catalog?.tags}
-            priceBounds={catalog?.priceBounds}
-            bestSellers={catalog?.bestSellers}
-            currency={catalog?.currency}
-            selected={
-              catalog && {
-                category: catalog.query.category,
-                tags: catalog.query.tags,
-                minPrice: catalog.query.minPrice,
-                maxPrice: catalog.query.maxPrice,
-              }
-            }
-            onCategoryChange={catalog ? (category) => applyFilters({ category }) : undefined}
-            onTagToggle={
-              catalog
-                ? (tag) =>
-                    applyFilters({
-                      tags: catalog.query.tags.includes(tag)
-                        ? catalog.query.tags.filter((t) => t !== tag)
-                        : [...catalog.query.tags, tag],
-                    })
-                : undefined
-            }
-            onPriceApply={
-              catalog ? ([min, max]) => applyFilters({ minPrice: min, maxPrice: max }) : undefined
-            }
-          />
+        <div>
           <div>
             {isSortingProductTop && (
               <ProductSorting
                 isGridView={isGridView}
                 setIsGridView={setIsGridView}
-                searchTerm={catalog?.query.q}
                 sort={catalog?.query.sort}
-                onSearch={catalog ? (q) => applyFilters({ q }) : undefined}
                 onSortChange={catalog ? (sort: SortKey) => applyFilters({ sort }) : undefined}
+                filterSlot={filterDrawer}
               />
             )}
             {catalog && data.length === 0 && (

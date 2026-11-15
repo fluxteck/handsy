@@ -7,6 +7,10 @@ export type CategoryType = {
      *  (e.g. "Bestsellers", which is a sort order). Defaults to the category
      *  page for `value`. */
     "href"?: string,
+    /** Parent category id, for nesting subcategories in the filter. */
+    "parentId"?: string,
+    /** Active products filed under this category, when the listing knows it. */
+    "productCount"?: number,
 }
 
 export const categoriesOneData: CategoryType[] = [

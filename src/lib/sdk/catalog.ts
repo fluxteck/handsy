@@ -323,7 +323,7 @@ export const getCatalogPage = cache(
       page: query.page,
       pageSize,
       totalPages: Math.max(1, Math.ceil(total / pageSize)),
-      categories,
+      categories: categories.map((c) => ({ ...c, productCount: facets.categoryCounts[String(c.id)] ?? 0 })),
       tags: facets.tags,
       priceBounds: facets.priceBounds,
     };
@@ -339,10 +339,19 @@ export const getCatalogPage = cache(
  * which is why the slider clamps rather than rejects out-of-range input.
  */
 const getCatalogFacets = cache(
-  async (): Promise<{ tags: string[]; priceBounds: { min: number; max: number } }> => {
+  async (): Promise<{
+    tags: string[];
+    priceBounds: { min: number; max: number };
+    /** Products per category id, so the filter can skip empty categories. */
+    categoryCounts: Record<string, number>;
+  }> => {
     try {
       const { items } = await getStorefrontClient().products.list({ limit: 100 });
       const tags = [...new Set(items.flatMap((p) => p.tags ?? []))].sort();
+      const categoryCounts: Record<string, number> = {};
+      for (const id of items.flatMap((p) => p.categoryIds ?? [])) {
+        categoryCounts[String(id)] = (categoryCounts[String(id)] ?? 0) + 1;
+      }
       const amounts = items.map((p) => p.priceFrom.amount).filter((a) => a > 0);
       return {
         tags,
@@ -351,10 +360,11 @@ const getCatalogFacets = cache(
           // Major units, rounded up so the top-priced product is reachable.
           max: amounts.length ? Math.ceil(Math.max(...amounts) / 100) : 0,
         },
+        categoryCounts,
       };
     } catch (err) {
       console.error("[handsy:catalog] facets failed to load", err);
-      return { tags: [], priceBounds: { min: 0, max: 0 } };
+      return { tags: [], priceBounds: { min: 0, max: 0 }, categoryCounts: {} };
     }
   },
 );
@@ -480,13 +490,20 @@ export const getVendorProducts = cache(
     if (!brands) return { products: [], categories: [] };
     try {
       const page = await brands.products(slug, { limit: 24 }, ctx());
-      const products = toProductTypes(page.items);
 
       const categoryIds = [...new Set(page.items.flatMap((p) => p.categoryIds ?? []))];
       const names = await Promise.all(categoryIds.map((id) => getCategoryName(id)));
+      const nameById = new Map(categoryIds.map((id, i) => [String(id), names[i]?.categoryName]));
       const categories = names
         .map((category) => category?.categoryName)
         .filter((title): title is string => Boolean(title));
+
+      // The shared mapper leaves `category` blank; the storefront's Category
+      // filter matches on it, so fill in each product's first category name.
+      const products = toProductTypes(page.items).map((product, i) => ({
+        ...product,
+        category: (page.items[i]?.categoryIds ?? []).map((id) => nameById.get(String(id))).find(Boolean) ?? "",
+      }));
 
       return { products, categories };
     } catch {

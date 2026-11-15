@@ -4,11 +4,13 @@ import { notFound } from 'next/navigation'
 import Newsletter from '@/components/sections/newsletter'
 import PageHeader from '@/components/sections/pageHeader'
 import ProductsView from '@/components/sections/shopDetails/productView'
+import Image from 'next/image'
 import Link from 'next/link'
+import { socialLinks } from '@/components/sections/footer'
 import { categorySlugLabels } from '@/db/menuList'
 import { categoryContent } from '@/db/categoryContent'
 import { parseCatalogQuery, type RawSearchParams } from '@/lib/catalog/filters'
-import { getCatalogPage, getHomeCategories, getTopRatedProducts } from '@/lib/sdk'
+import { getCatalogPage, getHomeCategories } from '@/lib/sdk'
 import { getStoreCurrency } from '@/lib/config'
 
 type PageProps = {
@@ -61,28 +63,62 @@ const CategoryLandingPage = async ({ params, searchParams }: PageProps) => {
   const baseQuery = parseCatalogQuery(await searchParams)
   const query = serverCategory ? { ...baseQuery, category: slug } : baseQuery
 
-  const [page, bestSellers] = await Promise.all([
+  // The header image is the category's lead product, read from the unfiltered
+  // listing so it stays put while the shopper filters or sorts. On the default
+  // view that is the page already being fetched.
+  const leadQuery = { ...parseCatalogQuery({}), ...(serverCategory ? { category: slug } : {}) }
+  const isDefaultQuery = JSON.stringify(leadQuery) === JSON.stringify(query)
+
+  const [page, leadPage] = await Promise.all([
     getCatalogPage(query),
-    getTopRatedProducts(3),
+    isDefaultQuery ? null : getCatalogPage(leadQuery),
   ])
+  const headerImage = content?.bannerImage ?? (leadPage ?? page).items[0]?.thumbnail
   return (
     <main>
       <PageHeader pageTitle={label} currentPage={label} breadcrumbLink="/category" breadcrumbLabel="Category" renderHeading={false} />
-      {content && (
-        <section className="container pt-8 lg:pt-10 pb-4 lg:pb-6">
-          <h1 className="text-heading capitalize text-secondary-foreground font-normal">{label}</h1>
-          <p className="mt-3 max-w-3xl text-gray-1-foreground leading-[170%]">{content.intro}</p>
-          <div className="mt-4">
-            <h2 className="text-lg font-medium text-secondary-foreground">Buying in Bulk</h2>
-            <p className="mt-1 max-w-3xl text-gray-1-foreground leading-[170%]">
-              {content.bulkNote}{" "}
-              <Link href="/b2b" className="text-secondary-foreground underline underline-offset-2 hover:text-primary transition-colors duration-300">
-                Get wholesale pricing →
-              </Link>
-            </p>
+      {/* Category banner: centred title (the page's only <h1>) over a grey
+          copy panel and a wide image. Per-category heading and image come from
+          `categoryContent`; without an image the panel spans the full width. */}
+      <section className="container pt-6 lg:pt-8 pb-2 lg:pb-3">
+        <h1 className="text-center text-heading uppercase tracking-[0.2em] text-secondary-foreground font-normal">{label}</h1>
+        <div className={headerImage ? "mt-4 lg:mt-6 grid md:grid-cols-[2fr_3fr]" : "mt-4 lg:mt-6"}>
+          <div className="flex flex-col justify-between gap-5 bg-[#F2F2F2] p-5 sm:p-6 lg:p-8">
+            <div>
+              <h2 className="text-lg lg:text-xl font-medium uppercase leading-[125%] text-secondary-foreground">
+                {content?.bannerHeading ?? `Explore our range of ${label}`}
+              </h2>
+              {content && (
+                <p className="mt-2 text-[15px] text-gray-1-foreground leading-[160%]">{content.intro}</p>
+              )}
+            </div>
+            <div className="flex items-center gap-2.5">
+              {socialLinks.map(({ Icon, href, label: network }) => (
+                <Link
+                  key={network}
+                  href={href}
+                  aria-label={network}
+                  className="flex size-7 items-center justify-center rounded-full bg-primary text-white transition-opacity duration-300 hover:opacity-75"
+                >
+                  <Icon className="size-3" />
+                </Link>
+              ))}
+            </div>
           </div>
-        </section>
-      )}
+          {headerImage && (
+            <div className="relative aspect-[2/1] md:aspect-auto md:min-h-[220px] lg:min-h-[250px] bg-home-bg-1">
+              <Image
+                src={headerImage}
+                alt=""
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 60vw"
+                className="object-cover"
+              />
+            </div>
+          )}
+        </div>
+      </section>
       <ProductsView
         isCategoryShow={false}
         isSortingProductTop={true}
@@ -98,7 +134,6 @@ const CategoryLandingPage = async ({ params, searchParams }: PageProps) => {
           categories: page.categories,
           tags: page.tags,
           priceBounds: page.priceBounds,
-          bestSellers,
           currency: getStoreCurrency(),
           failed: page.failed,
         }}

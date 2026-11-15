@@ -217,9 +217,9 @@ const ShopTheLook = ({ data, className }: { data: ShopTheLookData; className?: s
     <section className={cn("bg-home-bg-1 pt-10 md:pt-11.25 lg:pt-12.5 pb-10 md:pb-11.25 lg:pb-12.5", className)}>
       <div className="container">
         <Tabs defaultValue={firstRoomId}>
-          <div className="flex flex-wrap items-end justify-between gap-5 mb-7 lg:mb-8">
-            <div>
-              <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
+          <div className="flex flex-col items-center gap-5 mb-7 lg:mb-8">
+            <div className="text-center">
+              <p className="flex items-center justify-center gap-1.5 text-xs font-medium uppercase tracking-[0.2em] text-gray-3-foreground">
                 {data.eyebrow} <ChevronRight className="size-3" />
               </p>
               <h2 className="mt-1.5 text-heading capitalize text-secondary-foreground">
@@ -228,7 +228,7 @@ const ShopTheLook = ({ data, className }: { data: ShopTheLookData; className?: s
             </div>
 
             {data.rooms.length > 1 && (
-              <TabsList className="flex-wrap justify-start gap-2">
+              <TabsList className="flex-wrap justify-center gap-2">
                 {data.rooms.map((room) => (
                   <TabsTrigger
                     key={room.id}

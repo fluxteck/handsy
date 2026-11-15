@@ -3,6 +3,10 @@ export type CategoryContentType = {
     metaDescription: string;
     intro: string;
     bulkNote: string;
+    /** Banner heading on the landing page. Defaults to "Explore our range of <category>". */
+    bannerHeading?: string;
+    /** Banner image (wide, ~2.5:1). Defaults to the category's lead product photo. */
+    bannerImage?: string;
 };
 
 // SEO/AEO content for the /category/[slug] landing pages. Keyed by the same

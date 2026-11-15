@@ -3,32 +3,35 @@ import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import FilterDrawer from "@/components/sections/shopDetails/filterDrawer";
+import ProductSorting from "@/components/sections/shopDetails/productSorting";
+import ShopSidebar from "@/components/sections/shopDetails/shopSidebar";
+import type { CategoryType } from "@/db/categoriesData";
 import { Search } from "@/lib/icon";
 import type { VendorType } from "@/types/vendorType";
 
 const PAGE_SIZE = 8;
-const ALL = "all";
 
 type SortKey = "recommended" | "name" | "rating";
+
+const sortOptions: { value: SortKey; label: string }[] = [
+  { value: "recommended", label: "Recommended" },
+  { value: "name", label: "Name (A–Z)" },
+  { value: "rating", label: "Top rated" },
+];
 
 /**
  * Directory of every active maker storefront — search/filter/sort over the
  * real vendor list, all fetched once server-side (see `page.tsx`) and
  * filtered here in memory. A curated maker marketplace doesn't have enough
- * vendors to justify a server round trip per keystroke.
+ * vendors to justify a server round trip per keystroke. Category and Location
+ * sit in the site's shared Filter drawer.
  */
 const VendorDirectory = ({ vendors }: { vendors: VendorType[] }) => {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState(ALL);
-  const [location, setLocation] = useState(ALL);
+  const [category, setCategory] = useState("");
+  const [location, setLocation] = useState("");
   const [sort, setSort] = useState<SortKey>("recommended");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -38,6 +41,17 @@ const VendorDirectory = ({ vendors }: { vendors: VendorType[] }) => {
   const categoryOptions = useMemo(
     () => [...new Set(vendors.flatMap((vendor) => vendor.categories))].sort(),
     [vendors],
+  );
+  const categoryFilters = useMemo<CategoryType[]>(
+    () =>
+      categoryOptions.map((name) => ({
+        id: name,
+        categoryName: name,
+        categoryImg: "",
+        value: name,
+        productCount: vendors.filter((vendor) => vendor.categories.includes(name)).length,
+      })),
+    [categoryOptions, vendors],
   );
   const locationOptions = useMemo(
     () => [...new Set(vendors.map((vendor) => vendor.location).filter(Boolean))].sort(),
@@ -52,8 +66,8 @@ const VendorDirectory = ({ vendors }: { vendors: VendorType[] }) => {
         vendor.name.toLowerCase().includes(q) ||
         vendor.tagline.toLowerCase().includes(q) ||
         vendor.description.toLowerCase().includes(q);
-      const matchesCategory = category === ALL || vendor.categories.includes(category);
-      const matchesLocation = location === ALL || vendor.location === location;
+      const matchesCategory = !category || vendor.categories.includes(category);
+      const matchesLocation = !location || vendor.location === location;
       return matchesQuery && matchesCategory && matchesLocation;
     });
 
@@ -78,82 +92,66 @@ const VendorDirectory = ({ vendors }: { vendors: VendorType[] }) => {
           </p>
         </div>
 
-        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <label className="sm:col-span-2 lg:col-span-1 text-sm text-gray-1-foreground">
-            Search vendors
-            <div className="relative mt-2">
-              <Input
-                value={query}
-                onChange={(e) => {
-                  setQuery(e.target.value);
-                  setVisibleCount(PAGE_SIZE);
-                }}
-                placeholder="Search by name, craft, or material…"
-                className="pl-11 border-[#999796] bg-background text-secondary-foreground"
-              />
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-gray-1-foreground" />
-            </div>
-          </label>
-
-          <label className="text-sm text-gray-1-foreground">
-            Category
-            <Select
-              value={category}
-              onValueChange={(v) => {
-                setCategory(v);
-                setVisibleCount(PAGE_SIZE);
-              }}
-            >
-              <SelectTrigger className="mt-2 w-full border-[#999796] bg-background text-secondary-foreground">
-                <SelectValue placeholder="All categories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ALL}>All categories</SelectItem>
-                {categoryOptions.map((option) => (
-                  <SelectItem key={option} value={option} className="capitalize">
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
-
-          <label className="text-sm text-gray-1-foreground">
-            Location
-            <Select
-              value={location}
-              onValueChange={(v) => {
-                setLocation(v);
-                setVisibleCount(PAGE_SIZE);
-              }}
-            >
-              <SelectTrigger className="mt-2 w-full border-[#999796] bg-background text-secondary-foreground">
-                <SelectValue placeholder="All regions" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={ALL}>All regions</SelectItem>
-                {locationOptions.map((option) => (
-                  <SelectItem key={option} value={option}>
-                    {option}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
-
-          <label className="text-sm text-gray-1-foreground">
-            Sort by
-            <Select value={sort} onValueChange={(v) => setSort(v as SortKey)}>
-              <SelectTrigger className="mt-2 w-full border-[#999796] bg-background text-secondary-foreground">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="recommended">Recommended</SelectItem>
-                <SelectItem value="name">Name (A–Z)</SelectItem>
-                <SelectItem value="rating">Top rated</SelectItem>
-              </SelectContent>
-            </Select>
-          </label>
+        <div className="mt-10">
+          <ProductSorting
+            isGridView
+            sort={sort}
+            onSortChange={setSort}
+            sortOptions={sortOptions}
+            filterSlot={
+              <div className="flex flex-wrap items-center gap-3">
+                <FilterDrawer
+                  activeCount={Number(Boolean(category)) + Number(Boolean(location))}
+                  resultLabel={`Show ${filtered.length} ${filtered.length === 1 ? "vendor" : "vendors"}`}
+                  onClearAll={() => {
+                    setCategory("");
+                    setLocation("");
+                    setVisibleCount(PAGE_SIZE);
+                  }}
+                >
+                  <ShopSidebar
+                    isSidebarTagsHide
+                    categories={categoryFilters}
+                    selected={{ category, tags: [] }}
+                    onCategoryChange={(value) => {
+                      setCategory(value);
+                      setVisibleCount(PAGE_SIZE);
+                    }}
+                    optionGroups={[
+                      {
+                        id: "location",
+                        label: "Location",
+                        allLabel: "All regions",
+                        options: locationOptions.map((option) => ({
+                          value: option,
+                          label: option,
+                          count: vendors.filter((vendor) => vendor.location === option).length,
+                        })),
+                        selected: location,
+                        onChange: (value) => {
+                          setLocation(value);
+                          setVisibleCount(PAGE_SIZE);
+                        },
+                      },
+                    ]}
+                  />
+                </FilterDrawer>
+                <div className="relative w-[220px] sm:w-[280px]">
+                  <Input
+                    value={query}
+                    onChange={(e) => {
+                      setQuery(e.target.value);
+                      setVisibleCount(PAGE_SIZE);
+                    }}
+                    placeholder="Search vendors…"
+                    aria-label="Search vendors by name, craft, or material"
+                    className="pl-10 h-9 border-border bg-background text-secondary-foreground text-sm"
+                  />
+                  <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-gray-1-foreground" />
+                </div>
+              </div>
+            }
+          />
         </div>
 
         <div className="flex items-center justify-between gap-4 mt-10 mb-6">
